@@ -10,7 +10,7 @@ ASC.render = async function () {
   document.title = c.title + " · AI Scale Collaborative";
   const host = ASC.partner(c.host);
   if (!host && c.status !== "completed") { location.replace("convenings.html"); return; }
-  const showAnalysis = ASC.config.showFoundationAnalysis !== false;
+  const showAnalysis = false; // Foundation analysis lives on foundation.html (not linked)
 
   const blocks = (list) => (list || []).map(block).join("");
   function block(b) {

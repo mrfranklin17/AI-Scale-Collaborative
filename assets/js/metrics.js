@@ -28,7 +28,10 @@
       const counts = ASC.frictionFramework.map((f) => ({ f, n: rows.filter((r) => r.answers && r.answers.friction === f.id).length }));
       const total = counts.reduce((a, b) => a + b.n, 0);
       const top = counts.slice().sort((a, b) => b.n - a.n)[0];
-      return total && top.n ? { f: top.f, share: top.n / total, n: top.n, total } : null;
+      if (!total || !top.n) return null;
+      const tied = counts.filter((c) => c.n === top.n).map((c) => c.f);
+      const title = tied.length === 1 ? top.f.title : tied.slice(0, -1).map((f) => f.title).join(", ") + " and " + tied[tied.length - 1].title;
+      return { f: top.f, tied, title, share: top.n / total, n: top.n, total };
     },
     /* Three plain-language findings for a set of responses. */
     findings(rows) {

@@ -49,6 +49,18 @@ window.ASC.survey = {
     { id: "other", label: "Other" }
   ],
 
+  // Comment themes. Comments are tagged automatically when they contain one of
+  // the keywords (case-insensitive). Labels mirror the convening focus areas.
+  themes: [
+    { id: "data", label: "Data infrastructure", keywords: ["data hub", "warehouse", "flag", "dashboard", "data stack", "data access", "single view", "pipeline"] },
+    { id: "rapid-data", label: "Rapid data cycles", keywords: ["scoring", "rubric", "reteach", "friday", "interim", "data day", "data cycle"] },
+    { id: "tutoring", label: "AI tutoring", keywords: ["tutor", "dosage", "intervention"] },
+    { id: "literacy", label: "AI literacy", keywords: ["literacy", "history class", "accept, revise", "protocol"] },
+    { id: "mindsets", label: "Mindsets & culture", keywords: ["task force", "culture", "norm", "mindset", "abandon", "honest", "worth", "agent approach", "pilot"] },
+    { id: "equity", label: "Equity", keywords: ["english learner", "iep", "equity", "subgroup", "focus population", "furthest behind", "students with"] },
+    { id: "logistics", label: "Logistics", keywords: ["logistics", "schedule", "agenda", "pre-read", "debrief", "pacing", "more time", "smaller", "groups", "session on"] }
+  ],
+
   // Extra respondent organizations beyond the partners in data/collaborative.js
   extraOrgs: [
     { id: "gates", name: "Gates Foundation", short: "Gates Foundation" },

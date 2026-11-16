@@ -125,6 +125,7 @@
     const orgs = ["kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "gem-prep", "gem-prep", "gem-prep", "gem-prep", "collegiate", "collegiate", "collegiate", "collegiate", "collegiate", "esw", "esw", "esw", "noaief", "noaief", "noaief", "gates", "gates", "gates", "ai-for-equity", "ai-for-equity", "dream"];
     const roles = { default: ["network", "network", "school", "school", "instruction", "data", "operations"], esw: ["intermediary"], noaief: ["intermediary"], gates: ["foundation"], "ai-for-equity": ["other"], dream: ["school"] };
     const frictions = ["product", "configuration", "configuration", "coherence", "coherence", "practice", "practice", "practice"];
+    // Each sample comment is used once, so the list reads like distinct respondents.
     const text = {
       valuable: [
         "Seeing the Data Hub's 'where to intervene' board — flags, interventions and targets on one screen.",
@@ -134,7 +135,10 @@
         "Rubric-scoring agents giving Fridays back to teachers for reteach planning.",
         "The honesty about the tutoring pilot showing no difference yet.",
         "The AI literacy protocol in history class: accept, revise or reject.",
-        "Tiered data access and versioned flag definitions."
+        "Tiered data access and versioned flag definitions.",
+        "How the task force puts the choice of where to use AI with the people doing the work.",
+        "The 35-tools-piloted, five-to-eight-kept discipline and the one-month abandonment threshold.",
+        "Seeing tutoring tasks pulled from IM and sequenced to next week's Tier 1 lesson."
       ],
       try: [
         "Pilot rubric-based scoring for one interim with our ELA team.",
@@ -143,7 +147,9 @@
         "Set an explicit abandonment threshold for tools we pilot.",
         "Map our tutoring sessions to next week's Tier 1 content instead of remediation.",
         "Bring the task-force model to our central office.",
-        "Audit where tutoring sits in our schedule and what dosage students actually get."
+        "Audit where tutoring sits in our schedule and what dosage students actually get.",
+        "Ask every vendor for subgroup outcome data before renewal.",
+        "Try the history-class protocol in one middle school AI literacy unit."
       ],
       improve: [
         "More time in classrooms, less in presentations.",
@@ -151,8 +157,15 @@
         "Share pre-reads on the data stack ahead of time.",
         "A session specifically on English learners and students with IEPs.",
         "Smaller cross-network groups so intermediaries can compare notes.",
-        "Build in a debrief at the end of each day."
+        "Build in a debrief at the end of each day.",
+        "Tighter agenda on day two — sessions ran long.",
+        "Hear from teachers and students directly, not only leaders."
       ]
+    };
+    const nextText = {};
+    const takeText = (k) => {
+      nextText[k] = nextText[k] || 0;
+      return nextText[k] < text[k].length ? text[k][nextText[k]++] : null;
     };
     const rows = [];
     orgs.forEach((org, i) => {
@@ -168,7 +181,7 @@
       });
       const open = {};
       ASC.survey.open.forEach((q) => {
-        if (r() < 0.72) open[q.id] = pick(text[q.id]);
+        if (r() < 0.6) { const t = takeText(q.id); if (t) open[q.id] = t; }
       });
       rows.push({
         id: "sample-" + i,

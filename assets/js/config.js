@@ -21,10 +21,9 @@ window.ASC.config = {
   // as soon as a real response is recorded.
   showSampleData: true,
 
-  // Show the Foundation's "Connection to strategy" analysis panels on convening
-  // pages. Set to false before sharing the site with partners if those notes
-  // are meant for internal use only.
-  showFoundationAnalysis: true,
+  // Foundation "Connection to strategy" analysis is no longer shown on public
+  // convening pages. It appears only on foundation.html, which is unlinked but
+  // NOT access-controlled — see the note at the top of assets/js/pages/foundation.js.
 
   // Hide charts/averages for any slice with fewer responses than this, to
   // protect respondent anonymity in small groups.

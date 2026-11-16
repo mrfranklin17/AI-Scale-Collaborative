@@ -2,270 +2,283 @@ ASC.render = async function () {
   const e = ASC.esc;
   const S = ASC.survey;
   const C = ASC.charts;
-  const MIN = ASC.config.minResponsesToShow || 1;
+  const M = ASC.metrics;
+  const MIN = ASC.config.minResponsesToShow || 3;
+  const SMALL = 5; // below this, show a "may not be representative" note
   const main = document.getElementById("main");
-  const params = new URLSearchParams(location.search);
+
+  main.innerHTML = '<div class="wrap" style="padding:var(--sp-12) var(--gutter)"><p class="muted">Loading responses…</p></div>';
+  const { rows: all, sample, error } = await ASC.loadResponses();
+
+  /* ---------- state <-> URL ---------- */
+  const KEYS = ["convening", "org", "role", "theme"];
+  const state = { convening: "all", org: "all", role: "all", theme: "all", tab: S.open[0].id, q: "", limit: 6 };
+  function readUrl() {
+    const p = new URLSearchParams(location.search);
+    KEYS.forEach((k) => (state[k] = p.get(k) || "all"));
+  }
+  function writeUrl() {
+    const p = new URLSearchParams();
+    KEYS.forEach((k) => { if (state[k] !== "all") p.set(k, state[k]); });
+    const url = location.pathname + (p.toString() ? "?" + p : "");
+    if (url !== location.pathname + location.search) history.pushState(null, "", url);
+  }
+  readUrl();
+
+  /* ---------- options ---------- */
+  const convOpts = ASC.convenings.filter((c) => c.status === "completed" || all.some((r) => r.convening_id === c.id)).sort((a, b) => b.start.localeCompare(a.start));
+  const orgOpts = ASC.orgs().filter((o) => all.some((r) => r.organization === o.id));
+  const roleOpts = S.roles.filter((ro) => all.some((r) => r.role === ro.id));
+  const valid = { convening: convOpts.map((c) => c.id), org: orgOpts.map((o) => o.id), role: roleOpts.map((r) => r.id), theme: S.themes.map((t) => t.id) };
+  function sanitize() { KEYS.forEach((k) => { if (state[k] !== "all" && !valid[k].includes(state[k])) state[k] = "all"; }); }
+  sanitize();
+
+  const label = {
+    convening: (id) => { const c = ASC.convening(id); return c ? ASC.hostName(c, true) + " convening" : id; },
+    org: (id) => ASC.org(id).name + " respondents",
+    role: (id) => (S.roles.find((r) => r.id === id) || { label: id }).label,
+    theme: (id) => "Theme: " + (S.themes.find((t) => t.id === id) || { label: id }).label
+  };
+
+  /* ---------- data helpers ---------- */
+  const match = (r, opts) =>
+    (opts.convening === false || state.convening === "all" || r.convening_id === state.convening) &&
+    (opts.org === false || state.org === "all" || r.organization === state.org) &&
+    (state.role === "all" || r.role === state.role);
+  const selected = () => all.filter((r) => match(r, {}));
+  const network = () => all.filter((r) => match(r, { convening: false, org: false }));
+  const comparing = () => state.convening !== "all" || state.org !== "all";
+  const scope = () => {
+    const parts = ["convening", "org", "role"].filter((k) => state[k] !== "all").map((k) => label[k](state[k]));
+    return parts.length ? parts.join(" · ") : "All convenings";
+  };
+  const themesOf = (text) => {
+    const t = (text || "").toLowerCase();
+    return S.themes.filter((th) => th.keywords.some((k) => t.includes(k))).map((th) => th.id);
+  };
+  const latestDate = all.filter((r) => !r.sample).map((r) => r.submitted_at).sort().pop();
+
+  /* ---------- frame ---------- */
+  const sampleDismissed = (() => { try { return sessionStorage.getItem("asc_sample_bar") === "x"; } catch (x) { return false; } })();
+  const sel = (id, lbl, allLbl, opts) =>
+    '<div class="f"><label for="f-' + id + '">' + lbl + '</label><select id="f-' + id + '" data-key="' + id + '"><option value="all">' + allLbl + "</option>" +
+    opts.map((o) => '<option value="' + e(o.v) + '">' + e(o.t) + "</option>").join("") + "</select></div>";
 
   main.innerHTML =
-    '<section class="page-hero"><div class="wrap">' +
-    ASC.crumbs([{ label: "Feedback" }]) +
-    '<span class="eyebrow">Convening feedback</span><h1>What attendees told us</h1>' +
-    '<p class="lede">Filter to a single host convening to see feedback on that experience, or look across every convening to compare. Hosts can also narrow to responses from a specific organization or role.</p>' +
-    '</div></section><div class="wrap" id="dash"><p class="muted">Loading responses…</p></div>';
-
-  let real = [];
-  let loadError = null;
-  try {
-    real = await ASC.store.list();
-  } catch (x) {
-    loadError = x.message;
-  }
-  const usingSample = !real.length && ASC.config.showSampleData;
-  const all = usingSample ? ASC.sampleResponses() : real;
-
-  const state = {
-    convening: params.get("convening") || "all",
-    org: params.get("org") || "all",
-    role: params.get("role") || "all",
-    tab: S.open[0].id,
-    q: ""
-  };
-
-  /* ---------- metrics ---------- */
-  const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
-  const likertVals = (rows, id) => rows.map((r) => r.answers && r.answers.likert && r.answers.likert[id]).filter((v) => v >= 1 && v <= 5);
-  const overall = (rows) => mean(rows.map((r) => mean(Object.values((r.answers && r.answers.likert) || {}).filter((v) => v >= 1))).filter((v) => v != null));
-  const nps = (rows) => {
-    const v = rows.map((r) => r.answers && r.answers.nps).filter((x) => typeof x === "number");
-    if (!v.length) return null;
-    return Math.round(((v.filter((x) => x >= 9).length - v.filter((x) => x <= 6).length) / v.length) * 100);
-  };
-  const agreeShare = (rows, id) => {
-    const v = likertVals(rows, id);
-    return v.length ? v.filter((x) => x >= 4).length / v.length : null;
-  };
-
-  function filtered(opts) {
-    opts = Object.assign({ convening: true }, opts);
-    return all.filter(
-      (r) =>
-        (!opts.convening || state.convening === "all" || r.convening_id === state.convening) &&
-        (state.org === "all" || r.organization === state.org) &&
-        (state.role === "all" || r.role === state.role)
-    );
-  }
-
-  /* ---------- static frame ---------- */
-  const convsWithData = ASC.convenings.filter((c) => all.some((r) => r.convening_id === c.id));
-  const convOptions = ASC.convenings
-    .filter((c) => c.status === "completed" || convsWithData.includes(c))
-    .sort((a, b) => b.start.localeCompare(a.start))
-    .map((c) => {
-      const h = ASC.partner(c.host);
-      return '<option value="' + e(c.id) + '">' + e((h ? h.short : c.title) + " · " + c.dates) + "</option>";
-    })
-    .join("");
-  const orgsPresent = ASC.orgs().filter((o) => all.some((r) => r.organization === o.id));
-  const rolesPresent = S.roles.filter((ro) => all.some((r) => r.role === ro.id));
-
-  const dash = document.getElementById("dash");
-  dash.innerHTML =
-    (usingSample
-      ? '<div class="notice sample" style="margin-bottom:16px"><div><b>Showing illustrative sample data.</b> No survey responses have been recorded yet, so this dashboard is populated with generated example responses to show how results will look. Sample data disappears automatically once the first real response comes in. <a href="survey.html">Take the survey</a>.</div></div>'
+    (sample && !sampleDismissed
+      ? '<div class="sample-bar" role="note"><div class="wrap"><span class="chip chip--sample">Sample</span><span>No real responses yet<span class="hide-sm"> — charts use generated sample data</span>.</span><a class="hide-sm" href="survey.html">Take the survey</a><button type="button" class="sample-close" aria-label="Dismiss sample data notice">' + ASC.icon("close") + "</button></div></div>"
       : "") +
-    (loadError ? '<div class="notice" style="margin-bottom:16px"><div><b>Couldn’t load shared responses.</b> ' + e(loadError) + "</div></div>" : "") +
-    '<div class="filters" role="region" aria-label="Filters">' +
-    '<div class="f"><label for="f-conv">Convening</label><select id="f-conv"><option value="all">All convenings</option>' + convOptions + "</select></div>" +
-    '<div class="f"><label for="f-org">Respondent organization</label><select id="f-org"><option value="all">All organizations</option>' + orgsPresent.map((o) => '<option value="' + e(o.id) + '">' + e(o.name) + "</option>").join("") + "</select></div>" +
-    '<div class="f"><label for="f-role">Respondent role</label><select id="f-role"><option value="all">All roles</option>' + rolesPresent.map((r) => '<option value="' + e(r.id) + '">' + e(r.label) + "</option>").join("") + "</select></div>" +
-    '<div class="actions"><button class="btn btn-secondary btn-sm" type="button" id="reset">Reset</button><button class="btn btn-secondary btn-sm" type="button" id="export"><span style="width:16px;height:16px;display:inline-flex">' + ASC.icon("download") + "</span>CSV</button>" +
-    (ASC.store.mode === "local" ? '<label class="btn btn-secondary btn-sm" style="cursor:pointer"><span style="width:16px;height:16px;display:inline-flex">' + ASC.icon("upload") + '</span>Import<input type="file" id="import" accept=".csv,.json" class="sr-only"></label>' : "") +
+    ASC.pageHero({
+      crumbs: [{ label: "Feedback" }],
+      eyebrow: "Convening feedback",
+      title: "What attendees told us",
+      lede: "Pick a host convening to see feedback on that experience next to the network average, or look across every convening. Every view has its own link you can share.",
+      extra: sample ? '<p class="updated updated--sample">Showing sample data</p>' : latestDate ? ASC.updated(latestDate, "Last response") : ""
+    }) +
+    '<div class="wrap">' +
+    '<div class="print-only print-summary" id="print-summary"></div>' +
+    '<section class="filters" aria-label="Filters">' +
+    '<button type="button" class="btn btn-secondary filter-toggle" aria-expanded="false" aria-controls="filter-panel">' + ASC.icon("filter") + '<span id="filter-count">Filters</span></button>' +
+    '<div class="filter-panel" id="filter-panel">' +
+    sel("convening", "Convening", "All convenings", convOpts.map((c) => ({ v: c.id, t: ASC.hostName(c, true) + " · " + c.dates }))) +
+    sel("org", "Respondent organization", "All organizations", orgOpts.map((o) => ({ v: o.id, t: o.name }))) +
+    sel("role", "Respondent role", "All roles", roleOpts.map((r) => ({ v: r.id, t: r.label }))) +
+    '<div class="filter-actions">' +
+    '<button class="btn btn-secondary btn-sm" type="button" id="print">' + ASC.icon("print") + "Print / PDF</button>" +
+    '<button class="btn btn-secondary btn-sm" type="button" id="export">' + ASC.icon("download") + "CSV</button>" +
+    (ASC.store.mode === "local" ? '<label class="btn btn-secondary btn-sm">' + ASC.icon("upload") + 'Import<input type="file" id="import" accept=".csv,.json" class="sr-only"></label>' : "") +
     "</div></div>" +
-    '<div id="results"></div>';
+    '<div class="active-chips chips" id="active-chips" aria-live="polite"></div>' +
+    "</section>" +
+    (error ? '<div class="notice" style="margin-top:var(--sp-4)"><div><b>Couldn’t load shared responses.</b> ' + e(error) + "</div></div>" : "") +
+    '<div id="results" aria-live="polite"></div></div>';
 
-  const fc = document.getElementById("f-conv");
-  const fo = document.getElementById("f-org");
-  const fr = document.getElementById("f-role");
-  if (![...fc.options].some((o) => o.value === state.convening)) state.convening = "all";
-  if (![...fo.options].some((o) => o.value === state.org)) state.org = "all";
-  if (![...fr.options].some((o) => o.value === state.role)) state.role = "all";
-  fc.value = state.convening;
-  fo.value = state.org;
-  fr.value = state.role;
-
-  const sync = () => {
-    const p = new URLSearchParams();
-    if (state.convening !== "all") p.set("convening", state.convening);
-    if (state.org !== "all") p.set("org", state.org);
-    if (state.role !== "all") p.set("role", state.role);
-    history.replaceState(null, "", location.pathname + (p.toString() ? "?" + p : ""));
-    draw();
-  };
-  fc.addEventListener("change", () => { state.convening = fc.value; sync(); });
-  fo.addEventListener("change", () => { state.org = fo.value; sync(); });
-  fr.addEventListener("change", () => { state.role = fr.value; sync(); });
-  document.getElementById("reset").addEventListener("click", () => {
-    state.convening = state.org = state.role = "all";
-    fc.value = fo.value = fr.value = "all";
-    sync();
+  const panel = document.getElementById("filter-panel");
+  const toggle = main.querySelector(".filter-toggle");
+  toggle.addEventListener("click", () => {
+    const open = panel.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", String(open));
   });
-  document.getElementById("export").addEventListener("click", () => exportCsv(filtered()));
+  main.querySelectorAll("select[data-key]").forEach((s) =>
+    s.addEventListener("change", () => { state[s.dataset.key] = s.value; state.limit = 6; writeUrl(); draw(); })
+  );
+  document.getElementById("export").addEventListener("click", () => exportCsv(selected()));
+  document.getElementById("print").addEventListener("click", () => window.print());
   const imp = document.getElementById("import");
   if (imp) imp.addEventListener("change", importFile);
+  const sb = main.querySelector(".sample-close");
+  if (sb) sb.addEventListener("click", () => { main.querySelector(".sample-bar").remove(); try { sessionStorage.setItem("asc_sample_bar", "x"); } catch (x) {} });
+  window.addEventListener("popstate", () => { readUrl(); sanitize(); draw(); });
 
-  /* ---------- draw ---------- */
+  /* ---------- rendering ---------- */
+  const samplePill = sample ? ' <span class="chip chip--sample">Sample</span>' : "";
+  const nBadge = (n) => '<span class="n-badge" title="Number of responses">n=' + n + "</span>";
+  const smallNote = (n) => (n < SMALL ? '<p class="small-n" role="note">' + ASC.icon("info") + "Small sample (n=" + n + "): results may not be representative.</p>" : "");
+  const panelHtml = (o) =>
+    '<section class="panel' + (o.wide ? " panel--wide" : "") + '" aria-labelledby="' + o.id + '-h"><div class="panel-head"><div><h3 id="' + o.id + '-h">' + o.title + samplePill + "</h3>" +
+    '<p class="panel-sub">' + o.sub + "</p></div>" + (o.n != null ? nBadge(o.n) : "") + "</div>" + (o.n != null ? smallNote(o.n) : "") + o.body + "</section>";
+
   function draw() {
-    const rows = filtered();
-    const network = filtered({ convening: false });
+    // sync controls
+    main.querySelectorAll("select[data-key]").forEach((s) => (s.value = state[s.dataset.key]));
+    const active = KEYS.filter((k) => state[k] !== "all");
+    document.getElementById("filter-count").textContent = "Filters" + (active.length ? " (" + active.length + ")" : "");
+    document.getElementById("active-chips").innerHTML = active.length
+      ? active.map((k) => '<button type="button" class="chip chip--remove" data-clear="' + k + '" aria-label="Remove filter: ' + e(label[k](state[k])) + '">' + e(label[k](state[k])) + "</button>").join("") + '<button type="button" class="btn btn-ghost btn-sm" data-clear="all">Clear all</button>'
+      : '<span class="muted small">Showing all responses</span>';
+    document.querySelectorAll("[data-clear]").forEach((b) =>
+      b.addEventListener("click", () => {
+        if (b.dataset.clear === "all") KEYS.forEach((k) => (state[k] = "all")); else state[b.dataset.clear] = "all";
+        writeUrl(); draw();
+      })
+    );
+
+    const rows = selected();
+    const net = network();
+    const cmp = comparing() && net.length > rows.length; // nothing to compare when the selection is the whole network
     const conv = state.convening !== "all" ? ASC.convening(state.convening) : null;
-    const host = conv && ASC.partner(conv.host);
-    const scopeLabel = conv ? (host ? host.short : conv.title) + " convening" : "All convenings";
+    document.getElementById("print-summary").innerHTML = "<b>AI Scale Collaborative · Convening feedback</b><br>" + e(scope()) + " · n=" + rows.length + " · printed " + e(ASC.fmtDate(new Date().toISOString())) + (sample ? " · SAMPLE DATA" : "");
     const out = document.getElementById("results");
 
     if (rows.length < MIN) {
       out.innerHTML =
-        kpiHtml(rows, network, conv) +
-        '<div class="panel" style="margin-top:20px"><div class="empty">' +
-        (rows.length ? "Only " + rows.length + " response" + (rows.length === 1 ? "" : "s") + " match these filters. Results are hidden below " + MIN + " responses to protect anonymity." : "No responses match these filters yet.") +
-        "</div></div>" + crossSchool(conv);
+        '<div class="empty-state" style="margin-top:var(--sp-6)"><div class="icon-dot">' + ASC.icon("chart") + "</div><h3>" +
+        (rows.length ? "Not enough responses to show results" : "No responses match these filters yet") + "</h3><p>" +
+        (rows.length ? "Results are hidden below " + MIN + " responses to protect anonymity (this view has " + rows.length + ")." : "Try removing a filter, or share the survey link with attendees.") +
+        "</p></div>" + acrossHosts(conv);
+      wireTables();
       return;
     }
 
+    /* findings */
+    const f = M.findings(rows);
+    const fr = f.fr;
+    const netMeans = {};
+    M.statementMeans(net).forEach((x) => (netMeans[x.q.id] = x.m));
+    const findings =
+      '<section class="findings" aria-labelledby="findings-h"><h2 id="findings-h">Headline findings' + samplePill + '</h2><p class="panel-sub">' + e(scope()) + " · n=" + rows.length + "</p><ul>" +
+      "<li><b>Strongest:</b> " + e(f.hi.q.short) + " (" + C.fmt(f.hi.m) + " of 5)" + (cmp && netMeans[f.hi.q.id] != null ? ", " + C.deltaHtml(f.hi.m - netMeans[f.hi.q.id], 1, "", "vs network") : "") + ".</li>" +
+      "<li><b>Weakest:</b> " + e(f.lo.q.short) + " (" + C.fmt(f.lo.m) + " of 5)" + (cmp && netMeans[f.lo.q.id] != null ? ", " + C.deltaHtml(f.lo.m - netMeans[f.lo.q.id], 1, "", "vs network") : "") + ".</li>" +
+      (fr ? "<li><b>Most-cited friction:</b> " + e(fr.title) + (fr.tied.length > 1 ? ", tied at " + C.pct(fr.share) + " each" : ", named by " + C.pct(fr.share) + " of respondents") + ".</li>" : "") +
+      "</ul></section>";
+
+    /* KPIs */
+    const kpi = (k, v, sub, d) => '<div class="kpi"><div class="k">' + k + '</div><div class="v">' + v + '</div><div class="d">' + sub + (d || "") + "</div></div>";
+    const ov = M.overall(rows), ovN = M.overall(net);
+    const np = M.nps(rows), npN = M.nps(net);
+    const ac = M.agreeShare(rows, "actionable"), acN = M.agreeShare(net, "actionable");
+    const kpis =
+      '<div class="kpis">' +
+      kpi("Responses", rows.length, (() => { const n = new Set(rows.map((r) => r.organization)).size; return "from " + n + " organization" + (n === 1 ? "" : "s"); })(), cmp ? '<br><span class="muted">network: ' + net.length + "</span>" : "") +
+      kpi("Average agreement", C.fmt(ov) + " <small>/ 5</small>", "across " + S.likert.length + " statements", cmp ? "<br>" + C.deltaHtml(ov - ovN, 1) : "") +
+      kpi("Net promoter score", np == null ? "—" : (np > 0 ? "+" : "") + np, "% promoters − % detractors", cmp && np != null && npN != null ? "<br>" + C.deltaHtml(np - npN, 0) : "") +
+      kpi("Left with an actionable idea", C.pct(ac), "agree or strongly agree", cmp && ac != null && acN != null ? "<br>" + C.deltaHtml((ac - acN) * 100, 0, " pts") : "") +
+      "</div>";
+
+    /* statements */
     const likRows = S.likert.map((q) => {
-      const v = likertVals(rows, q.id);
-      return { name: q.short, counts: [1, 2, 3, 4, 5].map((k) => v.filter((x) => x === k).length), mean: mean(v), n: v.length };
+      const v = M.likertVals(rows, q.id);
+      const nv = M.likertVals(net, q.id);
+      return {
+        name: q.short,
+        counts: [1, 2, 3, 4, 5].map((k) => v.filter((x) => x === k).length),
+        mean: M.mean(v),
+        n: v.length,
+        ref: cmp && nv.length ? { agree: nv.filter((x) => x >= 4).length / nv.length, mean: M.mean(nv) } : null
+      };
+    });
+    const statements = panelHtml({
+      id: "statements",
+      wide: true,
+      title: e(f.hi.q.short) + " rated highest; " + e(f.lo.q.short.charAt(0).toLowerCase() + f.lo.q.short.slice(1)) + " lagged",
+      sub: "Share of respondents by level of agreement · " + e(scope()) + (cmp ? " · black tick = where the network’s “agree” share begins; mean change vs network at right" : ""),
+      n: rows.length,
+      body: C.likert(likRows, S.scale, { refLabel: cmp ? "Network" : null })
     });
 
-    let compare = "";
-    if (conv) {
-      const others = convsWithData.length > 1;
-      compare =
-        '<div class="panel"><div class="panel-head"><div><h3>This convening vs. the network</h3><p>Mean agreement (1–5) for ' + e(scopeLabel) + " compared with all convenings" + (state.org !== "all" || state.role !== "all" ? " (same respondent filters)" : "") + ".</p></div></div>" +
-        C.dots(S.likert.map((q) => ({ name: q.short, a: mean(likertVals(rows, q.id)), b: mean(likertVals(network, q.id)) })), scopeLabel, "All convenings", 1, 5) +
-        (others ? "" : '<p class="muted small" style="margin:14px 0 0">Only one convening has responses so far, so the network average matches this convening. Comparisons become meaningful after the next convening.</p>') +
-        "</div>";
-    }
-
+    /* sessions */
     let sessions = "";
     if (conv && conv.sessions && conv.sessions.length) {
       const sr = conv.sessions
-        .map((s) => {
-          const v = rows.map((r) => r.answers && r.answers.sessions && r.answers.sessions[s.id]).filter((x) => x >= 1);
-          return { s, v, m: mean(v) };
-        })
+        .map((s) => { const v = rows.map((r) => r.answers && r.answers.sessions && r.answers.sessions[s.id]).filter((x) => x >= 1); return { s, v, m: M.mean(v) }; })
         .filter((x) => x.v.length >= MIN)
         .sort((a, b) => b.m - a.m);
-      sessions =
-        '<div class="panel"><div class="panel-head"><div><h3>Session usefulness</h3><p>Mean rating, 1 (not useful) to 5 (extremely useful). Hover for detail.</p></div></div>' +
-        (sr.length
-          ? C.hbars(
-              sr.map((x) => ({
-                name: x.s.name,
-                value: x.m - 1,
-                label: C.fmt(x.m),
-                tip: "<b>" + e(x.s.name) + "</b>Mean " + C.fmt(x.m) + " · " + Math.round((x.v.filter((k) => k >= 4).length / x.v.length) * 100) + "% very or extremely useful · n=" + x.v.length
-              })),
-              4
-            ) + '<p class="muted small" style="margin:12px 0 0">Bars start at 1, the lowest possible rating.</p>'
-          : '<div class="empty">Not enough session ratings yet.</div>') +
-        "</div>";
+      const sn = rows.filter((r) => r.answers && r.answers.sessions && Object.keys(r.answers.sessions).length).length;
+      sessions = panelHtml({
+        id: "sessions",
+        title: sr.length ? e(sr[0].s.name) + " was the most useful session" : "Session usefulness",
+        sub: "Mean usefulness, 1 (not useful) to 5 (extremely useful) · bars start at 1",
+        n: sn,
+        body: sr.length
+          ? C.hbars(sr.map((x) => ({ name: x.s.name, value: x.m - 1, label: C.fmt(x.m), tip: "<b>" + e(x.s.name) + "</b>Mean " + C.fmt(x.m) + " · n=" + x.v.length })), 4, { alt: "Session usefulness means: " + sr.map((x) => x.s.name + " " + C.fmt(x.m)).join("; ") })
+          : '<div class="empty">Not enough session ratings yet.</div>'
+      });
     }
 
-    const fCounts = ASC.frictionFramework.map((f) => ({ f, n: rows.filter((r) => r.answers && r.answers.friction === f.id).length }));
+    /* frictions */
+    const fCounts = ASC.frictionFramework.map((x) => ({ x, n: rows.filter((r) => r.answers && r.answers.friction === x.id).length }));
     const fTotal = fCounts.reduce((a, b) => a + b.n, 0);
-    const friction =
-      '<div class="panel"><div class="panel-head"><div><h3>Most relevant friction point</h3><p>Share of respondents naming each friction point as most relevant to their own work.</p></div></div>' +
-      (fTotal
-        ? C.hbars(
-            fCounts.map((x) => ({ name: x.f.n + ". " + x.f.title, value: x.n / fTotal, label: C.pct(x.n / fTotal), tip: "<b>" + e(x.f.title) + "</b>" + x.n + " of " + fTotal + " respondents" })),
-            1
-          )
-        : '<div class="empty">No responses to this question yet.</div>') +
-      "</div>";
+    const frictions = panelHtml({
+      id: "frictions",
+      title: fr ? (fr.tied.length > 1 ? e(fr.title) + " tied as most relevant (" + C.pct(fr.share) + " each)" : e(fr.title) + " resonated most (" + C.pct(fr.share) + ")") : "Most relevant friction point",
+      sub: "Share of respondents naming each friction point as most relevant to their own work",
+      n: fTotal,
+      body: fTotal
+        ? C.hbars(fCounts.map((c) => ({ name: c.x.title, chip: '<i class="fr-dot fr-' + c.x.id + '" aria-hidden="true"></i>', value: c.n / fTotal, label: C.pct(c.n / fTotal), color: "var(--fr-" + c.x.id + ")", tip: "<b>" + e(c.x.title) + "</b>" + c.n + " of " + fTotal })), 1)
+        : '<div class="empty">No responses to this question yet.</div>'
+    });
 
     out.innerHTML =
-      kpiHtml(rows, network, conv) +
-      '<div class="panel" style="margin-top:20px"><div class="panel-head"><div><h3>How attendees rated ' + e(conv ? "this convening" : "convenings") + "</h3><p>Distribution of agreement with each statement · " + e(scopeLabel) + " · n=" + rows.length + "</p></div></div>" +
-      C.likert(likRows, S.scale) + "</div>" +
-      '<div class="dash-grid" style="margin-top:20px">' + compare + sessions + friction + orgPanel(rows) + "</div>" +
-      crossSchool(conv) +
-      commentsPanel(rows);
-
+      findings + kpis + statements +
+      '<div class="dash-grid">' + sessions + frictions + byOrg(rows) + "</div>" +
+      trends() + acrossHosts(conv) + commentsPanel();
     wireComments(rows);
+    wireTables();
   }
 
-  function kpiHtml(rows, network, conv) {
-    const orgCount = new Set(rows.map((r) => r.organization)).size;
-    const ok = rows.length >= MIN;
-    const delta = (a, b, d, suffix) => {
-      if (!conv || a == null || b == null || convsWithData.length < 2) return "";
-      const v = a - b;
-      return " · <b>" + (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(d) + (suffix || "") + "</b> vs. network";
-    };
-    const ov = ok ? overall(rows) : null;
-    const np = ok ? nps(rows) : null;
-    const ac = ok ? agreeShare(rows, "actionable") : null;
-    return (
-      '<div class="kpis" style="margin-top:20px">' +
-      '<div class="kpi"><div class="k">Responses</div><div class="v">' + rows.length + '</div><div class="d">from ' + orgCount + " organization" + (orgCount === 1 ? "" : "s") + "</div></div>" +
-      '<div class="kpi"><div class="k">Average agreement</div><div class="v">' + C.fmt(ov) + ' <small>/ 5</small></div><div class="d">across ' + S.likert.length + " statements" + delta(ov, overall(network), 1) + "</div></div>" +
-      '<div class="kpi"><div class="k">Net promoter score</div><div class="v">' + (np == null ? "—" : (np > 0 ? "+" : "") + np) + '</div><div class="d">% promoters − % detractors' + delta(np, nps(network), 0) + "</div></div>" +
-      '<div class="kpi"><div class="k">Leaving with an actionable idea</div><div class="v">' + C.pct(ac) + '</div><div class="d">agree or strongly agree' + (ac != null && conv && convsWithData.length > 1 ? delta(ac * 100, agreeShare(network, "actionable") * 100, 0, " pts") : "") + "</div></div>" +
-      "</div>"
-    );
+  function trends() {
+    const base = all.filter((r) => match(r, { convening: false }));
+    const convs = ASC.completedConvenings().filter((c) => base.filter((r) => r.convening_id === c.id).length >= MIN);
+    const body =
+      convs.length < 2
+        ? '<div class="empty-state"><div class="icon-dot">' + ASC.icon("chart") + "</div><h3>Trends appear after Convening 2</h3><p>Once two convenings have at least " + MIN + " responses each, this shows how every statement moves from one convening to the next.</p></div>"
+        : C.trends(S.likert.map((q) => ({ name: q.short, points: convs.map((c) => { const v = M.likertVals(base.filter((r) => r.convening_id === c.id), q.id); return { label: ASC.hostName(c, true), value: M.mean(v), n: v.length }; }) })));
+    return '<div style="margin-top:var(--sp-5)">' + panelHtml({ id: "trends", wide: true, title: convs.length < 2 ? "Trends across convenings" : "How ratings moved across convenings", sub: "Mean agreement (1–5) for each statement, by convening in date order", body }) + "</div>";
   }
 
-  function orgPanel(rows) {
-    const groups = ASC.orgs()
-      .map((o) => ({ o, rs: rows.filter((r) => r.organization === o.id) }))
-      .filter((g) => g.rs.length)
-      .sort((a, b) => b.rs.length - a.rs.length);
-    return (
-      '<div class="panel"><div class="panel-head"><div><h3>By respondent organization</h3><p>Who responded and how they rated the experience. Averages hidden below ' + MIN + " responses.</p></div></div>" +
-      '<div class="table-wrap"><table class="data-table"><thead><tr><th>Organization</th><th class="num">Responses</th><th class="num">Avg. agreement</th><th class="num">Actionable idea</th></tr></thead><tbody>' +
-      groups
-        .map((g) => {
-          const small = g.rs.length < MIN;
-          return "<tr><td>" + e(g.o.name) + '</td><td class="num">' + g.rs.length + '</td><td class="num">' + (small ? "—" : C.fmt(overall(g.rs))) + '</td><td class="num">' + (small ? "—" : C.pct(agreeShare(g.rs, "actionable"))) + "</td></tr>";
-        })
-        .join("") +
-      "</tbody></table></div></div>"
-    );
+  function byOrg(rows) {
+    const groups = ASC.orgs().map((o) => ({ o, rs: rows.filter((r) => r.organization === o.id) })).filter((g) => g.rs.length).sort((a, b) => b.rs.length - a.rs.length);
+    const body =
+      '<div class="table-wrap"><table class="data-table"><caption class="sr-only">Responses and ratings by respondent organization</caption><thead><tr><th scope="col">Organization</th><th scope="col" class="num">n</th><th scope="col" class="num">Avg.</th><th scope="col" class="num">Actionable</th></tr></thead><tbody>' +
+      groups.map((g) => { const small = g.rs.length < MIN; return '<tr><th scope="row">' + e(g.o.name) + '</th><td class="num">' + g.rs.length + '</td><td class="num">' + (small ? "—" : C.fmt(M.overall(g.rs))) + '</td><td class="num">' + (small ? "—" : C.pct(M.agreeShare(g.rs, "actionable"))) + "</td></tr>"; }).join("") +
+      "</tbody></table></div><p class=\"muted small\" style=\"margin:var(--sp-3) 0 0\">— hidden for groups under " + MIN + " responses.</p>";
+    const top = groups[0];
+    return panelHtml({ id: "orgs", title: top ? e(top.o.short) + " sent the most respondents" : "By respondent organization", sub: "Responses and average agreement by organization", n: rows.length, body });
   }
 
-  function crossSchool(conv) {
-    const rowsAll = filtered({ convening: false });
-    const list = ASC.convenings
-      .filter((c) => c.status === "completed" || rowsAll.some((r) => r.convening_id === c.id))
-      .sort((a, b) => a.start.localeCompare(b.start));
-    const body = list
-      .map((c) => {
-        const rs = rowsAll.filter((r) => r.convening_id === c.id);
-        const h = ASC.partner(c.host);
-        const ok = rs.length >= MIN;
-        return (
-          '<tr class="' + (conv && conv.id === c.id ? "sel" : "") + '"><td><a href="feedback.html?convening=' + e(c.id) + '">' + e(h ? h.name : c.title) + "</a></td><td>" + e(c.dates) + '</td><td class="num">' + rs.length +
-          '</td><td class="num">' + (ok ? C.fmt(overall(rs)) : "—") + '</td><td class="num">' + (ok ? (nps(rs) > 0 ? "+" : "") + nps(rs) : "—") + '</td><td class="num">' + (ok ? C.pct(agreeShare(rs, "actionable")) : "—") + "</td></tr>"
-        );
-      })
-      .join("");
-    const tot = rowsAll.length >= MIN;
-    return (
-      '<div class="panel" style="margin-top:20px"><div class="panel-head"><div><h3>Across all host schools</h3><p>Every convening side by side' + (state.org !== "all" || state.role !== "all" ? ", with the current respondent filters applied" : "") + ". Select a host to drill in.</p></div></div>" +
-      '<div class="table-wrap"><table class="data-table"><thead><tr><th>Host</th><th>Dates</th><th class="num">Responses</th><th class="num">Avg. agreement</th><th class="num">NPS</th><th class="num">Actionable idea</th></tr></thead><tbody>' +
-      body +
-      '<tr><td><b>Network total</b></td><td></td><td class="num"><b>' + rowsAll.length + '</b></td><td class="num"><b>' + (tot ? C.fmt(overall(rowsAll)) : "—") + '</b></td><td class="num"><b>' + (tot ? (nps(rowsAll) > 0 ? "+" : "") + nps(rowsAll) : "—") + '</b></td><td class="num"><b>' + (tot ? C.pct(agreeShare(rowsAll, "actionable")) : "—") + "</b></td></tr>" +
-      "</tbody></table></div></div>"
-    );
+  function acrossHosts(conv) {
+    const base = all.filter((r) => match(r, { convening: false }));
+    const list = ASC.completedConvenings();
+    const ok = (rs) => rs.length >= MIN;
+    const row = (name, rs, cls, href) =>
+      '<tr class="' + cls + '"><th scope="row">' + (href ? '<a href="' + href + '">' + name + "</a>" : name) + '</th><td class="num">' + rs.length + '</td><td class="num">' + (ok(rs) ? C.fmt(M.overall(rs)) : "—") + '</td><td class="num">' + (ok(rs) ? (M.nps(rs) > 0 ? "+" : "") + M.nps(rs) : "—") + '</td><td class="num">' + (ok(rs) ? C.pct(M.agreeShare(rs, "actionable")) : "—") + "</td></tr>";
+    const p = new URLSearchParams(location.search);
+    const body =
+      '<div class="table-wrap"><table class="data-table"><caption class="sr-only">Results for every host convening</caption><thead><tr><th scope="col">Host convening</th><th scope="col" class="num">n</th><th scope="col" class="num">Avg. agreement</th><th scope="col" class="num">NPS</th><th scope="col" class="num">Actionable idea</th></tr></thead><tbody>' +
+      list.map((c) => { p.set("convening", c.id); return row(e(ASC.hostName(c)) + ' <span class="muted small">' + e(c.dates) + "</span>", base.filter((r) => r.convening_id === c.id), conv && conv.id === c.id ? "sel" : "", "feedback.html?" + p.toString()); }).join("") +
+      row("<b>Network total</b>", base, "total") +
+      "</tbody></table></div>";
+    return '<div style="margin-top:var(--sp-5)">' + panelHtml({ id: "hosts", wide: true, title: "Every host school side by side", sub: "Select a host to open its view" + (state.org !== "all" || state.role !== "all" ? " · current respondent filters applied" : ""), body }) + "</div>";
   }
 
   function commentsPanel() {
     return (
-      '<div class="panel" style="margin-top:20px" id="comments"><div class="panel-head"><div><h3>In their words</h3><p>Open-ended responses for the current filters.</p></div>' +
-      '<div style="min-width:220px;flex:0 1 280px"><label class="sr-only" for="c-search">Search comments</label><input type="search" id="c-search" placeholder="Search comments…" value="' + e(state.q) + '"></div></div>' +
-      '<div class="tabs" role="tablist">' +
-      S.open.map((q) => '<button type="button" role="tab" data-tab="' + e(q.id) + '" aria-selected="' + (state.tab === q.id) + '">' + e(q.short) + ' <span class="muted" data-count="' + e(q.id) + '"></span></button>').join("") +
-      '</div><p class="muted small" id="c-question" style="margin-top:-4px"></p><div class="comments" id="c-list"></div></div>'
+      '<section class="panel panel--wide" id="comments" aria-labelledby="comments-h" style="margin-top:var(--sp-5)"><div class="panel-head"><div><h3 id="comments-h">In their words' + samplePill + '</h3><p class="panel-sub">Open-ended responses · ' + e(scope()) + "</p></div>" +
+      '<div class="c-search"><label class="sr-only" for="c-search">Search comments</label><input type="search" id="c-search" placeholder="Search comments…" value="' + e(state.q) + '"></div></div>' +
+      '<div class="tabs" role="tablist" aria-label="Question">' + S.open.map((q) => '<button type="button" role="tab" id="tab-' + q.id + '" data-tab="' + e(q.id) + '" aria-controls="c-list">' + e(q.short) + ' <span data-count="' + e(q.id) + '"></span></button>').join("") + "</div>" +
+      '<p class="muted small" id="c-question"></p>' +
+      '<div class="chips theme-chips" role="group" aria-label="Filter by theme" id="theme-chips"></div>' +
+      '<div class="comments" id="c-list" role="tabpanel"></div></section>'
     );
   }
 
@@ -273,42 +286,64 @@ ASC.render = async function () {
     const list = document.getElementById("c-list");
     const search = document.getElementById("c-search");
     const roleLabel = (id) => (S.roles.find((r) => r.id === id) || { label: id }).label;
+    const orgCounts = {};
+    rows.forEach((r) => (orgCounts[r.organization] = (orgCounts[r.organization] || 0) + 1));
     function paint() {
       const q = state.q.toLowerCase();
-      S.open.forEach((o) => {
-        const n = rows.filter((r) => r.answers && r.answers.open && r.answers.open[o.id]).length;
-        const el = document.querySelector('[data-count="' + o.id + '"]');
-        if (el) el.textContent = "(" + n + ")";
-      });
-      document.querySelectorAll("[data-tab]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === state.tab)));
+      const withText = rows.filter((r) => r.answers && r.answers.open && r.answers.open[state.tab]);
+      S.open.forEach((o) => { const el = document.querySelector('[data-count="' + o.id + '"]'); if (el) el.textContent = "(" + rows.filter((r) => r.answers && r.answers.open && r.answers.open[o.id]).length + ")"; });
+      document.querySelectorAll("[data-tab]").forEach((b) => { const on = b.dataset.tab === state.tab; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; });
+      list.setAttribute("aria-labelledby", "tab-" + state.tab);
       document.getElementById("c-question").textContent = (S.open.find((o) => o.id === state.tab) || {}).text || "";
-      const items = rows
-        .filter((r) => r.answers && r.answers.open && r.answers.open[state.tab])
+      const counts = {};
+      withText.forEach((r) => themesOf(r.answers.open[state.tab]).forEach((t) => (counts[t] = (counts[t] || 0) + 1)));
+      document.getElementById("theme-chips").innerHTML =
+        '<button type="button" class="chip" data-theme="all" aria-pressed="' + (state.theme === "all") + '">All themes</button>' +
+        S.themes.filter((t) => counts[t.id] || state.theme === t.id).map((t) => '<button type="button" class="chip" data-theme="' + t.id + '" aria-pressed="' + (state.theme === t.id) + '">' + e(t.label) + " (" + (counts[t.id] || 0) + ")</button>").join("");
+      document.querySelectorAll("[data-theme]").forEach((b) => b.addEventListener("click", () => { state.theme = b.dataset.theme; state.limit = 6; writeUrl(); draw(); }));
+      const items = withText
+        .filter((r) => state.theme === "all" || themesOf(r.answers.open[state.tab]).includes(state.theme))
         .filter((r) => !q || r.answers.open[state.tab].toLowerCase().includes(q))
         .sort((a, b) => (b.submitted_at || "").localeCompare(a.submitted_at || ""));
-      const shown = items.slice(0, state.limit || 8);
+      const shown = items.slice(0, state.limit);
       list.innerHTML = items.length
-        ? shown
-            .map((r) => {
-              const c = ASC.convening(r.convening_id);
-              const h = c && ASC.partner(c.host);
-              return (
-                '<div class="comment"><p>' + e(r.answers.open[state.tab]) + '</p><div class="meta">' +
-                '<span class="tag">' + e(ASC.org(r.organization).short) + "</span><span>" + e(roleLabel(r.role)) + "</span>" +
-                (state.convening === "all" && h ? "<span>· " + e(h.short) + " convening</span>" : "") +
-                (r.sample ? '<span class="tag tag-sample">Sample</span>' : "") + "</div></div>"
-              );
-            })
-            .join("")
-        : '<div class="empty">' + (q ? "No comments match “" + e(state.q) + "”." : "No comments for this question yet.") + "</div>";
-      if (items.length > shown.length) {
-        list.insertAdjacentHTML("beforeend", '<div><button type="button" class="btn btn-secondary btn-sm more-btn" id="c-more">Show all ' + items.length + " comments</button></div>");
-        document.getElementById("c-more").addEventListener("click", () => { state.limit = 1e9; paint(); });
-      }
+        ? shown.map((r) => {
+            const c = ASC.convening(r.convening_id);
+            const showOrg = orgCounts[r.organization] >= MIN;
+            const th = themesOf(r.answers.open[state.tab]).map((id) => S.themes.find((t) => t.id === id).label);
+            return (
+              '<figure class="comment"><blockquote>' + e(r.answers.open[state.tab]) + "</blockquote><figcaption>" +
+              "<span>" + e(roleLabel(r.role)) + (showOrg ? ", " + e(ASC.org(r.organization).short) : "") + "</span>" +
+              (state.convening === "all" && c ? '<span class="muted">· ' + e(ASC.hostName(c, true)) + " convening</span>" : "") +
+              th.map((t) => '<span class="chip">' + e(t) + "</span>").join("") +
+              (r.sample ? '<span class="chip chip--sample">Sample</span>' : "") + "</figcaption></figure>"
+            );
+          }).join("") +
+          (items.length > shown.length ? '<div><button type="button" class="btn btn-secondary btn-sm" id="c-more">Show more (' + (items.length - shown.length) + " remaining)</button></div>" : "")
+        : '<div class="empty">' + (q ? "No comments match “" + e(state.q) + "”." : "No comments for this question and theme yet.") + "</div>";
+      const more = document.getElementById("c-more");
+      if (more) more.addEventListener("click", () => { state.limit += 6; paint(); });
     }
-    document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => { state.tab = b.dataset.tab; state.limit = 8; paint(); }));
-    search.addEventListener("input", () => { state.q = search.value; paint(); });
+    const tabs = [...document.querySelectorAll("[data-tab]")];
+    tabs.forEach((b, i) => {
+      b.addEventListener("click", () => { state.tab = b.dataset.tab; state.limit = 6; paint(); });
+      b.addEventListener("keydown", (ev) => {
+        if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+        const n = tabs[(i + (ev.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+        n.focus(); n.click();
+      });
+    });
+    search.addEventListener("input", () => { state.q = search.value; state.limit = 6; paint(); });
     paint();
+  }
+
+  function wireTables() {
+    // Scrollable tables must be keyboard-reachable
+    document.querySelectorAll("#results .table-wrap").forEach((w, i) => {
+      w.tabIndex = 0;
+      w.setAttribute("role", "region");
+      if (!w.getAttribute("aria-label")) w.setAttribute("aria-label", "Scrollable table " + (i + 1));
+    });
   }
 
   /* ---------- CSV import / export ---------- */
@@ -319,19 +354,12 @@ ASC.render = async function () {
   }
   function exportCsv(rows) {
     const sess = allSessionIds();
-    const cols = ["id", "submitted_at", "convening_id", "organization", "role"]
-      .concat(S.likert.map((q) => "lk_" + q.id), ["nps"], sess.map((s) => "ss_" + s), ["friction"], S.open.map((q) => "op_" + q.id), ["sample"]);
-    const cell = (v) => {
-      const s = v == null ? "" : String(v);
-      return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-    };
+    const cols = ["id", "submitted_at", "convening_id", "organization", "role"].concat(S.likert.map((q) => "lk_" + q.id), ["nps"], sess.map((s) => "ss_" + s), ["friction"], S.open.map((q) => "op_" + q.id), ["sample"]);
+    const cell = (v) => { const s = v == null ? "" : String(v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
     const lines = [cols.join(",")].concat(
       rows.map((r) => {
         const a = r.answers || {};
-        const vals = {
-          id: r.id, submitted_at: r.submitted_at, convening_id: r.convening_id, organization: r.organization, role: r.role,
-          nps: a.nps, friction: a.friction, sample: r.sample ? "true" : ""
-        };
+        const vals = { id: r.id, submitted_at: r.submitted_at, convening_id: r.convening_id, organization: r.organization, role: r.role, nps: a.nps, friction: a.friction, sample: r.sample ? "true" : "" };
         S.likert.forEach((q) => (vals["lk_" + q.id] = a.likert && a.likert[q.id]));
         sess.forEach((s) => (vals["ss_" + s] = a.sessions && a.sessions[s]));
         S.open.forEach((q) => (vals["op_" + q.id] = a.open && a.open[q.id]));
@@ -346,38 +374,30 @@ ASC.render = async function () {
     a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
   }
-
   function parseCsv(text) {
     const out = [];
     let row = [], cur = "", q = false;
     for (let i = 0; i < text.length; i++) {
       const ch = text[i];
-      if (q) {
-        if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; }
-        else if (ch === '"') q = false;
-        else cur += ch;
-      } else if (ch === '"') q = true;
+      if (q) { if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; }
+      else if (ch === '"') q = true;
       else if (ch === ",") { row.push(cur); cur = ""; }
-      else if (ch === "\n" || ch === "\r") {
-        if (ch === "\r" && text[i + 1] === "\n") i++;
-        row.push(cur); out.push(row); row = []; cur = "";
-      } else cur += ch;
+      else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(cur); out.push(row); row = []; cur = ""; }
+      else cur += ch;
     }
     if (cur || row.length) { row.push(cur); out.push(row); }
     return out.filter((r) => r.some((c) => c !== ""));
   }
-
   function importFile(ev) {
     const file = ev.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      let rows = [];
       try {
         const text = String(reader.result).replace(/^﻿/, "");
-        if (/\.json$/i.test(file.name)) {
-          rows = JSON.parse(text);
-        } else {
+        let rows;
+        if (/\.json$/i.test(file.name)) rows = JSON.parse(text);
+        else {
           const [head, ...data] = parseCsv(text);
           rows = data.map((d) => {
             const o = {};
@@ -389,7 +409,7 @@ ASC.render = async function () {
               if (k.startsWith("ss_") && o[k] !== "") answers.sessions[k.slice(3)] = num(o[k]);
               if (k.startsWith("op_") && o[k]) answers.open[k.slice(3)] = o[k];
             });
-            return { id: o.id || "imp-" + Math.random().toString(36).slice(2), submitted_at: o.submitted_at || new Date().toISOString(), convening_id: o.convening_id, organization: o.organization, role: o.role, answers };
+            return { id: o.id || "imp-" + Math.random().toString(36).slice(2), submitted_at: o.submitted_at || new Date().toISOString(), convening_id: o.convening_id, organization: o.organization, role: o.role, sample: o.sample === "true", answers };
           });
         }
         rows = rows.filter((r) => r && r.convening_id && !r.sample);
