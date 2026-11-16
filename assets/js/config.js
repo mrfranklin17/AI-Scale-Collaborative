@@ -28,5 +28,20 @@ window.ASC.config = {
 
   // Hide charts/averages for any slice with fewer responses than this, to
   // protect respondent anonymity in small groups.
-  minResponsesToShow: 3
+  minResponsesToShow: 3,
+
+  // Shown in the footer. Leave email blank to show the team name only.
+  contact: {
+    name: "US Charters team, Gates Foundation",
+    email: ""
+  },
+
+  // "Last updated" dates shown on pages. Update when you edit the matching data.
+  // (The Feedback page uses the date of the most recent response instead.)
+  lastUpdated: {
+    convenings: "2026-11-16",
+    measures: "2026-11-16",
+    partners: "2026-11-16",
+    about: "2026-11-16"
+  }
 };

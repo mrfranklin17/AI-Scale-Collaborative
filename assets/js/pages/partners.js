@@ -20,7 +20,7 @@ ASC.render = function () {
 
   document.getElementById("main").innerHTML =
     '<section class="page-hero"><div class="wrap">' +
-    '<div class="crumbs"><a href="index.html">Overview</a> / Partners</div>' +
+    ASC.crumbs([{ label: "Partners" }]) +
     '<span class="eyebrow">Partners</span><h1>Four CMOs and two intermediaries</h1>' +
     '<p class="lede">High-readiness organizations already implementing AI-augmented instruction, spanning different geographies, student populations and instructional models. Each partner commits to hosting the collaborative on-site at least twice during the investment period.</p>' +
     "</div></section>" +

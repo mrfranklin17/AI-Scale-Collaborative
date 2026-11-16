@@ -9,6 +9,7 @@ ASC.render = async function () {
   }
   document.title = c.title + " · AI Scale Collaborative";
   const host = ASC.partner(c.host);
+  if (!host && c.status !== "completed") { location.replace("convenings.html"); return; }
   const showAnalysis = ASC.config.showFoundationAnalysis !== false;
 
   const blocks = (list) => (list || []).map(block).join("");
@@ -86,11 +87,11 @@ ASC.render = async function () {
     '<section class="doc-section" id="feedback"><h2>Attendee feedback</h2>' +
     '<p>See how attendees rated this convening, session by session, and how it compares with the rest of the network.</p>' +
     '<div class="hero-actions"><a class="btn btn-primary" href="feedback.html?convening=' + e(c.id) + '">View feedback for this convening</a>' +
-    '<a class="btn btn-ghost" href="survey.html?convening=' + e(c.id) + '">Take the survey</a></div></section>';
+    '<a class="btn btn-secondary" href="survey.html?convening=' + e(c.id) + '">Take the survey</a></div></section>';
 
   main.innerHTML =
     '<section class="page-hero"><div class="wrap">' +
-    '<div class="crumbs"><a href="index.html">Overview</a> / <a href="convenings.html">Convenings</a> / ' + e(host ? host.short : c.title) + "</div>" +
+    ASC.crumbs([{ label: "Convenings", href: "convenings.html" }, { label: ASC.hostName(c, true) }]) +
     '<span class="eyebrow">Convening ' + e(c.number) + " · " + e(c.dates) + "</span>" +
     "<h1>" + e(c.title) + "</h1>" +
     '<p class="lede">Hosted by ' + e(host ? host.name : c.host) + " · " + e(c.location) + "</p>" +

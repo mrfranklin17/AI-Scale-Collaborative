@@ -97,6 +97,16 @@ window.ASC.collaborative = {
   }
 };
 
+/* Milestones for the landing-page timeline strip. Convenings are added automatically.
+   `date` is used for ordering and to mark items done (in the past) or upcoming. */
+window.ASC.milestones = [
+  { date: "2026-09-01", when: "Fall 2026", what: "Network launches", note: "4 CMOs · 2 intermediaries" },
+  { date: "2028-06-30", when: "Summer 2028", what: "Year 2 targets", note: "65% proficiency · 75% AI access", href: "measures.html" },
+  { date: "2028-07-01", when: "Fall 2028", what: "Potential extension begins", note: "Through Summer 2030", href: "about.html#investment" },
+  { date: "2029-06-30", when: "Summer 2029", what: "Year 3 targets", note: "80% proficiency · 100% AI access", href: "measures.html" },
+  { date: "2030-06-30", when: "2030", what: "What we will know", note: "End of extension period", href: "measures.html" }
+];
+
 window.ASC.partners = [
   {
     id: "dream",
@@ -166,7 +176,9 @@ window.ASC.measures = [
       { label: "Year 3", value: 80 }
     ],
     source: "State assessments + Similar Schools framework",
-    cadence: "Annual"
+    cadence: "Annual",
+    current: null,          // set to a number (0–100) when the first report is in
+    firstReport: "Fall 2027 (after SY26–27 state results)"
   },
   {
     id: "access",
@@ -178,7 +190,9 @@ window.ASC.measures = [
       { label: "Year 3", value: 100 }
     ],
     source: "CMO/intermediary implementation reports (collected by AI for Equity)",
-    cadence: "Quarterly"
+    cadence: "Quarterly",
+    current: null,
+    firstReport: "Spring 2027"
   },
   {
     id: "diffusion",
@@ -190,7 +204,9 @@ window.ASC.measures = [
       { label: "Year 3", value: 100 }
     ],
     source: "CMO/intermediary implementation reports (collected by AI for Equity); self-report",
-    cadence: "Annual"
+    cadence: "Annual",
+    current: null,
+    firstReport: "Summer 2027"
   }
 ];
 

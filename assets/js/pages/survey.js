@@ -16,7 +16,7 @@ ASC.render = function () {
 
   main.innerHTML =
     '<section class="page-hero"><div class="wrap">' +
-    '<div class="crumbs"><a href="index.html">Overview</a> / Survey</div>' +
+    ASC.crumbs([{ label: "Survey" }]) +
     '<span class="eyebrow">Post-convening survey</span><h1>How was the convening?</h1>' +
     '<p class="lede">About five minutes. Responses are attributed to your organization and role — never your name — and feed the shared <a href="feedback.html">Feedback</a> dashboard that hosts and partners use to improve future convenings.</p>' +
     "</div></section>" +
@@ -106,7 +106,7 @@ ASC.render = function () {
       form.outerHTML =
         '<div class="card form-card success"><div class="check"><span style="width:28px;height:28px;display:inline-flex">' + ASC.icon("check") + "</span></div>" +
         "<h2>Thank you</h2><p class=\"muted\">Your feedback on " + e(c.title) + " has been recorded.</p>" +
-        '<div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="feedback.html?convening=' + e(c.id) + '">See the results</a><a class="btn btn-ghost" href="convening.html?id=' + e(c.id) + '">Back to the convening</a></div></div>';
+        '<div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="feedback.html?convening=' + e(c.id) + '">See the results</a><a class="btn btn-secondary" href="convening.html?id=' + e(c.id) + '">Back to the convening</a></div></div>';
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (x) {
       err.textContent = x.message || "Something went wrong. Please try again.";

@@ -367,6 +367,22 @@ window.ASC.convenings = [
     ]
   }
 
+  ,{
+    // Placeholder until the next host and dates are confirmed. Update host,
+    // dates and status ("upcoming" once scheduled) when they are set.
+    id: "convening-2",
+    host: null,
+    title: "Convening 2",
+    number: 2,
+    status: "planning",
+    start: "2027-02-01",
+    dates: "Early 2027",
+    location: "To be confirmed",
+    summary: "Next quarterly convening. Host, dates and agenda to be confirmed.",
+    themes: [],
+    sessions: []
+  }
+
   /*
   ,{
     id: "kipp-norcal-2027-02",          // unique, used in URLs and survey data
