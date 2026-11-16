@@ -383,17 +383,17 @@ window.ASC.convenings = [
   }
 
   ,{
-    // Placeholder until the next host and dates are confirmed. Update host,
-    // dates and status ("upcoming" once scheduled) when they are set.
-    id: "convening-2",
-    host: null,
-    title: "Convening 2",
+    id: "kipp-norcal-2027-03",
+    host: "kipp-norcal",
+    title: "KIPP NorCal Site Visit",
     number: 2,
-    status: "planning",
-    start: "2027-02-01",
-    dates: "Early 2027",
-    location: "To be confirmed",
-    summary: "Next quarterly convening. Host, dates and agenda to be confirmed.",
+    status: "upcoming",
+    statusNote: "Details to come soon!",
+    start: "2027-03-23",
+    end: "2027-03-25",
+    dates: "March 23–25, 2027",
+    location: "Bay Area, CA",
+    summary: "The second Collaborative convening, hosted by KIPP NorCal. Agenda and site details to come soon.",
     themes: [],
     sessions: []
   }

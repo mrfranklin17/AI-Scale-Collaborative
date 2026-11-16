@@ -117,17 +117,28 @@ window.ASC.milestones = [
   { date: "2030-06-30", when: "2030", what: "What we will know", note: "End of the strategy period", href: "measures.html" }
 ];
 
+/* CMO partners. Facts come from each organization's official website (accessed November 2026);
+   update them as partners share stack documentation. `hosting` is shown on cards when no
+   convening entry exists yet; hosted/scheduled convenings are read from data/convenings.js. */
 window.ASC.partners = [
   {
     id: "dream",
+    cardLine: "3K–12 · East Harlem and the Bronx",
     mark: "DREAM", // short label on generated art
     name: "DREAM Charter Schools",
     short: "DREAM",
     type: "CMO",
-    location: "New York, NY",
+    location: "East Harlem & the Bronx, NY",
     region: "Northeast",
     lat: 40.84, lon: -73.9,
-    schools: null, students: null, // add when known
+    logo: "assets/img/logos/dream.svg",
+    logoMark: "assets/img/logos/dream-mark.svg",
+    website: "https://wearedream.org",
+    facts: [
+      { k: "Grades", v: "3K–12" },
+      { k: "Where", v: "East Harlem and the Bronx" },
+      { k: "In the community", v: "More than three decades" }
+    ],
     stack: {
       hqim: "Illustrative Mathematics (math)",
       tools: ["DREAM Data Hub (BigQuery + Looker Studio)", "Enterprise AI for every staff member", "Rubric-scoring agents (co-designed with Enlighten)", "AI tutoring assistant on the Learning Commons knowledge graph", "DREAM Observation Agent (Google Chat)", "Coursemojo (pilot)", "i-Ready", "Zearn"],
@@ -135,49 +146,80 @@ window.ASC.partners = [
       source: "Observed at the November 2026 convening; to be confirmed in DREAM’s stack documentation."
     },
     rationale: "Pioneer of bottom-up AI adoption, with 75% weekly staff AI usage, custom internal tool development, and strong community trust infrastructure. Brings an urban, Northeast context.",
-    summary: "Bronx-based network serving early childhood through grade 12. Hosted the first Collaborative convening in November 2026 at its Highbridge and Mott Haven campuses."
+    summary: "Free public charter schools in East Harlem and the Bronx serving children from 3K through high school, building on more than three decades of work in the community."
   },
   {
     id: "kipp-norcal",
-    mark: "KIPP", // short label on generated art
+    cardLine: "23 schools · 7,100 students · TK–12",
+    mark: "KIPP",
     name: "KIPP NorCal",
     short: "KIPP NorCal",
     type: "CMO",
-    location: "Bay Area, CA",
+    location: "Bay Area & Stockton, CA",
     region: "West",
     lat: 37.8, lon: -122.27,
-    schools: null, students: null,
+    logo: "assets/img/logos/kipp-norcal.svg",
+    logoMark: "assets/img/logos/kipp-norcal-mark.svg",
+    website: "https://kippnorcal.org",
+    facts: [
+      { k: "Schools", v: "23" },
+      { k: "Students", v: "7,100" },
+      { k: "Grades", v: "TK–12" },
+      { k: "Cities", v: "East Palo Alto, Menlo Park, Oakland, Redwood City, San Francisco, San José, San Lorenzo, Stockton" },
+      { k: "In Northern California", v: "24 years · 4,500 alumni" }
+    ],
+    hosting: "Spring 2027",
     stack: null, // filled from quarterly stack documentation
     rationale: "Systematic piloting rigor, subgroup equity metrics, and in-house statistical evaluation capacity — a strong evidence culture that aligns with the network’s learning requirements.",
-    summary: "Bay Area CMO with a strong evidence culture and in-house evaluation capacity."
+    summary: "23 tuition-free public charter schools serving 7,100 TK–12 students across eight Northern California cities, from San Francisco and Oakland to San José and Stockton."
   },
   {
     id: "gem-prep",
-    mark: "GEM", // short label on generated art
-    name: "GEM Prep",
-    short: "GEM Prep",
+    cardLine: "K–12 · 7 campuses + online school",
+    mark: "GEM",
+    name: "Gem Prep",
+    short: "Gem Prep",
     type: "CMO",
     location: "Idaho",
     region: "Mountain West",
-    lat: 44.1, lon: -114.7, mapLabel: "Idaho",
-    schools: null, students: null,
+    lat: 43.6, lon: -114.2, mapLabel: "Idaho",
+    logo: "assets/img/logos/gem-prep.png",
+    logoMark: "assets/img/logos/gem-prep-mark.png",
+    website: "https://gemprep.org",
+    facts: [
+      { k: "Grades", v: "K–12" },
+      { k: "Campuses", v: "Idaho Falls, Meridian (3), Nampa, Pocatello, Twin Falls, plus Gem Prep: Online" },
+      { k: "Opening", v: "Rexburg, Fall 2027" },
+      { k: "Operator", v: "Gem Innovation Schools" }
+    ],
+    hosting: "2027–28 school year",
     stack: null,
     rationale: "Rural and western geography, in an Idaho policy environment supportive of nontraditional scheduling and competency-based progression. Strong AI readiness documented in a 2024 BLUUM case study.",
-    summary: "Idaho CMO bringing a rural, western context to the network."
+    summary: "K–12 free public charter schools across southern and eastern Idaho — Meridian, Nampa, Idaho Falls, Pocatello and Twin Falls — plus an online school, operated by Gem Innovation Schools."
   },
   {
     id: "collegiate",
-    mark: "CA", // short label on generated art
+    cardLine: "5 high schools + 2 post-secondary programs",
+    mark: "CA",
     name: "Collegiate Academies",
     short: "Collegiate",
     type: "CMO",
-    location: "New Orleans, LA",
+    location: "New Orleans & Baton Rouge, LA",
     region: "South",
     lat: 29.95, lon: -90.07,
-    schools: null, students: null,
+    logo: "assets/img/logos/collegiate.png",
+    logoMark: "assets/img/logos/collegiate-mark.png",
+    website: "https://www.collegiateacademies.org",
+    facts: [
+      { k: "Schools", v: "5 open-enrollment high schools + 2 post-secondary programs" },
+      { k: "Grades", v: "9–12 and beyond" },
+      { k: "Scholars", v: "85% first-generation college · 20% with special education needs" },
+      { k: "In Louisiana", v: "15 years" }
+    ],
+    hosting: "2027–28 school year",
     stack: null,
     rationale: "Operates in an AI-active city with a high-need urban context and a strong equity focus.",
-    summary: "New Orleans CMO with a strong equity focus in a high-need urban context."
+    summary: "Five open-enrollment high schools and two post-secondary programs in New Orleans and Baton Rouge, preparing every scholar for college and lives of unlimited opportunity."
   }
 ];
 

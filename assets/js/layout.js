@@ -39,6 +39,18 @@
   ASC.nextConvening = function () {
     return ASC.convenings.filter((c) => c.status !== "completed").sort((a, b) => a.start.localeCompare(b.start))[0];
   };
+  // Hosting status text for a partner: dates hosted, else the planned window.
+  ASC.hostingText = function (p) {
+    const mine = ASC.convenings.filter((c) => c.host === p.id).sort((a, b) => a.start.localeCompare(b.start));
+    const done = mine.filter((c) => c.status === "completed");
+    const next = mine.find((c) => c.status !== "completed");
+    const parts = done.map((c) => "Hosted " + c.dates);
+    if (next || p.hosting) parts.push("Hosting " + (p.hosting || next.dates));
+    return { text: parts.length ? parts.join(" · ") : "Hosting date to be scheduled", hosted: done.length > 0, convenings: done };
+  };
+  ASC.logoPlate = function (p, cls) {
+    return p.logo ? '<div class="logo-plate' + (cls ? " " + cls : "") + '"><img src="' + ASC.esc(p.logo) + '" alt="' + ASC.esc(p.name) + ' logo" loading="lazy"></div>' : "";
+  };
   ASC.initials = function (name) {
     return name.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).slice(0, 2).map((w) => w[0]).join("");
   };
@@ -144,7 +156,7 @@
   ASC.pageHero = function (o) {
     const e = ASC.esc;
     const band = o.band || "sky";
-    const art = o.art === false ? "" : '<div class="hero-art">' + ASC.art(o.art || o.title, { label: o.artLabel }) + "</div>";
+    const art = o.artHtml ? '<div class="hero-art">' + o.artHtml + "</div>" : o.art === false ? "" : '<div class="hero-art">' + ASC.art(o.art || o.title, { label: o.artLabel }) + "</div>";
     return (
       '<section class="page-hero band band--' + band + '"><div class="wrap"><div class="hero-inner' + (art ? "" : " no-art") + '"><div>' + ASC.crumbs(o.crumbs) +
       (o.eyebrow ? '<span class="eyebrow">' + e(o.eyebrow) + "</span>" : "") +

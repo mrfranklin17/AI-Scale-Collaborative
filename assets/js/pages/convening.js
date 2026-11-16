@@ -19,10 +19,17 @@ ASC.render = async function () {
     "<div><dt>Host</dt><dd>" + '<a href="partner.html?id=' + e(host.id) + '">' + e(host.name) + "</a></dd></div>" +
     "<div><dt>Dates</dt><dd>" + e(c.dates) + "</dd></div>" +
     "<div><dt>Location</dt><dd>" + e(c.location) + "</dd></div>" +
-    "<div><dt>Attendees</dt><dd>" + (c.attendees ? e(c.attendees) : '<span class="muted">Not recorded</span>') + "</dd></div>" +
-    '<div><dt>Status</dt><dd><span class="chip' + (c.status === "completed" ? " chip--good" : " chip--outline") + '">' + (c.status === "completed" ? I("check") : "") + e(status) + "</span></dd></div>" +
+    (c.status === "completed" ? "<div><dt>Attendees</dt><dd>" + (c.attendees ? e(c.attendees) : '<span class="muted">Not recorded</span>') + "</dd></div>" : "") +
+    '<div><dt>Status</dt><dd><span class="chip' + (c.status === "completed" ? " chip--good" : " chip--outline") + '">' + (c.status === "completed" ? I("check") : "") + e(c.statusNote || status) + "</span></dd></div>" +
     "</dl>" +
     (c.themes && c.themes.length ? '<div class="chips" aria-label="Focus areas" style="margin-top:var(--sp-4)">' + c.themes.map((t) => '<span class="chip chip--accent">' + e(t) + "</span>").join("") + "</div>" : "");
+
+  if (c.status !== "completed") {
+    main.innerHTML =
+      ASC.pageHero({ crumbs: [{ label: "Convenings", href: "convenings.html" }, { label: ASC.hostName(c, true) }], band: "plum", art: c.id, artLabel: "0" + c.number, eyebrow: "Convening " + c.number + " · " + c.dates, title: c.title, lede: e(c.summary), below: '<div class="card glance-card">' + glance + "</div>" }) +
+      '<div class="wrap page-body"><div class="empty-state"><div class="icon-dot">' + I("calendar") + "</div><h3>" + e(c.statusNote || "Details to come") + '</h3><p>The agenda, notes and attendee survey will appear here. <a href="convenings.html">See all convenings</a></p></div></div>';
+    return;
+  }
 
   /* ---- sections ---- */
   const S = [];

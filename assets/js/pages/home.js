@@ -13,14 +13,14 @@ ASC.render = async function () {
   const nextCard = next
     ? '<aside class="card next-card" aria-labelledby="next-h"><div class="card-kicker">Next convening</div>' +
       '<h2 id="next-h">' + e(next.title) + "</h2>" +
-      "<dl><dt>Host</dt><dd>" + e(ASC.hostName(next)) + "</dd><dt>When</dt><dd>" + e(next.dates) + "</dd><dt>Where</dt><dd>" + e(next.location) + '</dd><dt>Status</dt><dd><span class="chip' + (next.status === "upcoming" ? " chip--accent" : " chip--outline") + '">' + e(statusLabel(next)) + "</span></dd></dl>" +
+      "<dl><dt>Host</dt><dd>" + e(ASC.hostName(next)) + "</dd><dt>When</dt><dd>" + e(next.dates) + "</dd><dt>Where</dt><dd>" + e(next.location) + '</dd><dt>Status</dt><dd><span class="chip' + (next.status === "upcoming" ? " chip--accent" : " chip--outline") + '">' + e(next.statusNote || statusLabel(next)) + "</span></dd></dl>" +
       '<a class="arrow-link" href="convenings.html">Convening schedule ' + I("arrow") + "</a></aside>"
     : "";
 
   /* ---- Timeline strip ---- */
   const items = ASC.milestones
     .map((m) => Object.assign({}, m))
-    .concat(ASC.convenings.map((x) => ({ date: x.start, when: x.dates, what: x.title, note: x.host ? "Hosted by " + ASC.hostName(x, true) : x.location, href: x.host ? "convening.html?id=" + x.id : "convenings.html", done: x.status === "completed" })))
+    .concat(ASC.convenings.map((x) => ({ date: x.start, when: x.dates, what: x.title, note: x.host ? "Hosted by " + ASC.hostName(x, true) : x.location, href: x.status === "completed" ? "convening.html?id=" + x.id : "convenings.html", done: x.status === "completed" })))
     .sort((a, b) => a.date.localeCompare(b.date));
   items.forEach((it) => { if (it.done == null) it.done = it.date <= today; });
   const nowIdx = items.findIndex((it) => !it.done);
@@ -73,7 +73,6 @@ ASC.render = async function () {
     '<span class="eyebrow">US Charters · Launched ' + e(c.launch) + "</span>" +
     '<h1>Four charter networks learning how AI can <span class="hl">raise proficiency</span>.</h1>' +
     '<p class="lede">' + e(c.tagline) + "</p>" +
-    '<ul class="focus-chips" aria-label="Focus populations">' + c.focusPopulations.map((f) => "<li>" + e(f) + "</li>").join("") + "</ul>" +
     '<div class="actions-row"><a class="btn btn-primary" href="about.html">Explore the collaborative ' + I("arrow") + '</a><a class="btn btn-secondary" href="convenings.html">See convenings</a></div>' +
     '</div><div class="hero-visual">' + ASC.art("ai-scale-collaborative-hero") + nextCard + "</div></div>" +
     '<svg class="connector" viewBox="0 0 300 160" style="left:44%;bottom:-40px;width:260px" aria-hidden="true"><path d="M5 5 C 80 150, 200 150, 295 120"/></svg>' +

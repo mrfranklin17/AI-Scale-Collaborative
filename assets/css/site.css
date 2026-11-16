@@ -788,3 +788,20 @@ textarea { min-height: 110px; resize: vertical; }
   .seg--with-na { grid-template-columns: minmax(0, 1fr); }
   .seg-na { margin: var(--sp-2) 0 0; }
 }
+
+/* ---------- Partner logos ---------- */
+.logo-plate { background: #fff; border-radius: var(--radius-sm); display: grid; place-items: center; padding: var(--sp-6); border: 1px solid #e5ddd0; }
+.logo-plate img { max-height: 64px; max-width: 80%; width: auto; height: auto; object-fit: contain; }
+.card-logo { margin: calc(var(--sp-6) * -1) calc(var(--sp-6) * -1) var(--sp-5); border-radius: var(--radius) var(--radius) 0 0; border: 0; border-bottom: 1px solid var(--border); aspect-ratio: 16 / 6; }
+.hero-logo { aspect-ratio: 4 / 3; padding: var(--sp-8); box-shadow: var(--shadow-lg); border: 0; }
+.hero-logo img { max-height: 110px; max-width: 86%; }
+.pc-facts { font-size: var(--fs-sm); font-weight: 600; color: var(--text); margin: 0 0 var(--sp-3); }
+.pc-host { display: flex; gap: 8px; align-items: center; font-size: var(--fs-sm); color: var(--text-2); margin: 0; }
+.host-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--coral); flex: none; }
+.host-dot.on { background: var(--coral); }
+.pin circle { fill: var(--accent); stroke: #fff; stroke-width: 3; }
+.pin-badge { fill: #fff; stroke: #cbc3b3; stroke-width: 1.2; filter: drop-shadow(0 3px 6px rgba(22, 18, 28, 0.18)); }
+.pin:hover .pin-badge, .pin:focus-visible .pin-badge { stroke: var(--accent); stroke-width: 2.5; }
+.pin text { font-size: 15px; }
+.rot-partner { display: inline-flex; gap: var(--sp-3); align-items: center; }
+.rot-partner img { border-radius: 6px; background: #fff; border: 1px solid #e5ddd0; padding: 2px; object-fit: contain; flex: none; }
