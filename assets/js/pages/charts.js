@@ -83,7 +83,7 @@
             })
             .join("");
           const ref = r.ref && r.ref.agree != null ? '<span class="lk-ref" style="left:' + (1 - r.ref.agree) * 100 + '%" data-tip="' + e("<b>" + opts.refLabel + "</b>" + Math.round(r.ref.agree * 100) + "% agree · mean " + fmt(r.ref.mean)) + '"></span>' : "";
-          const alt = r.name + ": " + labels.map((l, i) => l + " " + r.counts[i]).join(", ") + ". " + Math.round(agree * 100) + "% agree, mean " + fmt(r.mean) + (r.ref ? ". " + opts.refLabel + " " + Math.round(r.ref.agree * 100) + "% agree, mean " + fmt(r.ref.mean) : "") + ".";
+          const alt = r.name + ": " + labels.map((l, i) => l + " " + r.counts[i]).join(", ") + (r.na ? ", N/A " + r.na : "") + ". " + Math.round(agree * 100) + "% agree, mean " + fmt(r.mean) + (r.ref ? ". " + opts.refLabel + " " + Math.round(r.ref.agree * 100) + "% agree, mean " + fmt(r.ref.mean) : "") + ".";
           return (
             '<div class="lk-row"><div class="lk-name">' + e(r.name) + "</div>" +
             '<div class="lk-bar" role="img" tabindex="0" aria-label="' + e(alt) + '">' + segs + ref + "</div>" +
@@ -93,10 +93,11 @@
         .join("");
       const table =
         '<details class="table-toggle no-print"><summary>View as table</summary><div class="table-wrap" tabindex="0" role="region" aria-label="Statement ratings table"><table class="data-table"><thead><tr><th scope="col">Statement</th>' +
-        labels.map((l) => '<th scope="col" class="num">' + e(l) + "</th>").join("") + '<th scope="col" class="num">Mean</th>' + (opts.refLabel ? '<th scope="col" class="num">' + e(opts.refLabel) + " mean</th>" : "") + '<th scope="col" class="num">n</th></tr></thead><tbody>' +
-        rows.map((r) => '<tr><th scope="row">' + e(r.name) + "</th>" + r.counts.map((c) => '<td class="num">' + c + "</td>").join("") + '<td class="num">' + fmt(r.mean) + "</td>" + (opts.refLabel ? '<td class="num">' + fmt(r.ref && r.ref.mean) + "</td>" : "") + '<td class="num">' + r.n + "</td></tr>").join("") +
+        labels.map((l) => '<th scope="col" class="num">' + e(l) + "</th>").join("") + '<th scope="col" class="num">Mean</th>' + (opts.refLabel ? '<th scope="col" class="num">' + e(opts.refLabel) + " mean</th>" : "") + '<th scope="col" class="num">n</th><th scope="col" class="num">N/A</th></tr></thead><tbody>' +
+        rows.map((r) => '<tr><th scope="row">' + e(r.name) + "</th>" + r.counts.map((c) => '<td class="num">' + c + "</td>").join("") + '<td class="num">' + fmt(r.mean) + "</td>" + (opts.refLabel ? '<td class="num">' + fmt(r.ref && r.ref.mean) + "</td>" : "") + '<td class="num">' + r.n + '</td><td class="num">' + (r.na || 0) + "</td></tr>").join("") +
         "</tbody></table></div></details>";
-      return legend + '<div class="lk-head" aria-hidden="true"><span></span><span class="lk-ticks"><span>0%</span><span>50%</span><span>100%</span></span><span>Mean</span></div>' + body + table;
+      const naTotal = rows.reduce((a, r) => a + (r.na || 0), 0);
+      return legend + '<div class="lk-head" aria-hidden="true"><span></span><span class="lk-ticks"><span>0%</span><span>50%</span><span>100%</span></span><span>Mean</span></div>' + body + (naTotal ? '<p class="muted small" style="margin:var(--sp-3) 0 0">' + naTotal + " N/A answer" + (naTotal === 1 ? "" : "s") + " across these statements are left out of percentages and means; see the table for counts.</p>" : "") + table;
     },
 
     /* Horizontal bars with direct value labels. rows: [{ name, value (0..max), label, tip, color? }] */

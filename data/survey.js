@@ -7,6 +7,8 @@ window.ASC = window.ASC || {};
 
 window.ASC.survey = {
   scale: ["Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"],
+  // Offered on every statement. Stored as "na" and left out of percentages and means.
+  naLabel: "N/A — doesn’t apply to my work",
 
   likert: [
     { id: "objectives", short: "Met learning goals", text: "The convening met its stated learning goals." },

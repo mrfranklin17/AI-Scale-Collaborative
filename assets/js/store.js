@@ -173,6 +173,7 @@
       const likert = {};
       ASC.survey.likert.forEach((q) => {
         likert[q.id] = clamp(Math.round(3.6 + (lean[q.id] || 0) + person + (r() - 0.5) * 1.6), 1, 5);
+        if ((org === "gates" || org === "ai-for-equity") && ["relevance", "actionable", "agenda"].includes(q.id) && r() < 0.6) likert[q.id] = "na";
       });
       const sessions = {};
       conv.sessions.forEach((s) => {

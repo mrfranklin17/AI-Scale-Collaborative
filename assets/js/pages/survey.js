@@ -19,10 +19,12 @@ ASC.render = function () {
   const scaleGroup = (name, legend, labels, opts) => {
     opts = opts || {};
     const start = opts.nps ? 0 : 1;
+    const opt = (v, l, cls) => '<label' + (cls ? ' class="' + cls + '"' : "") + '><input type="radio" name="' + e(name) + '" value="' + v + '"' + (String(values[name]) === v ? " checked" : "") + "><span>" + e(l) + "</span></label>";
     return (
       '<fieldset class="q' + (opts.nps ? " q--nps" : "") + '" data-name="' + e(name) + '"' + (opts.required ? " data-required" : "") + "><legend>" + e(legend) + (opts.optional ? ' <span class="muted small">(optional)</span>' : "") + "</legend>" +
-      '<div class="seg' + (opts.nps ? " seg--nps" : "") + '">' +
-      labels.map((l, i) => { const v = String(i + start); return '<label><input type="radio" name="' + e(name) + '" value="' + v + '"' + (String(values[name]) === v ? " checked" : "") + "><span>" + e(l) + "</span></label>"; }).join("") +
+      '<div class="seg' + (opts.nps ? " seg--nps" : "") + (opts.na ? " seg--with-na" : "") + '">' +
+      labels.map((l, i) => opt(String(i + start), l)).join("") +
+      (opts.na ? opt("na", S.naLabel, "seg-na") : "") +
       "</div>" + (opts.ends ? '<div class="seg-ends" aria-hidden="true"><span>' + e(opts.ends[0]) + "</span><span>" + e(opts.ends[1]) + "</span></div>" : "") +
       '<p class="q-error" hidden>Please choose an answer.</p></fieldset>'
     );
@@ -46,9 +48,9 @@ ASC.render = function () {
       {
         id: "ratings",
         title: "Your experience",
-        intro: "How much do you agree with each statement?",
+        intro: "How much do you agree with each statement? Choose N/A if a statement doesn’t apply to your work.",
         html:
-          S.likert.map((q) => scaleGroup("lk_" + q.id, q.text, S.scale, { required: true })).join("") +
+          S.likert.map((q) => scaleGroup("lk_" + q.id, q.text, S.scale, { required: true, na: true })).join("") +
           scaleGroup("nps", S.nps.text, Array.from({ length: 11 }, (_, i) => String(i)), { nps: true, required: true, ends: [S.nps.low, S.nps.high] })
       }
     ];
@@ -165,7 +167,7 @@ ASC.render = function () {
 
     const c = ASC.convening(values.convening_id);
     const answers = { likert: {}, nps: Number(values.nps), sessions: {}, friction: values.friction || null, open: {} };
-    S.likert.forEach((q) => (answers.likert[q.id] = Number(values["lk_" + q.id])));
+    S.likert.forEach((q) => { const v = values["lk_" + q.id]; answers.likert[q.id] = v === "na" ? "na" : Number(v); });
     (c.sessions || []).forEach((s) => { const v = values["ss_" + s.id]; if (v) answers.sessions[s.id] = Number(v); });
     S.open.forEach((q) => { const v = (values["op_" + q.id] || "").trim(); if (v) answers.open[q.id] = v; });
 

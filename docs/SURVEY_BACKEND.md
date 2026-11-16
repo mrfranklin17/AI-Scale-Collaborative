@@ -71,6 +71,8 @@ Each response is one row. `organization` and `role` are stored as ids (e.g. `kip
 }
 ```
 
+A statement answered **N/A** is stored as `"na"` (e.g. `"relevance": "na"`) and is left out of percentages and means.
+
 Question ids come from `data/survey.js`. Don't rename an id once responses exist — add a new one, so old and new wording are never mixed.
 
 ## Foundation responses

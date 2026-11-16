@@ -193,6 +193,7 @@ ASC.render = async function () {
         counts: [1, 2, 3, 4, 5].map((k) => v.filter((x) => x === k).length),
         mean: M.mean(v),
         n: v.length,
+        na: M.naCount(rows, q.id),
         ref: cmp && nv.length ? { agree: nv.filter((x) => x >= 4).length / nv.length, mean: M.mean(nv) } : null
       };
     });
@@ -200,7 +201,7 @@ ASC.render = async function () {
       id: "statements",
       wide: true,
       title: e(f.hi.q.short) + " rated highest; " + e(f.lo.q.short.charAt(0).toLowerCase() + f.lo.q.short.slice(1)) + " lagged",
-      sub: "Share of respondents by level of agreement · " + e(scope()) + (cmp ? " · black tick = where the network’s “agree” share begins; mean change vs network at right" : ""),
+      sub: "Share of respondents by level of agreement, excluding N/A · " + e(scope()) + (cmp ? " · black tick = where the network’s “agree” share begins; mean change vs network at right" : ""),
       n: rows.length,
       body: C.likert(likRows, S.scale, { refLabel: cmp ? "Network" : null })
     });
@@ -414,7 +415,7 @@ ASC.render = async function () {
             const num = (v) => (v === "" || v == null ? undefined : Number(v));
             const answers = { likert: {}, sessions: {}, open: {}, nps: num(o.nps), friction: o.friction || null };
             Object.keys(o).forEach((k) => {
-              if (k.startsWith("lk_") && o[k] !== "") answers.likert[k.slice(3)] = num(o[k]);
+              if (k.startsWith("lk_") && o[k] !== "") answers.likert[k.slice(3)] = o[k] === "na" ? "na" : num(o[k]);
               if (k.startsWith("ss_") && o[k] !== "") answers.sessions[k.slice(3)] = num(o[k]);
               if (k.startsWith("op_") && o[k]) answers.open[k.slice(3)] = o[k];
             });

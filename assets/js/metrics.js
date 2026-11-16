@@ -9,6 +9,7 @@
   ASC.metrics = {
     mean,
     likertVals,
+    naCount(rows, id) { return rows.filter((r) => r.answers && r.answers.likert && r.answers.likert[id] === "na").length; },
     overall(rows) {
       return mean(rows.map((r) => mean(Object.values((r.answers && r.answers.likert) || {}).filter((v) => v >= 1))).filter((v) => v != null));
     },

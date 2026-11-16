@@ -778,3 +778,13 @@ textarea { min-height: 110px; resize: vertical; }
 .switch input:checked + .switch-track::after { transform: translateX(18px); }
 .switch input:focus-visible + .switch-track { outline: 3px solid var(--focus); outline-offset: 2px; }
 @media (max-width: 760px) { .switch { flex-basis: 100%; } }
+
+/* N/A option on rating statements: set apart from the scale */
+.seg--with-na { grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(0, 1.25fr); }
+.seg-na { margin-left: var(--sp-2); }
+.seg-na span { border-style: dashed; color: var(--text-2); }
+.seg-na input:checked + span { border-style: solid; }
+@media (max-width: 640px) {
+  .seg--with-na { grid-template-columns: minmax(0, 1fr); }
+  .seg-na { margin: var(--sp-2) 0 0; }
+}
