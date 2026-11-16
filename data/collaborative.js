@@ -16,10 +16,10 @@ window.ASC.collaborative = {
   focusPopulations: ["Black students", "Latino students", "Students from low-income families"],
   intro: [
     "The AI Scale Collaborative is the field-learning engine of the US Charters AI Innovation strategy. A concentrated network of high-readiness CMOs implements AI-augmented instruction under a common measurement framework, documents their instructional stacks, and shares what they learn across the network.",
-    "The evidence this generates — cross-context, disaggregated, practitioner-produced — is what the broader field cannot currently get from vendors or from isolated pilots."
+    "Together, the four networks generate evidence that is cross-context, disaggregated, and practitioner-produced — learning each partner can put to work in its own schools and share across the network."
   ],
   theoryOfChange:
-    "If a concentrated network of high-readiness CMOs implements AI-augmented instruction under common measurement conditions, then the field gains cross-context evidence on which approaches increase proficiency for which students — evidence that vendor claims and isolated pilots cannot provide.",
+    "If a concentrated network of high-readiness CMOs implements AI-augmented instruction under common measurement conditions, the network learns together which approaches increase proficiency, and for which students.",
   questions: [
     {
       title: "Conditions for proficiency gains",
@@ -35,7 +35,7 @@ window.ASC.collaborative = {
     }
   ],
   designNote:
-    "These questions are answerable through a field-learning model; they are not answerable through a controlled experiment, and the design does not pretend otherwise. The evidence the network produces is ESSA Tier 3 by design.",
+    "These questions are best answered by learning across real school contexts, side by side, rather than through a controlled experiment. The evidence the network produces is ESSA Tier 3 by design.",
   smallNetwork:
     "A smaller, higher-fidelity network produces more actionable evidence than a larger, lower-fidelity one. The network can add CMO partners when evidence and fit support it.",
   tightLoose:
@@ -111,7 +111,7 @@ window.ASC.collaborative = {
    Year 1 is SY2026–27. */
 window.ASC.milestones = [
   { date: "2026-09-01", when: "Fall 2026", what: "Network launches", note: "Four CMO partners · Year 1 begins" },
-  { date: "2028-04-01", when: "Spring 2028", what: "Year 1–2 evidence review", note: "Informs Years 3–4 renewal", href: "about.html#investment" },
+  { date: "2028-04-01", when: "Spring 2028", what: "Year 1–2 evidence review", note: "Informs Years 3–4 renewal" },
   { date: "2028-06-30", when: "Summer 2028", what: "Year 2 targets", note: "65% proficiency · 100% Index ≥ 3.5", href: "measures.html" },
   { date: "2029-06-30", when: "Summer 2029", what: "Year 3 targets", note: "80% proficiency · 100% AI access", href: "measures.html" },
   { date: "2030-06-30", when: "2030", what: "What we will know", note: "End of the strategy period", href: "measures.html" }

@@ -49,29 +49,6 @@ ASC.render = function () {
         '<h2 id="backbone-h">AI for Equity: the measurement backbone</h2>' +
         '<div class="card card--tint"><p style="font-size:var(--fs-md);color:var(--text)">' + e(c.aiForEquity) + "</p>" +
         '<a class="arrow-link" href="measures.html#index">The Innovation Index measure ' + ASC.icon("arrow") + "</a></div>"
-    },
-    {
-      id: "investment",
-      nav: "Investment",
-      html:
-        '<h2 id="investment-h">Two-year grants, with a path to 2030</h2>' +
-        '<div class="timeline" style="margin-top:var(--sp-5)">' +
-        inv.periods.map((p, i) => '<div class="card' + (i ? " card--outline" : "") + '"><span class="chip' + (i ? " chip--outline" : " chip--accent") + '">' + e(p.label) + '</span><h3 style="margin-top:var(--sp-3)">' + e(p.dates) + '</h3><p class="muted">' + e(p.detail) + "</p></div>").join("") +
-        "</div>" +
-        '<div class="grid grid-2" style="margin-top:var(--sp-5)">' +
-        '<div class="card"><h3>Investment</h3><ul style="margin:var(--sp-2) 0 0;padding-left:1.1em;color:var(--text-2)">' + inv.amount.map((a) => "<li>" + e(a) + "</li>").join("") + "</ul></div>" +
-        '<div class="card"><h3>Evidence standard</h3><p class="muted">' + e(inv.evidence) + "</p></div></div>"
-    },
-    {
-      id: "frictions",
-      nav: "Friction framework",
-      html:
-        '<h2 id="frictions-h">Four places to look when implementation breaks down</h2>' +
-        '<p style="color:var(--text-2);max-width:68ch">Every convening’s observations are organized against the same four friction points, each with its own color across the site.</p>' +
-        '<div class="grid grid-2" style="margin-top:var(--sp-5)">' +
-        ASC.frictionFramework.map((f) => '<div class="card"><span class="chip chip--fr chip--' + f.id + '">' + f.n + ". " + e(f.title) + '</span><p style="font-style:italic;margin:var(--sp-3) 0 var(--sp-2)">' + e(f.question) + '</p><ul style="margin:0;padding-left:1.1em;color:var(--text-2);font-size:var(--fs-sm)">' + f.insights.map((x) => "<li>" + e(x) + "</li>").join("") + "</ul></div>").join("") +
-        "</div>" +
-        '<figure class="figure" style="margin-top:var(--sp-6)"><img src="assets/img/friction-framework.webp" alt="The Implementation R&amp;D friction framework: product, configuration, coherence and practice friction points, with the insights each aims to share." loading="lazy"><figcaption class="muted small" style="margin-top:var(--sp-2)">Implementation R&amp;D friction framework. Select to enlarge.</figcaption></figure>'
     }
   ];
 

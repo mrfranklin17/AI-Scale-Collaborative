@@ -81,7 +81,7 @@ ASC.render = async function () {
     /* statement band */
     '<section class="band band--sky" aria-labelledby="why-h"><div class="wrap">' +
     '<span class="eyebrow" id="why-h">Why this network</span>' +
-    '<p class="statement">If four high-readiness CMOs implement AI under <em>common measurement conditions</em>, the field learns which approaches increase proficiency — and for which students.</p>' +
+    '<p class="statement">If four high-readiness CMOs implement AI under <em>common measurement conditions</em>, we learn together which approaches increase proficiency — and for which students.</p>' +
     '<div class="grid grid-2" style="margin-top:var(--sp-10);max-width:1000px;align-items:end"><p style="color:var(--text-2);margin:0;font-size:var(--fs-md)">' + e(c.intro[0]) + '</p><div><a class="btn btn-secondary" href="about.html">How the network works ' + I("arrow") + "</a></div></div>" +
     "</div></section>" +
 
