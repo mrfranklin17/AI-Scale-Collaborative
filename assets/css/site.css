@@ -754,3 +754,17 @@ textarea { min-height: 110px; resize: vertical; }
 
 .glance-card { margin-top: var(--sp-10); padding: var(--sp-6) var(--sp-8); }
 .page-hero + .wrap > .filters, .page-hero + .wrap .filters { margin-top: var(--sp-8); }
+
+.focus-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: calc(var(--sp-2) * -1) 0 var(--sp-8); padding: 0; }
+.focus-chips li { font-size: var(--fs-sm); font-weight: 600; padding: 6px 14px; border-radius: var(--radius-pill); background: var(--surface); border: 1.5px solid var(--text); color: var(--text); }
+.focus-chips--light li { background: transparent; }
+.pc-why { font-size: var(--fs-sm); color: var(--text-2); margin: 0 0 var(--sp-3); }
+
+.focus-card { border: 0; }
+.focus-card .q-num { color: #16121c; }
+.focus-card h3 { color: #16121c; margin: 0; font-size: var(--fs-xl); }
+.focus-card--0 { background: var(--coral); }
+.focus-card--1 { background: var(--teal); }
+.focus-card--2 { background: #ffe27a; }
+.focus-note { display: flex; gap: 8px; align-items: center; font-size: var(--fs-sm); font-weight: 600; color: var(--text); margin: var(--sp-3) 0 0; }
+.focus-note .icon { color: var(--coral); }

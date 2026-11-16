@@ -192,7 +192,7 @@
     return (
       '<a class="skip" href="#main">Skip to content</a>' +
       '<header class="site-header"><div class="wrap">' +
-      '<a class="brand" href="index.html" aria-label="AI Scale Collaborative home"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative<small>CMO &amp; Intermediary Network</small></span></a>' +
+      '<a class="brand" href="index.html" aria-label="AI Scale Collaborative home"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative<small>CMO Network</small></span></a>' +
       '<a class="btn btn-primary btn-sm header-cta" href="survey.html">Share feedback</a>' +
       '<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">' + ASC.icon("menu") + '<span class="label">Menu</span></button>' +
       '<nav class="nav" id="site-nav" aria-label="Main">' +
@@ -211,7 +211,7 @@
       '<footer class="site-footer"><div class="wrap">' +
       '<div class="footer-cta"><h2>Attended a convening? Tell us how it went.</h2><div class="actions-row"><a class="btn btn-light" href="survey.html">Take the survey ' + ASC.icon("arrow") + '</a><a class="btn btn-outline-light" href="feedback.html">See the results</a></div></div>' +
       '<div class="footer-grid">' +
-      '<div><a class="brand" href="index.html" style="color:#fff;margin-bottom:var(--sp-4)"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative</span></a><p>A US Charters network of four CMOs and two intermediaries measuring how AI-augmented instruction affects student outcomes. Launched Fall 2026.</p></div>' +
+      '<div><a class="brand" href="index.html" style="color:#fff;margin-bottom:var(--sp-4)"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative</span></a><p>A US Charters network of four CMOs learning how AI-augmented instruction can increase proficiency for Black, Latino, and low-income students. Launched Fall 2026.</p></div>' +
       '<div><h2>The collaborative</h2><ul>' +
       NAV.slice(0, 4).map((n) => '<li><a href="' + n.href + '">' + n.label + "</a></li>").join("") +
       '<li><a href="about.html#requirements">Network requirements</a></li></ul></div>' +

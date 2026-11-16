@@ -44,7 +44,6 @@ window.ASC.survey = {
     { id: "instruction", label: "Teacher, coach or academic dean" },
     { id: "data", label: "Data or technology" },
     { id: "operations", label: "Operations" },
-    { id: "intermediary", label: "Intermediary staff" },
     { id: "foundation", label: "Foundation staff" },
     { id: "other", label: "Other" }
   ],

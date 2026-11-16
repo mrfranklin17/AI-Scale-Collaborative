@@ -11,7 +11,6 @@ ASC.render = function () {
   const hosted = ASC.convenings.filter((c) => c.host === p.id && c.status === "completed").sort((a, b) => a.start.localeCompare(b.start));
   const upcoming = ASC.convenings.filter((c) => c.host === p.id && c.status !== "completed");
   const facts = [
-    ["Type", p.type],
     ["Location", p.location],
     ["Region", p.region],
     ["Schools", p.schools || null],
@@ -31,8 +30,8 @@ ASC.render = function () {
       crumbs: [{ label: "Partners", href: "partners.html" }, { label: p.short }],
       band: "sage",
       art: p.id,
-      artLabel: ASC.initials(p.name),
-      eyebrow: p.type === "CMO" ? "CMO partner" : "Intermediary partner",
+      artLabel: p.mark || ASC.initials(p.name),
+      eyebrow: "CMO partner",
       title: p.name,
       lede: e(p.summary),
       below:
@@ -42,6 +41,7 @@ ASC.render = function () {
       updated: ASC.config.lastUpdated.partners
     }) +
     ASC.withToc([
+      { id: "why", nav: "Why " + p.short, html: '<h2 id="why-h">Why ' + e(p.short) + " is in the network</h2>" + '<p class="callout">' + e(p.rationale || p.summary) + "</p>" },
       { id: "stack", nav: "AI stack", html: '<h2 id="stack-h">Instructional and AI stack</h2>' + stack },
       { id: "hosted", nav: "Convenings hosted", html: '<h2 id="hosted-h">Convenings hosted</h2>' + convList },
       {

@@ -27,6 +27,8 @@ ASC.render = function () {
       '<div class="card"><span class="chip chip--accent">Measure ' + (i + 1) + " · " + e(m.cadence) + "</span>" +
       '<h2 id="' + e(m.id) + '-h" style="font-size:var(--fs-lg);margin-top:var(--sp-3)">' + e(m.title) + "</h2>" +
       '<p class="muted" style="max-width:70ch">' + e(m.definition) + "</p>" +
+      (m.domains ? '<div class="chips" aria-label="Index domains" style="margin-top:var(--sp-3)">' + m.domains.map((d) => '<span class="chip chip--accent">' + e(d) + "</span>").join("") + "</div>" : "") +
+      (m.focus ? '<p class="focus-note">' + ASC.icon("users") + "<span>Reported for Black, Latino, and low-income students.</span></p>" : "") +
       track(m) +
       '<dl class="mt-meta"><dt>Data source</dt><dd>' + e(m.source) + "</dd><dt>Cadence</dt><dd>" + e(m.cadence) + "</dd><dt>Targets</dt><dd>" + m.targets.map((t) => t.value + "% by " + t.label).join(" · ") + "</dd></dl></div>"
   }));
@@ -35,10 +37,12 @@ ASC.render = function () {
     id: "how",
     nav: "How measurement works",
     html:
-      '<h2 id="how-h">Every number is disaggregated</h2>' +
-      '<div class="callout" style="margin-bottom:var(--sp-5)"><b>Disaggregation.</b> Proficiency and AI access are reported by race/ethnicity, special education status and English learner status. Under the <a href="about.html#equity">equity guardrail</a>, no tool or model is scaled within a network school until subgroup data shows no harm.</div>' +
+      '<h2 id="how-h">Three design choices set this measurement apart</h2>' +
+      '<div class="grid grid-3" style="margin-bottom:var(--sp-6)">' + ASC.measurementChoices.map((m) => '<div class="card card--tint"><h3>' + e(m.title) + '</h3><p class="muted">' + e(m.text) + "</p></div>").join("") + "</div>" +
+      '<div class="callout" style="margin-bottom:var(--sp-6)">Proficiency and AI access are reported for Black, Latino, and low-income students. Under the <a href="about.html#equity">equity guardrail</a>, data by race/ethnicity, special education status and English learner status must show no harm to any subgroup before a tool is scaled.</div>' +
+      '<p class="muted small" style="margin-bottom:var(--sp-6)"><b>Year definitions.</b> Year 1 is SY2026–27, Year 2 is SY2027–28 and Year 3 is SY2028–29. Targets match what partners have signed or proposed.</p>' +
       '<div class="grid grid-2">' +
-      ["assessment", "equity", "vendor", "stack"].map((id) => { const r = req(id); return '<div class="card"><h3>' + e(r.title) + '</h3><p class="muted">' + e(r.text) + "</p></div>"; }).join("") +
+      ["assessment", "equity", "vendor", "index"].map((id) => { const r = req(id); return '<div class="card"><h3>' + e(r.title) + '</h3><p class="muted">' + e(r.text) + "</p></div>"; }).join("") +
       "</div>"
   };
 
@@ -50,7 +54,7 @@ ASC.render = function () {
       artLabel: "2030",
       eyebrow: "Outcome metrics",
       title: "What we will know by 2030",
-      lede: "Three outcome measures track whether AI-augmented instruction is reaching students and moving proficiency — always disaggregated by focus population.",
+      lede: "Five outcome measures track whether AI-augmented instruction reaches every student in each CMO network and increases proficiency for Black, Latino, and low-income students.",
       updated: ASC.config.lastUpdated.measures
     }) + ASC.withToc(measureSections.concat([how]));
 };

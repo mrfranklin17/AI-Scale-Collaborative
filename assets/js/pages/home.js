@@ -3,7 +3,6 @@ ASC.render = async function () {
   const e = ASC.esc;
   const I = ASC.icon;
   const cmos = ASC.partners.filter((p) => p.type === "CMO");
-  const ints = ASC.partners.filter((p) => p.type === "Intermediary");
   const completed = ASC.completedConvenings();
   const latest = completed[completed.length - 1];
   const next = ASC.nextConvening();
@@ -62,8 +61,8 @@ ASC.render = async function () {
   ];
 
   const stats = [
-    { href: "partners.html?type=CMO", v: cmos.length, l: "CMO partners", go: "Meet the CMOs", cls: "coral" },
-    { href: "partners.html?type=Intermediary", v: ints.length, l: "Intermediary partners", go: "Meet the intermediaries", cls: "teal" },
+    { href: "partners.html", v: cmos.length, l: "CMO partners", go: "Meet the CMOs", cls: "coral" },
+    { href: "about.html#focus", v: c.focusPopulations.length, l: "Focus populations", go: "Who we focus on", cls: "teal" },
     { href: "measures.html", v: ASC.measures.length, l: "Outcome measures to 2030", go: "See the measures", cls: "sun" },
     { href: "convenings.html", v: completed.length, l: "Convening" + (completed.length === 1 ? "" : "s") + " held", go: "See convenings", cls: "white" }
   ];
@@ -72,8 +71,9 @@ ASC.render = async function () {
     /* hero */
     '<section class="hero"><div class="wrap hero-grid"><div>' +
     '<span class="eyebrow">US Charters · Launched ' + e(c.launch) + "</span>" +
-    '<h1>Six networks learning <span class="hl">what AI does</span> for students.</h1>' +
+    '<h1>Four charter networks learning how AI can <span class="hl">raise proficiency</span>.</h1>' +
     '<p class="lede">' + e(c.tagline) + "</p>" +
+    '<ul class="focus-chips" aria-label="Focus populations">' + c.focusPopulations.map((f) => "<li>" + e(f) + "</li>").join("") + "</ul>" +
     '<div class="actions-row"><a class="btn btn-primary" href="about.html">Explore the collaborative ' + I("arrow") + '</a><a class="btn btn-secondary" href="convenings.html">See convenings</a></div>' +
     '</div><div class="hero-visual">' + ASC.art("ai-scale-collaborative-hero") + nextCard + "</div></div>" +
     '<svg class="connector" viewBox="0 0 300 160" style="left:44%;bottom:-40px;width:260px" aria-hidden="true"><path d="M5 5 C 80 150, 200 150, 295 120"/></svg>' +
@@ -82,13 +82,13 @@ ASC.render = async function () {
     /* statement band */
     '<section class="band band--sky" aria-labelledby="why-h"><div class="wrap">' +
     '<span class="eyebrow" id="why-h">Why this network</span>' +
-    '<p class="statement">The evidence this network generates — <em>cross-context, disaggregated, practitioner-produced</em> — is what the field can’t get from vendors or from isolated pilots.</p>' +
+    '<p class="statement">If four high-readiness CMOs implement AI under <em>common measurement conditions</em>, the field learns which approaches increase proficiency — and for which students.</p>' +
     '<div class="grid grid-2" style="margin-top:var(--sp-10);max-width:1000px;align-items:end"><p style="color:var(--text-2);margin:0;font-size:var(--fs-md)">' + e(c.intro[0]) + '</p><div><a class="btn btn-secondary" href="about.html">How the network works ' + I("arrow") + "</a></div></div>" +
     "</div></section>" +
 
     /* stats band */
     '<section class="band band--plum band--slant" aria-label="At a glance"><div class="wrap">' +
-    '<div class="section-head"><div><span class="eyebrow">At a glance</span><h2>A small network, built to learn fast.</h2></div><p>Four CMOs and two intermediaries commit to a common measurement framework, quarterly stack documentation and on-site convenings.</p></div>' +
+    '<div class="section-head"><div><span class="eyebrow">At a glance</span><h2>A small network, built to learn fast.</h2></div><p>' + e(c.smallNetwork) + "</p></div>" +
     '<div class="stat-blocks">' +
     stats.map((s) => '<a class="stat-block stat-block--' + s.cls + '" href="' + s.href + '"><div><div class="v">' + s.v + '</div><div class="l">' + s.l + '</div></div><span class="go">' + s.go + " →</span></a>").join("") +
     "</div></div></section>" +

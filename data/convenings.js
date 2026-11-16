@@ -47,7 +47,7 @@ window.ASC.convenings = [
     questions: [
       "Does time freed by AI scoring change what happens in Monday’s lesson — and how would a network observe it?",
       "What dosage does AI-assisted tutoring need before its effect can fairly be tested?",
-      "How should networks measure acceleration in grades where no assessment can express a year of growth?",
+      "How should networks track proficiency for Black, Latino, and low-income students in grades where no state assessment is given?",
       "When a tool won’t share its data (as with Zearn here), how should the vendor-transparency requirement apply?",
       "How do we know whether a flagged intervention was any good, not only that it was recorded?"
     ],
@@ -308,7 +308,7 @@ window.ASC.convenings = [
               tag: "Charter Scale",
               conditions: "Staffing and scheduling; instructional coherence",
               blocks: [
-                { p: "This is the clearest example in the portfolio of scheduling as the binding constraint rather than content. The subject with stronger results is held outside the school day, and the one with weaker results holds the protected minutes. The reasoning is defensible, but math acceleration depends on students showing up an hour before school or on a Saturday." },
+                { p: "This is the clearest example in the portfolio of scheduling as the binding constraint rather than content. The subject with stronger results is held outside the school day, and the one with weaker results holds the protected minutes. The reasoning is defensible, but math gains depend on students showing up an hour before school or on a Saturday." },
                 { p: "The mixed review packets are a coherence gap inside an otherwise coherent block." }
               ]
             }

@@ -1,6 +1,6 @@
 # AI Scale Collaborative
 
-Website for the Gates Foundation US Charters **AI Scale Collaborative** (CMO & Intermediary Network): collaborative overview, partners, outcome measures, convening notes, and a post-convening survey with a shared feedback dashboard.
+Website for the Gates Foundation US Charters **AI Scale Collaborative** (CMO Network): collaborative overview, partners, outcome measures, convening notes, and a post-convening survey with a shared feedback dashboard.
 
 It is a static site — plain HTML, CSS and JavaScript, no build step — so it can be hosted on GitHub Pages, SharePoint, Azure Static Web Apps, Netlify or any web server.
 

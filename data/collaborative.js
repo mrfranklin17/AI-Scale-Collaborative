@@ -1,28 +1,33 @@
 /*
- * Core content about the AI Scale Collaborative.
- * Source: "AI Scale Collaborative: CMO & Intermediary Network" (external overview).
+ * Core content about the AI Scale Collaborative (CMO network).
+ * Source: "AI Innovation Strategy, 2027–2030" (US Charters, November 2026),
+ * AI Scale Collaborative section and Outcomes Framework.
  * Edit this file to update the Overview, Purpose & Design, Partners and Measures pages.
  */
 window.ASC = window.ASC || {};
 
 window.ASC.collaborative = {
   name: "AI Scale Collaborative",
-  subtitle: "CMO & Intermediary Network",
+  subtitle: "CMO Network",
   launch: "Fall 2026",
   tagline:
-    "A concentrated network of high-readiness CMOs and intermediaries measuring how AI-augmented instruction affects student outcomes — and sharing what they learn.",
+    "Four high-readiness charter networks implementing AI-augmented instruction under a common measurement framework — to learn what raises proficiency for Black, Latino, and low-income students.",
+  // The students whose proficiency the network is built to raise.
+  focusPopulations: ["Black students", "Latino students", "Students from low-income families"],
   intro: [
-    "Over the last 12 months the US Charters team at the Gates Foundation has been exploring an Innovation Portfolio focused on measuring the impact of AI in schools and its effect on student outcomes. After conversations with stakeholders across the country, the team landed on a concentrated network of high-readiness CMOs and intermediaries already willing to implement AI-augmented instruction.",
-    "Members commit to assessing student performance under a common measurement framework, documenting their instructional stacks, and sharing what they learn across the network. The evidence this generates — cross-context, disaggregated, practitioner-produced — is what the broader field cannot currently get from vendors or from isolated pilots."
+    "The AI Scale Collaborative is the field-learning engine of the US Charters AI Innovation strategy. A concentrated network of high-readiness CMOs implements AI-augmented instruction under a common measurement framework, documents their instructional stacks, and shares what they learn across the network.",
+    "The evidence this generates — cross-context, disaggregated, practitioner-produced — is what the broader field cannot currently get from vendors or from isolated pilots."
   ],
+  theoryOfChange:
+    "If a concentrated network of high-readiness CMOs implements AI-augmented instruction under common measurement conditions, then the field gains cross-context evidence on which approaches increase proficiency for which students — evidence that vendor claims and isolated pilots cannot provide.",
   questions: [
     {
-      title: "Conditions for acceleration",
-      text: "Under what conditions does AI-augmented instruction produce accelerated learning gains for students in high-quality charter contexts?"
+      title: "Conditions for proficiency gains",
+      text: "Under what conditions does AI-augmented instruction increase proficiency for Black, Latino, and low-income students in high-quality charter contexts?"
     },
     {
       title: "What holds up across contexts",
-      text: "Which tools and implementation approaches hold up across diverse CMO settings — different geographies, student populations, instructional models — and which only work in narrow conditions?"
+      text: "Which tools and implementation approaches hold up across diverse CMO settings — different geographies, student populations, and instructional models — and which work only in narrow conditions?"
     },
     {
       title: "Educator AI agency",
@@ -30,29 +35,31 @@ window.ASC.collaborative = {
     }
   ],
   designNote:
-    "These questions are answerable through a field-learning model; they are not answerable through a controlled experiment, and the design does not pretend otherwise.",
+    "These questions are answerable through a field-learning model; they are not answerable through a controlled experiment, and the design does not pretend otherwise. The evidence the network produces is ESSA Tier 3 by design.",
+  smallNetwork:
+    "A smaller, higher-fidelity network produces more actionable evidence than a larger, lower-fidelity one. The network can add CMO partners when evidence and fit support it.",
   tightLoose:
-    "The network operates on a tight-loose framework. The tight elements are non-negotiable entry conditions; the loose elements are where variation is expected and valuable — because the network learns from variation, not from controlling it.",
+    "The network operates on a tight-loose framework. The tight elements are non-negotiable entry conditions; the loose elements are where variation is expected and valuable, because the network learns from variation rather than by controlling it.",
   requirements: [
     {
       id: "assessment",
       title: "Shared assessment approach",
-      text: "CMOs commit to a common approach to measuring student learning proficiency using a Similar Schools model, with disaggregated subgroup reporting as a condition of membership. CMOs are also encouraged to explore and compare AI-enabled, ongoing formative assessment approaches that yield better real-time tracking than legacy standardized measures. CMOs propose their assessment approach at onboarding and report consistently for comparability across the network."
+      text: "CMOs commit to a common approach to measuring student proficiency using a Similar Schools model, with disaggregated subgroup reporting as a condition of network membership. CMOs are also encouraged to explore and compare AI-enabled, ongoing formative assessment approaches that give better real-time tracking than legacy standardized measures. CMOs propose their assessment approach at onboarding and report consistently for comparability across the network."
     },
     {
       id: "stack",
       title: "Stack documentation",
-      text: "CMOs report on HQIM, AI tools in use, deployment conditions, subject sequencing, and supervised vs. unsupervised use boundaries. Updated quarterly. Allows cross-context partnerships to emerge and partner CMOs to learn about different implementation stacks."
+      text: "CMOs report on HQIM, AI tools in use, deployment conditions, subject sequencing, and supervised vs. unsupervised use boundaries, updated quarterly. This lets cross-context partnerships emerge and lets CMOs learn about each other’s implementation stacks."
     },
     {
       id: "equity",
       title: "Equity guardrail — do no harm",
-      text: "Disaggregated student proficiency data (by race/ethnicity, special education status, and English learner status) must demonstrate no harm to subgroups before any tool or model is scaled within a network school. CMOs agree to openly share the experience of target populations and why tools may or may not be effective."
+      text: "Disaggregated student proficiency data (by race/ethnicity, special education status, and English learner status) must show no harm to any subgroup before a tool or model is scaled within a network school. CMOs agree to share openly how students in each subgroup experience the tools and why tools may or may not be effective."
     },
     {
       id: "vendor",
       title: "Vendor transparency",
-      text: "All AI tools used in network schools must share outcome data — disaggregated by student subgroup — with CMOs, who in turn share with the Foundation. The goal is a back-end evidence base about what each tool is producing, not to approve or restrict tool selection. CMOs choose their own tools; the Foundation collects and synthesizes the learning."
+      text: "AI tools used in CMO network schools must share outcome data, disaggregated by student subgroup, with the CMO, which in turn shares it with the Foundation. The goal is a back-end evidence base on what each tool is producing, not approval or restriction of tool selection. CMOs choose their own tools; the Foundation collects and synthesizes the learning."
     },
     {
       id: "families",
@@ -62,54 +69,58 @@ window.ASC.collaborative = {
     {
       id: "human",
       title: "Human-centered implementation",
-      text: "Organizations demonstrate internal AI champions and staff-driven adoption processes."
+      text: "CMOs demonstrate internal AI champions and staff-driven adoption processes."
     },
     {
       id: "convenings",
       title: "Quarterly convenings",
-      text: "Site-based, rotating, 2–3 days. Structured learning, not reporting. Each partner commits to hosting the larger collaborative on-site at least twice during the investment period."
+      text: "Site-based, rotating, two to three days. Structured learning, not reporting. Each CMO partner hosts the Collaborative on-site at least twice during the investment period."
     },
     {
       id: "index",
       title: "Innovation Index participation",
-      text: "CMOs agree to ongoing participation in AI for Equity's Innovation Index over the course of the investment."
+      text: "CMOs participate in AI for Equity’s Innovation Index throughout the investment, with pre-, mid-, and post-assessments."
     }
   ],
+  aiForEquity:
+    "AI for Equity is the network’s measurement backbone. Its Innovation Index provides common measurement and equity benchmarking across the CMO network; AI for Equity also co-designs and supports the quarterly convenings and produces the sector-facing research that turns network evidence into field learning. Its national Community of Practice is open to all network partners.",
   investment: {
     periods: [
       {
-        label: "Initial investment",
-        dates: "Fall 2026 – Summer 2028",
-        detail: "Two-year initial investment to support scaling of current efforts across all sites within each network."
+        label: "Initial grants",
+        dates: "Fall 2026 – August 2028",
+        detail: "Two-year grants to each of the four CMOs, covering Years 1 and 2 (SY2026–27 and SY2027–28)."
       },
       {
-        label: "Potential extension",
-        dates: "Fall 2028 – Summer 2030",
-        detail: "Possible two-year extension to continue scaling new tools, implementation and AI literacy — or to explore new school model ideas as part of the AI for Equity Horizons Project."
+        label: "Potential renewal",
+        dates: "Years 3–4, through 2030",
+        detail: "All grants carry potential renewal for Years 3–4, based on a review of Year 1–2 evidence in spring 2028."
       }
     ],
     amount: [
-      "$300k/yr per partner",
-      "$600k/yr for the initial investment",
-      "$600k/yr for the two-year extension"
+      "$300K per CMO per year",
+      "Measurement backbone and convening support from AI for Equity",
+      "Quarterly convenings and network coordination managed by the Foundation"
     ],
-    research: "Opportunity to participate in a research study through MIT Blueprint."
+    evidence: "Field learning, not a randomized trial. The evidence the network produces is ESSA Tier 3 by design."
   }
 };
 
 /* Milestones for the landing-page timeline strip. Convenings are added automatically.
-   `date` is used for ordering and to mark items done (in the past) or upcoming. */
+   `date` is used for ordering and to mark items done (in the past) or upcoming.
+   Year 1 is SY2026–27. */
 window.ASC.milestones = [
-  { date: "2026-09-01", when: "Fall 2026", what: "Network launches", note: "4 CMOs · 2 intermediaries" },
-  { date: "2028-06-30", when: "Summer 2028", what: "Year 2 targets", note: "65% proficiency · 75% AI access", href: "measures.html" },
-  { date: "2028-07-01", when: "Fall 2028", what: "Potential extension begins", note: "Through Summer 2030", href: "about.html#investment" },
+  { date: "2026-09-01", when: "Fall 2026", what: "Network launches", note: "Four CMO partners · Year 1 begins" },
+  { date: "2028-04-01", when: "Spring 2028", what: "Year 1–2 evidence review", note: "Informs Years 3–4 renewal", href: "about.html#investment" },
+  { date: "2028-06-30", when: "Summer 2028", what: "Year 2 targets", note: "65% proficiency · 100% Index ≥ 3.5", href: "measures.html" },
   { date: "2029-06-30", when: "Summer 2029", what: "Year 3 targets", note: "80% proficiency · 100% AI access", href: "measures.html" },
-  { date: "2030-06-30", when: "2030", what: "What we will know", note: "End of extension period", href: "measures.html" }
+  { date: "2030-06-30", when: "2030", what: "What we will know", note: "End of the strategy period", href: "measures.html" }
 ];
 
 window.ASC.partners = [
   {
     id: "dream",
+    mark: "DREAM", // short label on generated art
     name: "DREAM Charter Schools",
     short: "DREAM",
     type: "CMO",
@@ -123,11 +134,12 @@ window.ASC.partners = [
       summary: "HQIM: Illustrative Mathematics · Data Hub, rubric-scoring agents, AI tutoring assistant, Coursemojo pilot",
       source: "Observed at the November 2026 convening; to be confirmed in DREAM’s stack documentation."
     },
-    summary:
-      "Bronx-based network serving early childhood through grade 12. Hosted the first collaborative convening in November 2026 at its Highbridge and Mott Haven campuses."
+    rationale: "Pioneer of bottom-up AI adoption, with 75% weekly staff AI usage, custom internal tool development, and strong community trust infrastructure. Brings an urban, Northeast context.",
+    summary: "Bronx-based network serving early childhood through grade 12. Hosted the first Collaborative convening in November 2026 at its Highbridge and Mott Haven campuses."
   },
   {
     id: "kipp-norcal",
+    mark: "KIPP", // short label on generated art
     name: "KIPP NorCal",
     short: "KIPP NorCal",
     type: "CMO",
@@ -136,22 +148,26 @@ window.ASC.partners = [
     lat: 37.8, lon: -122.27,
     schools: null, students: null,
     stack: null, // filled from quarterly stack documentation
-    summary: "CMO partner in the Bay Area."
+    rationale: "Systematic piloting rigor, subgroup equity metrics, and in-house statistical evaluation capacity — a strong evidence culture that aligns with the network’s learning requirements.",
+    summary: "Bay Area CMO with a strong evidence culture and in-house evaluation capacity."
   },
   {
     id: "gem-prep",
-    name: "Gem Prep",
-    short: "Gem Prep",
+    mark: "GEM", // short label on generated art
+    name: "GEM Prep",
+    short: "GEM Prep",
     type: "CMO",
     location: "Idaho",
     region: "Mountain West",
     lat: 44.1, lon: -114.7, mapLabel: "Idaho",
     schools: null, students: null,
     stack: null,
-    summary: "CMO partner in Idaho."
+    rationale: "Rural and western geography, in an Idaho policy environment supportive of nontraditional scheduling and competency-based progression. Strong AI readiness documented in a 2024 BLUUM case study.",
+    summary: "Idaho CMO bringing a rural, western context to the network."
   },
   {
     id: "collegiate",
+    mark: "CA", // short label on generated art
     name: "Collegiate Academies",
     short: "Collegiate",
     type: "CMO",
@@ -160,31 +176,8 @@ window.ASC.partners = [
     lat: 29.95, lon: -90.07,
     schools: null, students: null,
     stack: null,
-    summary: "CMO partner in New Orleans."
-  },
-  {
-    id: "esw",
-    name: "Excellent Schools WA",
-    short: "Excellent Schools WA",
-    type: "Intermediary",
-    location: "Washington",
-    region: "Pacific Northwest",
-    lat: 47.4, lon: -120.6, mapLabel: "Washington",
-    schools: null, students: null,
-    stack: null,
-    summary: "Intermediary partner supporting single-site schools in Washington."
-  },
-  {
-    id: "noaief",
-    name: "New Orleans AI Education Fund",
-    short: "NOLA AI Ed Fund",
-    type: "Intermediary",
-    location: "New Orleans, LA",
-    region: "South",
-    lat: 29.95, lon: -90.07,
-    schools: null, students: null,
-    stack: null,
-    summary: "Intermediary partner supporting single-site schools in New Orleans."
+    rationale: "Operates in an AI-active city with a high-need urban context and a strong equity focus.",
+    summary: "New Orleans CMO with a strong equity focus in a high-need urban context."
   }
 ];
 
@@ -193,44 +186,75 @@ window.ASC.measures = [
     id: "proficiency",
     title: "Student Proficiency (Math + ELA)",
     definition:
-      "% of partner sites (CMO schools + intermediary single sites) in the top third on the Similar Schools metric — both Math and ELA.",
+      "% of CMO partner schools in the top third of the Similar Schools metric in both Math and ELA. Tests the core proposition: AI-augmented instruction increases proficiency for Black, Latino, and low-income students relative to comparable schools, in both subjects.",
     targets: [
       { label: "Year 2", value: 65 },
       { label: "Year 3", value: 80 }
     ],
     source: "State assessments + Similar Schools framework",
     cadence: "Annual",
+    focus: true,            // reported for the network's focus populations
     current: null,          // set to a number (0–100) when the first report is in
-    firstReport: "Fall 2027 (after SY26–27 state results)"
+    firstReport: "Fall 2027 (after SY2026–27 state results)"
   },
   {
     id: "access",
     title: "Network-Wide AI Access",
     definition:
-      "% of students with access to AI-enabled instructional solutions aligned to or integrated with HQIM, disaggregated by focus populations, across the full CMO network and intermediary single sites.",
+      "% of students across each full CMO network — not just pilot classrooms — with access to AI-enabled instructional solutions aligned to HQIM, disaggregated by focus populations. Tests the network-scale differentiator.",
     targets: [
       { label: "Year 2", value: 75 },
       { label: "Year 3", value: 100 }
     ],
-    source: "CMO/intermediary implementation reports (collected by AI for Equity)",
+    source: "Implementation reports (collected by AI for Equity)",
     cadence: "Quarterly",
+    focus: true,
     current: null,
     firstReport: "Spring 2027"
+  },
+  {
+    id: "tools",
+    title: "Original AI Tool Development",
+    definition: "% of CMO partners that have built and deployed an original AI tool.",
+    targets: [{ label: "End of Year 3", value: 100 }],
+    source: "PlayLab platform data + partner reports",
+    cadence: "Annual",
+    current: null,
+    firstReport: "Summer 2027"
   },
   {
     id: "diffusion",
     title: "AI Tool Diffusion to Non-Academic Functions",
     definition:
-      "% of CMOs and intermediary single sites deploying AI in HR, finance, scheduling, family communications, food service, or other operations.",
+      "% of CMO partners that have deployed at least one AI-enabled solution in a non-instructional area: human resources, finance and budgeting, facilities and scheduling, family and community communications, food service, or student support coordination. Tests whether AI is treated as organizational infrastructure, not only a teaching tool.",
     targets: [
       { label: "Year 2", value: 75 },
       { label: "Year 3", value: 100 }
     ],
-    source: "CMO/intermediary implementation reports (collected by AI for Equity); self-report",
+    source: "Implementation reports (AI for Equity); annual self-report with spot verification",
     cadence: "Annual",
     current: null,
     firstReport: "Summer 2027"
+  },
+  {
+    id: "index",
+    title: "AI for Equity Innovation Index",
+    definition:
+      "% of CMO partners scoring 3.5 or higher on the Innovation Index. Measures strategic AI adoption maturity, not just tool use.",
+    domains: ["Student AI Agency & Literacy", "Staff Empowerment & Efficacy", "Leadership Excellence"],
+    targets: [{ label: "End of Year 2", value: 100 }],
+    source: "AI for Equity Innovation Index",
+    cadence: "Annual (pre, mid, post)",
+    current: null,
+    firstReport: "Year 1 pre-assessment (SY2026–27)"
   }
+];
+
+/* How the network measures: design choices from the strategy's Outcomes Framework. */
+window.ASC.measurementChoices = [
+  { title: "Math and ELA", text: "Impact is tested in both Math and ELA, not math alone." },
+  { title: "Similar Schools", text: "Proficiency is measured with a Similar Schools methodology, against comparable schools." },
+  { title: "Network scale", text: "Implementation is measured across all sites in each CMO network, not at individual pilot schools." }
 ];
 
 /* The Implementation R&D friction framework used to organize site-visit learning. */
