@@ -541,3 +541,52 @@ a.pn:hover { border-color: var(--accent); }
 .pn--off .pn-dir { color: var(--text-3); }
 .pn-title { font-weight: 650; }
 @media (max-width: 560px) { .pn-nav { grid-template-columns: 1fr; } .pn--next { text-align: left; justify-items: start; } }
+
+/* ======================================================================
+   Partners
+   ====================================================================== */
+.usmap { margin: 0 0 var(--sp-6); padding: var(--sp-4); }
+.usmap svg { width: 100%; height: auto; display: block; max-height: 440px; }
+.us-nation { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
+.us-borders { fill: none; stroke: var(--border-strong); stroke-width: 0.7; }
+.pin circle { stroke: var(--surface); stroke-width: 3; }
+.pin--cmo circle { fill: var(--accent); }
+.pin--int circle { fill: var(--fr-configuration); }
+.pin text { font-family: var(--font); font-size: 17px; font-weight: 650; fill: var(--text); paint-order: stroke; stroke: var(--surface-2); stroke-width: 4px; stroke-linejoin: round; }
+.pin:hover text, .pin:focus text { fill: var(--link); text-decoration: underline; }
+.pin:focus { outline: none; }
+.pin:focus-visible text { fill: var(--link); stroke: var(--accent-soft); }
+.pin.dim { opacity: 0.25; }
+.usmap figcaption { display: flex; gap: var(--sp-4); flex-wrap: wrap; font-size: var(--fs-xs); color: var(--text-2); margin-top: var(--sp-2); align-items: center; }
+.usmap figcaption span { display: inline-flex; gap: 6px; align-items: center; }
+.pin-key { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.pin-key--cmo { background: var(--accent); }
+.pin-key--int { background: var(--fr-configuration); }
+.partner-filter { margin-bottom: var(--sp-5); }
+.partner-card[hidden] { display: none; }
+.pc-top { display: flex; gap: var(--sp-3); align-items: flex-start; margin-bottom: var(--sp-3); }
+.pc-top h3 { margin-bottom: 6px; font-size: var(--fs-base); }
+.pc-loc { display: flex; align-items: center; gap: 4px; margin: 0 0 var(--sp-2); }
+.pc-stack { font-size: var(--fs-sm); color: var(--text-2); margin: 0 0 var(--sp-3); }
+.pc-host { display: flex; gap: var(--sp-2); align-items: center; }
+.stack { margin: 0; }
+.stack dt { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); margin-top: var(--sp-4); }
+.stack dd { margin: 4px 0 0; }
+.stack ul { margin: 0; padding-left: 1.1em; color: var(--text-2); }
+.plain-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+.plain-list li { display: grid; gap: 2px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--sp-3) var(--sp-4); }
+.source { font-size: var(--fs-xs); color: var(--text-3); font-style: italic; }
+
+/* Content blocks (blocks.js) */
+.figure { margin: 24px 0; }
+.figure img { border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; cursor: zoom-in; }
+.figure figcaption { font-size: var(--fs-xs); color: var(--text-3); margin-top: 10px; }
+.pull { font-family: var(--font-display); font-size: 1.35rem; line-height: 1.4; border-left: 3px solid var(--accent); padding: 4px 0 4px 20px; margin: 24px 0; color: var(--text); }
+.steps { counter-reset: s; list-style: none; padding: 0 !important; display: grid; gap: 10px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 32px 1fr; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin: 0 !important; }
+.steps li::before { content: counter(s); width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.steps b { color: var(--text); }
+.mini-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 20px 0 8px; }
+.mini-stats div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; }
+.mini-stats b { display: block; font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; line-height: 1.1; }
+.mini-stats span { font-size: var(--fs-xs); color: var(--text-2); }

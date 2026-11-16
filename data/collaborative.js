@@ -115,6 +115,14 @@ window.ASC.partners = [
     type: "CMO",
     location: "New York, NY",
     region: "Northeast",
+    lat: 40.84, lon: -73.9,
+    schools: null, students: null, // add when known
+    stack: {
+      hqim: "Illustrative Mathematics (math)",
+      tools: ["DREAM Data Hub (BigQuery + Looker Studio)", "Enterprise AI for every staff member", "Rubric-scoring agents (co-designed with Enlighten)", "AI tutoring assistant on the Learning Commons knowledge graph", "DREAM Observation Agent (Google Chat)", "Coursemojo (pilot)", "i-Ready", "Zearn"],
+      summary: "HQIM: Illustrative Mathematics · Data Hub, rubric-scoring agents, AI tutoring assistant, Coursemojo pilot",
+      source: "Observed at the November 2026 convening; to be confirmed in DREAM’s stack documentation."
+    },
     summary:
       "Bronx-based network serving early childhood through grade 12. Hosted the first collaborative convening in November 2026 at its Highbridge and Mott Haven campuses."
   },
@@ -125,6 +133,9 @@ window.ASC.partners = [
     type: "CMO",
     location: "Bay Area, CA",
     region: "West",
+    lat: 37.8, lon: -122.27,
+    schools: null, students: null,
+    stack: null, // filled from quarterly stack documentation
     summary: "CMO partner in the Bay Area."
   },
   {
@@ -134,6 +145,9 @@ window.ASC.partners = [
     type: "CMO",
     location: "Idaho",
     region: "Mountain West",
+    lat: 44.1, lon: -114.7, mapLabel: "Idaho",
+    schools: null, students: null,
+    stack: null,
     summary: "CMO partner in Idaho."
   },
   {
@@ -143,6 +157,9 @@ window.ASC.partners = [
     type: "CMO",
     location: "New Orleans, LA",
     region: "South",
+    lat: 29.95, lon: -90.07,
+    schools: null, students: null,
+    stack: null,
     summary: "CMO partner in New Orleans."
   },
   {
@@ -152,6 +169,9 @@ window.ASC.partners = [
     type: "Intermediary",
     location: "Washington",
     region: "Pacific Northwest",
+    lat: 47.4, lon: -120.6, mapLabel: "Washington",
+    schools: null, students: null,
+    stack: null,
     summary: "Intermediary partner supporting single-site schools in Washington."
   },
   {
@@ -161,6 +181,9 @@ window.ASC.partners = [
     type: "Intermediary",
     location: "New Orleans, LA",
     region: "South",
+    lat: 29.95, lon: -90.07,
+    schools: null, students: null,
+    stack: null,
     summary: "Intermediary partner supporting single-site schools in New Orleans."
   }
 ];

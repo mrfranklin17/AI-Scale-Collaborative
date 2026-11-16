@@ -16,7 +16,7 @@ ASC.render = async function () {
   /* ---- at-a-glance header ---- */
   const glance =
     '<dl class="glance">' +
-    "<div><dt>Host</dt><dd>" + '<a href="partners.html">' + e(host.name) + "</a></dd></div>" +
+    "<div><dt>Host</dt><dd>" + '<a href="partner.html?id=' + e(host.id) + '">' + e(host.name) + "</a></dd></div>" +
     "<div><dt>Dates</dt><dd>" + e(c.dates) + "</dd></div>" +
     "<div><dt>Location</dt><dd>" + e(c.location) + "</dd></div>" +
     "<div><dt>Attendees</dt><dd>" + (c.attendees ? e(c.attendees) : '<span class="muted">Not recorded</span>') + "</dd></div>" +
