@@ -36,6 +36,21 @@ window.ASC.convenings = [
       "The first collaborative convening. Two days inside DREAM's data infrastructure, AI program and tutoring model — from Leader Data Day with roughly 100 leaders to an AI-native sixth-grade sprint and a Coursemojo pilot.",
     themes: ["Data infrastructure", "Innovative mindsets", "Rapid data cycles", "Human-led AI tutoring", "AI literacy"],
     notesBy: "Foundation team site-visit notes",
+    attendees: null, // number of collaborative attendees, when known
+    takeaways: [
+      "Data infrastructure comes first: a five-year Data Hub build with in-house engineers sits under every routine we saw.",
+      "AI sits behind the adult. The redesigned tutoring assistant prepares materials and analyzes student work; a person teaches.",
+      "Build to the workflow people already use — the Observation Agent lives inside Google Chat, where leaders already write.",
+      "Time savings are measured (50 hours per teacher a year, 99.3% AI–teacher scoring agreement); effects on instruction are not yet.",
+      "Where tutoring sits in the day decides dosage. The first AI-tutoring comparison ran on about four hours per student."
+    ],
+    questions: [
+      "Does time freed by AI scoring change what happens in Monday’s lesson — and how would a network observe it?",
+      "What dosage does AI-assisted tutoring need before its effect can fairly be tested?",
+      "How should networks measure acceleration in grades where no assessment can express a year of growth?",
+      "When a tool won’t share its data (as with Zearn here), how should the vendor-transparency requirement apply?",
+      "How do we know whether a flagged intervention was any good, not only that it was recorded?"
+    ],
     days: [
       {
         label: "Day 1",

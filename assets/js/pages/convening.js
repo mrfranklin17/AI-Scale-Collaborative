@@ -1,114 +1,165 @@
 ASC.render = async function () {
   const e = ASC.esc;
-  const id = new URLSearchParams(location.search).get("id");
-  const c = ASC.convening(id) || ASC.convenings.slice().sort((a, b) => b.start.localeCompare(a.start))[0];
+  const I = ASC.icon;
   const main = document.getElementById("main");
-  if (!c) {
-    main.innerHTML = '<section class="page-hero"><div class="wrap"><h1>Convening not found</h1><p><a href="convenings.html">Back to convenings</a></p></div></section>';
+  const id = new URLSearchParams(location.search).get("id");
+  const done = ASC.completedConvenings();
+  const c = ASC.convening(id) || done[done.length - 1];
+  if (!c || !c.host) {
+    main.innerHTML = ASC.pageHero({ crumbs: [{ label: "Convenings", href: "convenings.html" }, { label: "Not found" }], title: c ? "This convening hasn’t been scheduled yet" : "Convening not found", lede: '<a href="convenings.html">Back to all convenings</a>' });
     return;
   }
   document.title = c.title + " · AI Scale Collaborative";
   const host = ASC.partner(c.host);
-  if (!host && c.status !== "completed") { location.replace("convenings.html"); return; }
-  const showAnalysis = false; // Foundation analysis lives on foundation.html (not linked)
+  const status = { completed: "Completed", upcoming: "Scheduled", planning: "Being scheduled" }[c.status] || c.status;
 
-  const blocks = (list) => (list || []).map(block).join("");
-  function block(b) {
-    if (b.p) return "<p>" + e(b.p) + "</p>";
-    if (b.h) return "<h3>" + e(b.h) + "</h3>";
-    if (b.list) return "<ul>" + b.list.map((x) => "<li>" + e(x) + "</li>").join("") + "</ul>";
-    if (b.steps) return '<ol class="steps">' + b.steps.map((s) => "<li><div><b>" + e(s.title) + "</b>" + (s.text ? '<div class="muted small">' + e(s.text) + "</div>" : "") + "</div></li>").join("") + "</ol>";
-    if (b.stats) return '<div class="mini-stats">' + b.stats.map((s) => "<div><b>" + e(s.value) + "</b><span>" + e(s.label) + "</span></div>").join("") + "</div>";
-    if (b.quote) return '<blockquote class="pull">“' + e(b.quote) + "”</blockquote>";
-    if (b.insight) return '<p><b>Key insight:</b> ' + e(b.insight) + "</p>";
-    if (b.source) return '<p class="source">' + e(b.source) + "</p>";
-    if (b.figure) return '<figure class="figure"><img src="' + e(b.figure) + '" alt="' + e(b.alt || "") + '" loading="lazy"><figcaption>' + e(b.caption || "") + " Click to enlarge.</figcaption></figure>";
-    if (b.analysis) {
-      if (!showAnalysis) return "";
-      const a = b.analysis;
-      return (
-        '<details class="analysis"><summary><span class="lbl">Foundation analysis · Connection to strategy</span>' +
-        '<span class="cond">' + e(a.conditions) + '</span><span class="chev" style="width:18px;height:18px;display:inline-flex">' + ASC.icon("chev") + "</span></summary>" +
-        '<div class="body">' + (a.tag ? '<p class="small muted" style="margin-bottom:8px">' + e(a.tag) + " · Implementation R&amp;D conditions</p>" : "") + blocks(a.blocks) + "</div></details>"
-      );
-    }
-    return "";
+  /* ---- at-a-glance header ---- */
+  const glance =
+    '<dl class="glance">' +
+    "<div><dt>Host</dt><dd>" + '<a href="partners.html">' + e(host.name) + "</a></dd></div>" +
+    "<div><dt>Dates</dt><dd>" + e(c.dates) + "</dd></div>" +
+    "<div><dt>Location</dt><dd>" + e(c.location) + "</dd></div>" +
+    "<div><dt>Attendees</dt><dd>" + (c.attendees ? e(c.attendees) : '<span class="muted">Not recorded</span>') + "</dd></div>" +
+    '<div><dt>Status</dt><dd><span class="chip' + (c.status === "completed" ? " chip--good" : " chip--outline") + '">' + (c.status === "completed" ? I("check") : "") + e(status) + "</span></dd></div>" +
+    "</dl>" +
+    (c.themes && c.themes.length ? '<div class="chips" aria-label="Focus areas" style="margin-top:var(--sp-4)">' + c.themes.map((t) => '<span class="chip chip--accent">' + e(t) + "</span>").join("") + "</div>" : "");
+
+  /* ---- sections ---- */
+  const S = [];
+  if (c.takeaways && c.takeaways.length) {
+    S.push({ id: "takeaways", nav: "Key takeaways", html: '<h2 id="takeaways-h">Key takeaways</h2><ol class="takeaways">' + c.takeaways.map((t) => "<li>" + e(t) + "</li>").join("") + "</ol>" });
   }
-
-  function frictionCards(notes) {
-    return (
-      '<div class="friction-grid">' +
-      ASC.frictionFramework
-        .map((f) => {
-          const n = notes[f.id];
-          if (!n) return "";
-          return (
-            '<article class="friction-card"><header><span class="n">' + f.n + "</span><h3>" + e(f.title) + "</h3></header>" +
-            '<p class="q">' + e(f.question) + "</p><dl>" +
-            n.points.map((p) => "<dt>" + e(p.label) + "</dt><dd>" + e(p.text) + "</dd>").join("") +
-            "</dl>" + (n.insight ? '<div class="insight">Key insight: ' + e(n.insight) + "</div>" : "") +
-            (n.source ? '<p class="source">Source: ' + e(n.source) + "</p>" : "") + "</article>"
-          );
-        })
-        .join("") +
-      "</div>"
-    );
+  if (c.days && c.days.length) {
+    S.push({
+      id: "agenda",
+      nav: "Agenda",
+      html:
+        '<h2 id="agenda-h">Agenda</h2><ol class="agenda">' +
+        c.days.map((d) => '<li><div class="agenda-day"><span class="chip chip--accent">' + e(d.label) + "</span><h3>" + e(d.date) + '</h3><p class="muted small">' + I("pin") + " " + e(d.campus) + "</p></div><ul>" + d.items.map((x) => "<li>" + e(x) + "</li>").join("") + "</ul></li>").join("") +
+        "</ol>"
+    });
   }
+  const fr = (c.sections || []).find((s) => s.frictionNotes);
+  if (fr) {
+    S.push({
+      id: "saw",
+      nav: "What we saw",
+      html:
+        '<h2 id="saw-h">What we saw, by friction point</h2><p class="muted">' + e(fr.lede || "") + "</p>" +
+        '<div class="fr-grid">' +
+        ASC.frictionFramework
+          .map((f) => {
+            const n = fr.frictionNotes[f.id];
+            if (!n) return "";
+            return (
+              '<article class="fr-card fr-card--' + f.id + '" aria-labelledby="fr-' + f.id + '"><header><span class="chip chip--fr chip--' + f.id + '">' + f.n + ". " + e(f.title) + '</span><p id="fr-' + f.id + '">' + e(f.question) + "</p></header>" +
+              "<dl>" + n.points.map((p) => "<dt>" + e(p.label) + "</dt><dd>" + e(p.text) + "</dd>").join("") + "</dl>" +
+              (n.insight ? '<p class="fr-insight"><b>Key insight:</b> ' + e(n.insight) + "</p>" : "") +
+              (n.source ? '<p class="source">Source: ' + e(n.source) + "</p>" : "") + "</article>"
+            );
+          })
+          .join("") +
+        "</div>" + ASC.renderBlocks(fr.blocks)
+    });
+  }
+  if (c.questions && c.questions.length) {
+    S.push({ id: "questions", nav: "Questions raised", html: '<h2 id="questions-h">Questions this raised for the network</h2><ul class="qlist">' + c.questions.map((q) => "<li>" + I("info") + "<span>" + e(q) + "</span></li>").join("") + "</ul>" });
+  }
+  const notes = (c.sections || []).filter((s) => !s.frictionNotes);
+  if (notes.length) {
+    S.push({
+      id: "notes",
+      nav: "Detailed notes",
+      html:
+        '<h2 id="notes-h">Detailed notes</h2><p class="muted">' + e(c.notesBy || "Site-visit notes") + ". Open a section to read it in full.</p>" +
+        notes.map((s, i) => '<details class="note-section"' + (i === 0 ? " open" : "") + "><summary><span><b>" + e(s.title) + "</b>" + (s.lede ? '<span class="muted small">' + e(s.lede) + "</span>" : "") + "</span>" + I("chev") + '</summary><div class="prose">' + ASC.renderBlocks(s.blocks) + "</div></details>").join("")
+    });
+  }
+  S.push({ id: "feedback", nav: "Attendee feedback", html: '<h2 id="feedback-h">Attendee feedback</h2><div id="fb-summary"><p class="muted">Loading feedback…</p></div>' });
+  const surveyUrl = new URL("survey.html?convening=" + encodeURIComponent(c.id), location.href).href;
+  S.push({
+    id: "survey",
+    nav: "Survey QR code",
+    html:
+      '<h2 id="survey-h">Survey QR code</h2><div class="qr-block card"><div class="qr" id="qr" role="img" aria-label="QR code linking to the survey for this convening"></div>' +
+      '<div><h3>Project this at the close of the convening</h3><p class="muted">Attendees scan it to open the survey with this convening already selected. About five minutes on a phone.</p>' +
+      '<p class="small" style="word-break:break-all"><a href="' + e(surveyUrl) + '">' + e(surveyUrl) + "</a></p>" +
+      '<div class="actions-row"><button type="button" class="btn btn-primary" id="qr-full">Show full screen</button><a class="btn btn-secondary" href="survey.html?convening=' + e(c.id) + '">Open the survey</a></div></div></div>'
+  });
 
-  const overview =
-    '<section class="doc-section" id="overview"><h2>At a glance</h2>' +
-    '<p class="lede">' + e(c.summary) + "</p>" +
-    (c.highlights && c.highlights.length ? '<div class="mini-stats">' + c.highlights.map((h) => "<div><b>" + e(h.value) + "</b><span>" + e(h.label) + "</span></div>").join("") + "</div>" : "") +
-    (c.days && c.days.length
-      ? '<h3>Agenda</h3><div class="day-grid">' +
-        c.days.map((d) => '<div class="card" style="padding:18px 20px"><span class="tag tag-accent">' + e(d.label) + "</span><h4 style=\"margin:10px 0 0\">" + e(d.date) + " · " + e(d.campus) + "</h4><ul>" + d.items.map((x) => "<li>" + e(x) + "</li>").join("") + "</ul></div>").join("") +
-        "</div>"
-      : "") +
-    "</section>";
-
-  const sections = (c.sections || [])
-    .map(
-      (s) =>
-        '<section class="doc-section" id="' + e(s.id) + '"><h2>' + e(s.title) + "</h2>" +
-        (s.lede ? '<p class="lede">' + e(s.lede) + "</p>" : "") +
-        blocks(s.blocks) +
-        (s.frictionNotes ? frictionCards(s.frictionNotes) : "") +
-        "</section>"
-    )
-    .join("");
-
-  const toc =
-    '<nav class="toc" aria-label="On this page"><h4>On this page</h4><a href="#overview">At a glance</a>' +
-    (c.sections || []).map((s) => '<a href="#' + e(s.id) + '">' + e(s.nav || s.title) + "</a>").join("") +
-    '<a href="#feedback">Attendee feedback</a>' +
-    '<div class="toc-cta"><a class="btn btn-primary btn-sm" href="survey.html?convening=' + e(c.id) + '">Take the survey</a></div></nav>';
-
-  const feedback =
-    '<section class="doc-section" id="feedback"><h2>Attendee feedback</h2>' +
-    '<p>See how attendees rated this convening, session by session, and how it compares with the rest of the network.</p>' +
-    '<div class="hero-actions"><a class="btn btn-primary" href="feedback.html?convening=' + e(c.id) + '">View feedback for this convening</a>' +
-    '<a class="btn btn-secondary" href="survey.html?convening=' + e(c.id) + '">Take the survey</a></div></section>';
+  /* ---- prev / next ---- */
+  const all = ASC.convenings.slice().sort((a, b) => a.start.localeCompare(b.start));
+  const i = all.indexOf(c);
+  const pn = (x, dir) => {
+    if (!x) return "<span></span>";
+    const inner = '<span class="pn-dir">' + (dir < 0 ? I("back") + " Previous" : "Next " + I("arrow")) + '</span><span class="pn-title">' + e(x.host ? x.title : "Convening " + x.number + ": to be scheduled") + '</span><span class="muted small">' + e(x.dates) + "</span>";
+    return x.status === "completed" && x.host ? '<a class="pn pn--' + (dir < 0 ? "prev" : "next") + '" href="convening.html?id=' + e(x.id) + '">' + inner + "</a>" : '<div class="pn pn--' + (dir < 0 ? "prev" : "next") + ' pn--off">' + inner + "</div>";
+  };
 
   main.innerHTML =
-    '<section class="page-hero"><div class="wrap">' +
-    ASC.crumbs([{ label: "Convenings", href: "convenings.html" }, { label: ASC.hostName(c, true) }]) +
-    '<span class="eyebrow">Convening ' + e(c.number) + " · " + e(c.dates) + "</span>" +
-    "<h1>" + e(c.title) + "</h1>" +
-    '<p class="lede">Hosted by ' + e(host ? host.name : c.host) + " · " + e(c.location) + "</p>" +
-    (c.notesBy ? '<p class="muted small" style="margin-top:10px">' + e(c.notesBy) + (showAnalysis ? " · Panels marked “Foundation analysis” are the Foundation team’s reading, not the host’s." : "") + "</p>" : "") +
-    "</div></section>" +
-    '<div class="wrap detail-layout">' + toc + '<div class="prose">' + overview + sections + feedback + "</div></div>";
+    ASC.pageHero({
+      crumbs: [{ label: "Convenings", href: "convenings.html" }, { label: ASC.hostName(c, true) }],
+      eyebrow: "Convening " + c.number + " · " + c.dates,
+      title: c.title,
+      lede: e(c.summary),
+      extra: '<div class="card glance-card">' + glance + "</div>",
+      updated: ASC.config.lastUpdated.convenings
+    }) +
+    ASC.withToc(S, { cta: '<div class="toc-cta"><a class="btn btn-primary btn-sm" href="survey.html?convening=' + e(c.id) + '">Take the survey</a></div>' }) +
+    '<nav class="wrap pn-nav" aria-label="Other convenings">' + pn(all[i - 1], -1) + pn(all[i + 1], 1) + "</nav>";
 
-  // Highlight current section in the table of contents
-  const links = [...document.querySelectorAll(".toc a[href^='#']")];
-  const targets = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
-  const obs = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting) links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id));
-      });
-    },
-    { rootMargin: "-30% 0px -60% 0px" }
-  );
-  targets.forEach((t) => obs.observe(t));
+  /* ---- QR ---- */
+  const qrEl = document.getElementById("qr");
+  let svg = "";
+  if (window.qrcode) {
+    const q = window.qrcode(0, "M");
+    q.addData(surveyUrl);
+    q.make();
+    svg = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+    qrEl.innerHTML = svg;
+  } else {
+    qrEl.innerHTML = '<p class="muted small">QR code unavailable.</p>';
+  }
+  document.getElementById("qr-full").addEventListener("click", () => {
+    const ov = document.createElement("div");
+    ov.className = "qr-overlay";
+    ov.setAttribute("role", "dialog");
+    ov.setAttribute("aria-modal", "true");
+    ov.setAttribute("aria-label", "Survey QR code");
+    ov.innerHTML = '<div class="qr-big">' + svg + "</div><p>Scan to share feedback on " + e(c.title) + '</p><button type="button" class="btn btn-secondary">Close</button>';
+    document.body.appendChild(ov);
+    const btn = ov.querySelector("button");
+    const onKey = (ev) => {
+      if (ev.key === "Escape") { ev.preventDefault(); close(); }
+      else if (ev.key === "Tab") { ev.preventDefault(); btn.focus(); }
+    };
+    const close = () => { ov.remove(); document.removeEventListener("keydown", onKey); document.getElementById("qr-full").focus(); };
+    btn.addEventListener("click", close);
+    document.addEventListener("keydown", onKey);
+    btn.focus();
+  });
+
+  /* ---- embedded feedback summary ---- */
+  const fmt = (v) => (v == null || isNaN(v) ? "—" : Number(v).toFixed(1));
+  const pct = (v) => (v == null || isNaN(v) ? "—" : Math.round(v * 100) + "%");
+  const { rows: allRows, sample } = await ASC.loadResponses();
+  const rows = allRows.filter((r) => r.convening_id === c.id);
+  const MIN = ASC.config.minResponsesToShow || 3;
+  const M = ASC.metrics;
+  const box = document.getElementById("fb-summary");
+  if (rows.length < MIN) {
+    box.innerHTML = '<div class="empty-state"><div class="icon-dot">' + I("chart") + "</div><h3>Feedback results appear after " + MIN + " responses</h3><p>" + (rows.length ? rows.length + " so far. " : "No responses yet. ") + '<a href="survey.html?convening=' + e(c.id) + '">Take the survey</a></p></div>';
+    return;
+  }
+  const f = M.findings(rows);
+  const np = M.nps(rows);
+  box.innerHTML =
+    (sample ? '<p><span class="chip chip--sample">Sample</span> <span class="muted small">Illustrative sample data until real responses arrive.</span></p>' : "") +
+    '<div class="kpis" style="margin-top:0">' +
+    '<div class="kpi"><div class="k">Responses</div><div class="v">' + rows.length + "</div></div>" +
+    '<div class="kpi"><div class="k">Average agreement</div><div class="v">' + fmt(M.overall(rows)) + " <small>/ 5</small></div></div>" +
+    '<div class="kpi"><div class="k">Net promoter score</div><div class="v">' + (np > 0 ? "+" : "") + np + "</div></div>" +
+    '<div class="kpi"><div class="k">Left with an actionable idea</div><div class="v">' + pct(M.agreeShare(rows, "actionable")) + "</div></div></div>" +
+    '<ul class="fb-findings"><li><b>Strongest:</b> ' + e(f.hi.q.short) + " (" + fmt(f.hi.m) + ")</li><li><b>Weakest:</b> " + e(f.lo.q.short) + " (" + fmt(f.lo.m) + ")</li>" + (f.fr ? "<li><b>Most-cited friction:</b> " + e(f.fr.title) + "</li>" : "") + "</ul>" +
+    '<a class="btn btn-primary" href="feedback.html?convening=' + e(c.id) + '">See full results for this convening ' + I("arrow") + "</a>";
 };
