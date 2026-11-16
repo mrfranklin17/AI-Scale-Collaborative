@@ -60,8 +60,8 @@ ASC.render = function () {
       title: "In your words",
       intro: "Optional, but this is where the most useful feedback comes from.",
       html:
-        '<fieldset class="q" data-name="friction"><legend>' + e(S.friction.text) + ' <span class="muted small">(optional)</span></legend><div class="choice-grid">' +
-        ASC.frictionFramework.map((f) => '<label class="choice"><input type="radio" name="friction" value="' + e(f.id) + '"' + (values.friction === f.id ? " checked" : "") + '><span class="box"><span class="chip chip--fr chip--' + f.id + '">' + f.n + ". " + e(f.title) + "</span><small>" + e(f.question) + "</small></span></label>").join("") +
+        '<fieldset class="q" data-name="friction"><legend>' + e(S.friction.text) + ' <span class="muted small">(optional)</span></legend><p class="q-help">' + e(S.friction.intro) + '</p><div class="choice-grid">' +
+        ASC.frictionFramework.map((f) => '<label class="choice"><input type="radio" name="friction" value="' + e(f.id) + '"' + (values.friction === f.id ? " checked" : "") + '><span class="box"><span class="chip chip--fr chip--' + f.id + '">' + f.n + ". " + e(f.title) + "</span><small>" + e((S.friction.plain && S.friction.plain[f.id]) || f.question) + "</small></span></label>").join("") +
         "</div></fieldset>" +
         S.open.map((q) => '<div class="q"><label class="q-label" for="op_' + e(q.id) + '">' + e(q.text) + '</label><textarea id="op_' + e(q.id) + '" name="op_' + e(q.id) + '" maxlength="2000" rows="4">' + e(values["op_" + q.id] || "") + "</textarea></div>").join("")
     });

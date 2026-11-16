@@ -41,11 +41,11 @@
 
   const supabase = {
     headers() {
-      return {
-        apikey: cfg.supabaseAnonKey,
-        Authorization: "Bearer " + cfg.supabaseAnonKey,
-        "Content-Type": "application/json"
-      };
+      // Works with both key styles: legacy JWT "anon" keys (eyJ...) also go in the
+      // Authorization header; new "publishable" keys (sb_publishable_...) go in apikey only.
+      const h = { apikey: cfg.supabaseAnonKey, "Content-Type": "application/json" };
+      if (/^eyJ/.test(cfg.supabaseAnonKey)) h.Authorization = "Bearer " + cfg.supabaseAnonKey;
+      return h;
     },
     base() {
       return cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + cfg.table;
@@ -120,7 +120,7 @@
     const pick = (arr) => arr[Math.floor(r() * arr.length)];
     const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
     // Item "lean" shifts the distribution per question so the sample looks varied.
-    const lean = { objectives: 0.5, relevance: 0.6, host_view: 0.9, actionable: 0.7, equity: -0.6, connections: 0.1, logistics: -0.2 };
+    const lean = { objectives: 0.5, relevance: 0.6, host_view: 0.9, actionable: 0.7, focus_students: -0.6, agenda: 0.2, connections: 0.1, logistics: -0.2 };
     const sessionLean = { "leader-data-day": 0.6, "classroom-obs": 0.2, "ai-native": 0.4, "ai-literacy": 0.5, tutoring: 0.7, "data-hub": 0.9, "task-force": 0.3, coursemojo: -0.3 };
     const orgs = ["kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "gem-prep", "gem-prep", "gem-prep", "gem-prep", "gem-prep", "collegiate", "collegiate", "collegiate", "collegiate", "collegiate", "collegiate", "gates", "gates", "gates", "ai-for-equity", "ai-for-equity", "ai-for-equity", "dream", "dream", "dream"];
     const roles = { default: ["network", "network", "school", "school", "instruction", "data", "operations"], gates: ["foundation"], "ai-for-equity": ["other"], dream: ["school", "instruction", "data"] };

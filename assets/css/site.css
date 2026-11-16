@@ -768,3 +768,13 @@ textarea { min-height: 110px; resize: vertical; }
 .focus-card--2 { background: #ffe27a; }
 .focus-note { display: flex; gap: 8px; align-items: center; font-size: var(--fs-sm); font-weight: 600; color: var(--text); margin: var(--sp-3) 0 0; }
 .focus-note .icon { color: var(--coral); }
+.q-help { color: var(--text-2); font-size: var(--fs-sm); margin: calc(var(--sp-2) * -1) 0 var(--sp-4); max-width: 62ch; }
+
+.switch { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: var(--fs-sm); font-weight: 600; color: var(--text); cursor: pointer; position: relative; flex: 0 0 auto; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch-track { width: 42px; height: 24px; border-radius: 999px; background: var(--border-strong); position: relative; transition: background 0.15s; flex: none; }
+.switch-track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform 0.15s; }
+.switch input:checked + .switch-track { background: var(--accent); }
+.switch input:checked + .switch-track::after { transform: translateX(18px); }
+.switch input:focus-visible + .switch-track { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 760px) { .switch { flex-basis: 100%; } }

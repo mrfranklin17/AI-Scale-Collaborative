@@ -11,8 +11,8 @@ ASC.render = async function () {
   const { rows: all, sample, error } = await ASC.loadResponses();
 
   /* ---------- state <-> URL ---------- */
-  const KEYS = ["convening", "org", "role", "theme"];
-  const state = { convening: "all", org: "all", role: "all", theme: "all", tab: S.open[0].id, q: "", limit: 6 };
+  const KEYS = ["convening", "org", "role", "theme", "foundation"];
+  const state = { convening: "all", org: "all", role: "all", theme: "all", foundation: "all", tab: S.open[0].id, q: "", limit: 6 };
   function readUrl() {
     const p = new URLSearchParams(location.search);
     KEYS.forEach((k) => (state[k] = p.get(k) || "all"));
@@ -29,7 +29,7 @@ ASC.render = async function () {
   const convOpts = ASC.convenings.filter((c) => c.status === "completed" || all.some((r) => r.convening_id === c.id)).sort((a, b) => b.start.localeCompare(a.start));
   const orgOpts = ASC.orgs().filter((o) => all.some((r) => r.organization === o.id));
   const roleOpts = S.roles.filter((ro) => all.some((r) => r.role === ro.id));
-  const valid = { convening: convOpts.map((c) => c.id), org: orgOpts.map((o) => o.id), role: roleOpts.map((r) => r.id), theme: S.themes.map((t) => t.id) };
+  const valid = { convening: convOpts.map((c) => c.id), org: orgOpts.map((o) => o.id), role: roleOpts.map((r) => r.id), theme: S.themes.map((t) => t.id), foundation: ["exclude"] };
   function sanitize() { KEYS.forEach((k) => { if (state[k] !== "all" && !valid[k].includes(state[k])) state[k] = "all"; }); }
   sanitize();
 
@@ -37,19 +37,23 @@ ASC.render = async function () {
     convening: (id) => { const c = ASC.convening(id); return c ? ASC.hostName(c, true) + " convening" : id; },
     org: (id) => ASC.org(id).name + " respondents",
     role: (id) => (S.roles.find((r) => r.id === id) || { label: id }).label,
-    theme: (id) => "Theme: " + (S.themes.find((t) => t.id === id) || { label: id }).label
+    theme: (id) => "Theme: " + (S.themes.find((t) => t.id === id) || { label: id }).label,
+    foundation: () => "Excluding Foundation responses"
   };
 
   /* ---------- data helpers ---------- */
   const match = (r, opts) =>
     (opts.convening === false || state.convening === "all" || r.convening_id === state.convening) &&
     (opts.org === false || state.org === "all" || r.organization === state.org) &&
-    (state.role === "all" || r.role === state.role);
+    (state.role === "all" || r.role === state.role) &&
+    (state.foundation !== "exclude" || !isFoundation(r));
+  // A Foundation response: anyone who chose the Foundation employee role or the Gates Foundation organization.
+  function isFoundation(r) { return r.role === "foundation" || r.organization === "gates"; }
   const selected = () => all.filter((r) => match(r, {}));
   const network = () => all.filter((r) => match(r, { convening: false, org: false }));
   const comparing = () => state.convening !== "all" || state.org !== "all";
   const scope = () => {
-    const parts = ["convening", "org", "role"].filter((k) => state[k] !== "all").map((k) => label[k](state[k]));
+    const parts = ["convening", "org", "role", "foundation"].filter((k) => state[k] !== "all").map((k) => label[k](state[k]));
     return parts.length ? parts.join(" · ") : "All convenings";
   };
   const themesOf = (text) => {
@@ -85,6 +89,7 @@ ASC.render = async function () {
     sel("convening", "Convening", "All convenings", convOpts.map((c) => ({ v: c.id, t: ASC.hostName(c, true) + " · " + c.dates }))) +
     sel("org", "Respondent organization", "All organizations", orgOpts.map((o) => ({ v: o.id, t: o.name }))) +
     sel("role", "Respondent role", "All roles", roleOpts.map((r) => ({ v: r.id, t: r.label }))) +
+    '<label class="switch"><input type="checkbox" id="f-foundation" role="switch"><span class="switch-track" aria-hidden="true"></span><span>Exclude Foundation responses</span></label>' +
     '<div class="filter-actions">' +
     '<button class="btn btn-secondary btn-sm" type="button" id="print">' + ASC.icon("print") + "Print / PDF</button>" +
     '<button class="btn btn-secondary btn-sm" type="button" id="export">' + ASC.icon("download") + "CSV</button>" +
@@ -104,6 +109,7 @@ ASC.render = async function () {
   main.querySelectorAll("select[data-key]").forEach((s) =>
     s.addEventListener("change", () => { state[s.dataset.key] = s.value; state.limit = 6; writeUrl(); draw(); })
   );
+  document.getElementById("f-foundation").addEventListener("change", (ev) => { state.foundation = ev.target.checked ? "exclude" : "all"; state.limit = 6; writeUrl(); draw(); });
   document.getElementById("export").addEventListener("click", () => exportCsv(selected()));
   document.getElementById("print").addEventListener("click", () => window.print());
   const imp = document.getElementById("import");
@@ -123,6 +129,7 @@ ASC.render = async function () {
   function draw() {
     // sync controls
     main.querySelectorAll("select[data-key]").forEach((s) => (s.value = state[s.dataset.key]));
+    document.getElementById("f-foundation").checked = state.foundation === "exclude";
     const active = KEYS.filter((k) => state[k] !== "all");
     document.getElementById("filter-count").textContent = "Filters" + (active.length ? " (" + active.length + ")" : "");
     document.getElementById("active-chips").innerHTML = active.length
