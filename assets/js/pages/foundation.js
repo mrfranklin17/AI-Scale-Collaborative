@@ -27,6 +27,8 @@ ASC.render = function () {
   document.getElementById("main").innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Foundation analysis" }],
+      band: "sage",
+      art: false,
       eyebrow: "Foundation team",
       title: "Connections to strategy",
       lede: "The Foundation team’s reading of each convening against the Charter Scale implementation conditions. This page is not linked from the public site."

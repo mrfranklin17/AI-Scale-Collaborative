@@ -46,8 +46,8 @@ ASC.render = function () {
     const facts = [p.schools ? p.schools + " schools" : null, p.students ? Number(p.students).toLocaleString() + " students" : null].filter(Boolean).join(" · ");
     return (
       '<a class="card card--link partner-card" href="partner.html?id=' + e(p.id) + '" data-type="' + e(p.type) + '">' +
-      '<div class="pc-top"><div class="avatar' + (p.type === "Intermediary" ? " avatar--int" : "") + '" aria-hidden="true">' + e(ASC.initials(p.name)) + "</div>" +
-      "<div><h3>" + e(p.name) + '</h3><div class="chips"><span class="chip' + (p.type === "CMO" ? " chip--accent" : "") + '">' + e(p.type) + '</span><span class="chip chip--outline">' + e(p.region) + "</span></div></div></div>" +
+      '<div class="card-media">' + ASC.art(p.id, { ratio: 0.5625, label: ASC.initials(p.name), labelSize: 72 }) + "</div>" +
+      '<div class="pc-top"><div><h3>' + e(p.name) + '</h3><div class="chips"><span class="chip' + (p.type === "CMO" ? " chip--accent" : "") + '">' + e(p.type) + '</span><span class="chip chip--outline">' + e(p.region) + "</span></div></div></div>" +
       '<p class="pc-loc muted small">' + ASC.icon("pin") + e(p.location) + (facts ? " · " + e(facts) : "") + "</p>" +
       '<p class="pc-stack"><b>AI stack:</b> ' + (p.stack ? e(p.stack.summary) : '<span class="muted">Stack documentation due at onboarding</span>') + "</p>" +
       '<div class="pc-host"><span class="dots2" role="img" aria-label="Hosted ' + n + ' of 2 convenings"><i class="' + (n >= 1 ? "on" : "") + '"></i><i class="' + (n >= 2 ? "on" : "") + '"></i></span><span class="small muted">Hosted ' + n + " of 2</span></div>" +
@@ -58,6 +58,8 @@ ASC.render = function () {
   document.getElementById("main").innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Partners" }],
+      band: "sage",
+      art: "partners",
       eyebrow: "Partners",
       title: "Four CMOs and two intermediaries",
       lede: "High-readiness organizations already implementing AI-augmented instruction, across different geographies, student populations and instructional models. Each commits to hosting the collaborative at least twice.",

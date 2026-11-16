@@ -18,13 +18,13 @@ ASC.render = async function () {
       );
     }
     return (
-      '<li class="ct-item"><a class="card card--link" href="convening.html?id=' + e(c.id) + '">' +
+      '<li class="ct-item"><a class="card card--link ct-card" href="convening.html?id=' + e(c.id) + '"><div class="ct-media">' + ASC.art(c.id, { label: "0" + c.number, labelSize: 96 }) + "</div><div>" +
       '<div class="ct-when">Convening ' + e(c.number) + " · " + e(c.dates) + "</div>" +
       "<h3>" + e(c.title) + "</h3>" +
       '<p class="muted small">Hosted by ' + e(ASC.hostName(c)) + " · " + e(c.location) + "</p>" +
       "<p>" + e(c.summary) + "</p>" +
       (c.themes && c.themes.length ? '<div class="chips">' + c.themes.map((t) => '<span class="chip">' + e(t) + "</span>").join("") + "</div>" : "") +
-      '<span class="more">Read notes' + (n ? " · " + n + " survey response" + (n === 1 ? "" : "s") : "") + " →</span></a></li>"
+      '<span class="more">Read notes' + (n ? " · " + n + " survey response" + (n === 1 ? "" : "s") : "") + "</span></div></a></li>"
     );
   };
 
@@ -58,10 +58,12 @@ ASC.render = async function () {
   document.getElementById("main").innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Convenings" }],
+      band: "plum",
+      art: "convenings",
       eyebrow: "Convenings",
       title: "Structured learning, on site, every quarter",
       lede: "Site-based, rotating, two to three days. Notes, observations and implementation frictions from every visit live here, alongside attendee feedback.",
-      extra: '<div class="actions-row" style="margin-top:var(--sp-6)"><a class="btn btn-primary" href="survey.html">Share feedback on a convening</a><a class="btn btn-secondary" href="feedback.html">See feedback results</a></div>',
+      extra: '<div class="actions-row" style="margin-top:var(--sp-8)"><a class="btn btn-light" href="survey.html">Share feedback on a convening</a><a class="btn btn-outline-light" href="feedback.html">See feedback results</a></div>',
       updated: ASC.config.lastUpdated.convenings
     }) + ASC.withToc(sections);
 };

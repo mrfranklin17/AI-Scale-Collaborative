@@ -70,6 +70,8 @@ ASC.render = async function () {
       : "") +
     ASC.pageHero({
       crumbs: [{ label: "Feedback" }],
+      band: "sky",
+      art: "feedback",
       eyebrow: "Convening feedback",
       title: "What attendees told us",
       lede: "Pick a host convening to see feedback on that experience next to the network average, or look across every convening. Every view has its own link you can share.",

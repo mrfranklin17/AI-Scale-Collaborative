@@ -72,6 +72,8 @@ ASC.render = function () {
   main.innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Survey" }],
+      band: "sage",
+      art: false,
       eyebrow: "Post-convening survey",
       title: "How was the convening?",
       lede: "About <b>5 minutes</b>. Your answers save on this device as you go, so you can pick up where you left off."

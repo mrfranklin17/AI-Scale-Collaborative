@@ -45,6 +45,9 @@ ASC.render = function () {
   document.getElementById("main").innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Measures" }],
+      band: "sun",
+      art: "measures-2030",
+      artLabel: "2030",
       eyebrow: "Outcome metrics",
       title: "What we will know by 2030",
       lede: "Three outcome measures track whether AI-augmented instruction is reaching students and moving proficiency — always disaggregated by focus population.",

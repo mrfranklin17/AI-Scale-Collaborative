@@ -99,10 +99,13 @@ ASC.render = async function () {
   main.innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Convenings", href: "convenings.html" }, { label: ASC.hostName(c, true) }],
+      band: "plum",
+      art: c.id,
+      artLabel: "0" + c.number,
       eyebrow: "Convening " + c.number + " · " + c.dates,
       title: c.title,
       lede: e(c.summary),
-      extra: '<div class="card glance-card">' + glance + "</div>",
+      below: '<div class="card glance-card">' + glance + "</div>",
       updated: ASC.config.lastUpdated.convenings
     }) +
     ASC.withToc(S, { cta: '<div class="toc-cta"><a class="btn btn-primary btn-sm" href="survey.html?convening=' + e(c.id) + '">Take the survey</a></div>' }) +

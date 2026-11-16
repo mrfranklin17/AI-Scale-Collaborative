@@ -80,6 +80,48 @@
     return '<span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + "</svg></span>";
   };
 
+  /* ---------- generated art ----------
+   * ASC.art(seed, opts) returns an inline SVG composition of layered shapes in
+   * the site palette. The same seed always produces the same picture, so each
+   * convening, partner or page has its own consistent "image" until real
+   * photography is added. opts: { label, ratio: 1 | 0.5625, palette: [...] }
+   */
+  function rng(seed) {
+    let h = 2166136261;
+    for (const ch of String(seed)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+    return function () { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; };
+  }
+  ASC.art = function (seed, opts) {
+    opts = opts || {};
+    const r = rng(seed);
+    const W = 400, H = Math.round(400 * (opts.ratio || 1));
+    const pal = (opts.palette || ["--coral", "--sky", "--sun", "--teal", "--lilac", "--lime", "--plum"]).slice();
+    for (let i = pal.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [pal[i], pal[j]] = [pal[j], pal[i]]; }
+    const f = (v) => "fill:var(" + v + ")";
+    const x0 = 30 + r() * 60, y0 = 20 + r() * (H * 0.15);
+    const w0 = W * (0.55 + r() * 0.2), h0 = H * (0.55 + r() * 0.2);
+    const x1 = W - 30 - w0 * (0.75 + r() * 0.15), y1 = H - 20 - h0 * (0.8 + r() * 0.1);
+    const cr = 40 + r() * 46, cx = r() > 0.5 ? W - cr - 12 : cr + 12, cy = r() > 0.5 ? cr + 12 : H - cr - 12;
+    const dotsX = 40 + r() * 160, dotsY = H * (0.45 + r() * 0.3);
+    let dots = "";
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) dots += '<circle cx="' + (dotsX + i * 22).toFixed(1) + '" cy="' + (dotsY + j * 22).toFixed(1) + '" r="4.5"/>';
+    const arc = "M" + (W * 0.08).toFixed(0) + " " + (H * 0.9).toFixed(0) + " C " + (W * 0.3).toFixed(0) + " " + (H * (0.2 + r() * 0.3)).toFixed(0) + ", " + (W * 0.7).toFixed(0) + " " + (H * (0.1 + r() * 0.3)).toFixed(0) + ", " + (W * 0.95).toFixed(0) + " " + (H * 0.12).toFixed(0);
+    const label = opts.label
+      ? '<text x="' + (x0 + 26).toFixed(0) + '" y="' + (y0 + 26 + (opts.labelSize || 84) * 0.8).toFixed(0) + '" style="font-family:var(--font-display);font-weight:700;font-size:' + (opts.labelSize || 84) + 'px;letter-spacing:-0.05em;fill:#16121c">' + ASC.esc(opts.label) + "</text>"
+      : "";
+    return (
+      '<svg class="art" viewBox="0 0 ' + W + " " + H + '" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid slice">' +
+      '<rect x="' + x1.toFixed(1) + '" y="' + y1.toFixed(1) + '" width="' + w0.toFixed(1) + '" height="' + h0.toFixed(1) + '" rx="18" style="' + f(pal[0]) + '"/>' +
+      '<rect x="' + x0.toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + (w0 * 0.92).toFixed(1) + '" height="' + (h0 * 0.9).toFixed(1) + '" rx="18" style="' + f(pal[1]) + ';opacity:.94"/>' +
+      '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="' + cr.toFixed(1) + '" style="' + f(pal[2]) + '"/>' +
+      '<g style="fill:#16121c;opacity:.55">' + dots + "</g>" +
+      '<path d="' + arc + '" style="fill:none;stroke:#16121c;stroke-width:2.5;stroke-dasharray:7 8;opacity:.6"/>' +
+      label + "</svg>"
+    );
+  };
+  const BRAND_MARK =
+    '<svg viewBox="0 0 36 36" aria-hidden="true" focusable="false"><rect x="2" y="6" width="24" height="24" rx="5" fill="#4b1660"/><rect x="12" y="2" width="22" height="22" rx="5" fill="#f26a4f" opacity=".95"/><circle cx="24" cy="25" r="7" fill="#ffe27a"/></svg>';
+
   /* ---------- page scaffolding ---------- */
 
   // Breadcrumb trail: [{label, href?}, ...]; the last item is the current page.
@@ -97,17 +139,20 @@
     return iso ? '<p class="updated">' + ASC.esc(label || "Last updated") + " " + ASC.esc(ASC.fmtDate(iso)) + "</p>" : "";
   };
 
-  // Standard page hero
+  // Standard page hero: a full-bleed color band with optional generated art.
+  // o: { crumbs, eyebrow, title, lede, extra, updated, band: "sky"|"sage"|"sun"|"plum"|"cream", art: seed|false }
   ASC.pageHero = function (o) {
     const e = ASC.esc;
+    const band = o.band || "sky";
+    const art = o.art === false ? "" : '<div class="hero-art">' + ASC.art(o.art || o.title, { label: o.artLabel }) + "</div>";
     return (
-      '<section class="page-hero"><div class="wrap">' + ASC.crumbs(o.crumbs) +
+      '<section class="page-hero band band--' + band + '"><div class="wrap"><div class="hero-inner' + (art ? "" : " no-art") + '"><div>' + ASC.crumbs(o.crumbs) +
       (o.eyebrow ? '<span class="eyebrow">' + e(o.eyebrow) + "</span>" : "") +
-      "<h1>" + e(o.title) + "</h1>" +
+      "<h1>" + (o.titleHtml || e(o.title)) + "</h1>" +
       (o.lede ? '<p class="lede">' + o.lede + "</p>" : "") +
       (o.extra || "") +
       (o.updated ? ASC.updated(o.updated) : "") +
-      "</div></section>"
+      "</div>" + art + "</div>" + (o.below || "") + "</div></section>"
     );
   };
 
@@ -147,7 +192,7 @@
     return (
       '<a class="skip" href="#main">Skip to content</a>' +
       '<header class="site-header"><div class="wrap">' +
-      '<a class="brand" href="index.html" aria-label="AI Scale Collaborative home"><span class="brand-mark" aria-hidden="true">AI</span><span>AI Scale Collaborative<small>CMO &amp; Intermediary Network</small></span></a>' +
+      '<a class="brand" href="index.html" aria-label="AI Scale Collaborative home"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative<small>CMO &amp; Intermediary Network</small></span></a>' +
       '<a class="btn btn-primary btn-sm header-cta" href="survey.html">Share feedback</a>' +
       '<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">' + ASC.icon("menu") + '<span class="label">Menu</span></button>' +
       '<nav class="nav" id="site-nav" aria-label="Main">' +
@@ -163,8 +208,10 @@
     const c = (ASC.config && ASC.config.contact) || {};
     const e = ASC.esc;
     return (
-      '<footer class="site-footer"><div class="wrap"><div class="footer-grid">' +
-      '<div><h2>AI Scale Collaborative</h2><p>A US Charters network of four CMOs and two intermediaries measuring how AI-augmented instruction affects student outcomes. Launched Fall 2026.</p></div>' +
+      '<footer class="site-footer"><div class="wrap">' +
+      '<div class="footer-cta"><h2>Attended a convening? Tell us how it went.</h2><div class="actions-row"><a class="btn btn-light" href="survey.html">Take the survey ' + ASC.icon("arrow") + '</a><a class="btn btn-outline-light" href="feedback.html">See the results</a></div></div>' +
+      '<div class="footer-grid">' +
+      '<div><a class="brand" href="index.html" style="color:#fff;margin-bottom:var(--sp-4)"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative</span></a><p>A US Charters network of four CMOs and two intermediaries measuring how AI-augmented instruction affects student outcomes. Launched Fall 2026.</p></div>' +
       '<div><h2>The collaborative</h2><ul>' +
       NAV.slice(0, 4).map((n) => '<li><a href="' + n.href + '">' + n.label + "</a></li>").join("") +
       '<li><a href="about.html#requirements">Network requirements</a></li></ul></div>' +

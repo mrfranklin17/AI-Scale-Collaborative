@@ -29,10 +29,13 @@ ASC.render = function () {
   main.innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Partners", href: "partners.html" }, { label: p.short }],
+      band: "sage",
+      art: p.id,
+      artLabel: ASC.initials(p.name),
       eyebrow: p.type === "CMO" ? "CMO partner" : "Intermediary partner",
       title: p.name,
       lede: e(p.summary),
-      extra:
+      below:
         '<div class="card glance-card"><dl class="glance">' +
         facts.map(([k, v]) => "<div><dt>" + k + "</dt><dd>" + (v ? e(v) : '<span class="muted">Not yet reported</span>') + "</dd></div>").join("") +
         '<div><dt>Hosting</dt><dd><span class="dots2" role="img" aria-label="Hosted ' + hosted.length + ' of 2"><i class="' + (hosted.length >= 1 ? "on" : "") + '"></i><i class="' + (hosted.length >= 2 ? "on" : "") + '"></i></span> ' + hosted.length + " of 2</dd></div></dl></div>",

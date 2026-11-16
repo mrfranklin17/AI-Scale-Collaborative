@@ -51,6 +51,8 @@ ASC.render = function () {
   document.getElementById("main").innerHTML =
     ASC.pageHero({
       crumbs: [{ label: "Purpose & Design" }],
+      band: "sky",
+      art: "about-purpose",
       eyebrow: "Purpose & Design",
       title: "A field-learning network, not a controlled experiment",
       lede: e(c.intro[1]),
