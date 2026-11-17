@@ -52,8 +52,8 @@ ASC.render = async function () {
       band: "plum",
       art: "convenings",
       eyebrow: "Convenings",
-      title: "Structured learning, on site, every quarter",
-      lede: "Site-based, rotating, two to three days. Notes, observations and implementation frictions from every visit live here, alongside attendee feedback.",
+      title: "Structured learning, on site, every fall and spring",
+      lede: "Two convenings a year — one in the fall, one in the spring — each hosted on site by a rotating CMO partner for two to three days. Notes, observations and attendee feedback from every visit live here.",
       extra: '<div class="actions-row" style="margin-top:var(--sp-8)"><a class="btn btn-light" href="survey.html">Share feedback on a convening</a><a class="btn btn-outline-light" href="feedback.html">See feedback results</a></div>',
       updated: ASC.config.lastUpdated.convenings
     }) + ASC.withToc(sections);

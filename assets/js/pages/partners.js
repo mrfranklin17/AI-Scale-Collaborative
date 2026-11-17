@@ -67,6 +67,6 @@ ASC.render = function () {
     }) +
     '<div class="wrap page-body">' + map() +
     '<div class="grid grid-2" id="partner-grid">' + ASC.partners.map(card).join("") + "</div>" +
-    '<div class="card card--tint" style="margin-top:var(--sp-8)"><h3>What every partner commits to</h3><p class="muted">A shared Similar Schools assessment approach with disaggregated subgroup reporting, quarterly stack documentation, the do-no-harm equity guardrail, vendor outcome-data transparency, family disclosure, human-centered implementation, quarterly convenings and Innovation Index participation. Each CMO receives $300K a year under a two-year grant, with potential renewal for Years 3–4.</p><p class="muted small">Partner facts come from each organization’s website (November 2026).</p><a href="about.html#requirements">Read the full network requirements →</a></div>' +
+    '<div class="card card--tint" style="margin-top:var(--sp-8)"><h3>What every partner commits to</h3><p class="muted">A shared Similar Schools assessment approach with disaggregated subgroup reporting, quarterly stack documentation, the do-no-harm equity guardrail, vendor outcome-data transparency, family disclosure, human-centered implementation, fall and spring convenings and Innovation Index participation. Each CMO receives $300K a year under a two-year grant, with potential renewal for Years 3–4.</p><p class="muted small">Partner facts come from each organization’s website (November 2026).</p><a href="about.html#requirements">Read the full network requirements →</a></div>' +
     "</div>";
 };

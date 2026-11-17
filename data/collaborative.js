@@ -73,8 +73,8 @@ window.ASC.collaborative = {
     },
     {
       id: "convenings",
-      title: "Quarterly convenings",
-      text: "Site-based, rotating, two to three days. Structured learning, not reporting. Each CMO partner hosts the Collaborative on-site at least twice during the investment period."
+      title: "Fall and spring convenings",
+      text: "Two site-based convenings a year — one in the fall, one in the spring — rotating among the CMOs, two to three days each. Structured learning, not reporting. Each CMO partner hosts the Collaborative on-site at least twice during the investment period."
     },
     {
       id: "index",
@@ -83,7 +83,7 @@ window.ASC.collaborative = {
     }
   ],
   aiForEquity:
-    "AI for Equity is the network’s measurement backbone. Its Innovation Index provides common measurement and equity benchmarking across the CMO network; AI for Equity also co-designs and supports the quarterly convenings and produces the sector-facing research that turns network evidence into field learning. Its national Community of Practice is open to all network partners.",
+    "AI for Equity is the network’s measurement backbone. Its Innovation Index provides common measurement and equity benchmarking across the CMO network; AI for Equity also co-designs and supports the fall and spring convenings and produces the sector-facing research that turns network evidence into field learning. Its national Community of Practice is open to all network partners.",
   investment: {
     periods: [
       {
@@ -100,7 +100,7 @@ window.ASC.collaborative = {
     amount: [
       "$300K per CMO per year",
       "Measurement backbone and convening support from AI for Equity",
-      "Quarterly convenings and network coordination managed by the Foundation"
+      "Fall and spring convenings and network coordination managed by the Foundation"
     ],
     evidence: "Field learning, not a randomized trial. The evidence the network produces is ESSA Tier 3 by design."
   }
