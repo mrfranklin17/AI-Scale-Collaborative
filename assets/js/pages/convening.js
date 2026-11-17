@@ -10,6 +10,8 @@ ASC.render = async function () {
     return;
   }
   document.title = c.title + " · AI Scale Collaborative";
+  const md = document.querySelector('meta[name="description"]');
+  if (md) md.setAttribute("content", c.summary);
   const host = ASC.partner(c.host);
   const status = { completed: "Completed", upcoming: "Scheduled", planning: "Being scheduled" }[c.status] || c.status;
 
@@ -73,6 +75,9 @@ ASC.render = async function () {
     S.push({ id: "questions", nav: "Questions raised", html: '<h2 id="questions-h">Questions this raised for the network</h2><ul class="qlist">' + c.questions.map((q) => "<li>" + I("info") + "<span>" + e(q) + "</span></li>").join("") + "</ul>" });
   }
   const notes = (c.sections || []).filter((s) => !s.frictionNotes);
+  if (!fr && !notes.length && !(c.takeaways || []).length) {
+    S.push({ id: "notes", nav: "Convening notes", html: '<h2 id="notes-h">Convening notes</h2><div class="empty-state"><div class="icon-dot">' + I("book") + "</div><h3>Notes will be added</h3><p>Key takeaways and observations from this convening will be shared here once they’re ready.</p></div>" });
+  }
   if (notes.length) {
     S.push({
       id: "notes",
@@ -170,6 +175,6 @@ ASC.render = async function () {
     '<div class="kpi"><div class="k">Average agreement</div><div class="v">' + fmt(M.overall(rows)) + " <small>/ 5</small></div></div>" +
     '<div class="kpi"><div class="k">Net promoter score</div><div class="v">' + (np > 0 ? "+" : "") + np + "</div></div>" +
     '<div class="kpi"><div class="k">Left with an actionable idea</div><div class="v">' + pct(M.agreeShare(rows, "actionable")) + "</div></div></div>" +
-    '<ul class="fb-findings"><li><b>Strongest:</b> ' + e(f.hi.q.short) + " (" + fmt(f.hi.m) + ")</li><li><b>Weakest:</b> " + e(f.lo.q.short) + " (" + fmt(f.lo.m) + ")</li>" + (f.fr ? "<li><b>Most-cited friction:</b> " + e(f.fr.title) + "</li>" : "") + "</ul>" +
+    '<ul class="fb-findings"><li><b>Strongest:</b> ' + e(f.hi.q.short) + " (" + fmt(f.hi.m) + ")</li><li><b>Weakest:</b> " + e(f.lo.q.short) + " (" + fmt(f.lo.m) + ")</li>" + (f.fr && !ASC.survey.friction.paused ? "<li><b>Most-cited friction:</b> " + e(f.fr.title) + "</li>" : "") + "</ul>" +
     '<a class="btn btn-primary" href="feedback.html?convening=' + e(c.id) + '">See full results for this convening ' + I("arrow") + "</a>";
 };

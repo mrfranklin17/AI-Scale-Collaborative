@@ -49,7 +49,7 @@ ASC.render = function () {
       '<div class="pc-top"><div><h3>' + e(p.name) + '</h3><div class="chips"><span class="chip chip--outline">' + e(p.region) + "</span></div></div></div>" +
       '<p class="pc-loc muted small">' + ASC.icon("pin") + e(p.location) + "</p>" + (facts ? '<p class="pc-facts">' + e(facts) + "</p>" : "") +
       (p.rationale ? '<p class="pc-why">' + e(p.rationale) + "</p>" : "") +
-      '<p class="pc-stack"><b>AI stack:</b> ' + (p.stack ? e(p.stack.summary) : '<span class="muted">Stack documentation due at onboarding</span>') + "</p>" +
+      '<p class="pc-stack"><b>AI stack:</b> ' + (p.stack ? e(p.stack.summary) : '<span class="muted">Stack documentation not yet submitted</span>') + "</p>" +
       '<p class="pc-host"><span class="host-dot' + (h.hosted ? " on" : "") + '" aria-hidden="true"></span>' + e(h.text) + "</p>" +
       '<span class="more">View profile</span></a>'
     );
@@ -67,6 +67,6 @@ ASC.render = function () {
     }) +
     '<div class="wrap page-body">' + map() +
     '<div class="grid grid-2" id="partner-grid">' + ASC.partners.map(card).join("") + "</div>" +
-    '<div class="card card--tint" style="margin-top:var(--sp-8)"><h3>What every partner commits to</h3><p class="muted">A shared Similar Schools assessment approach with disaggregated subgroup reporting, quarterly stack documentation, the do-no-harm equity guardrail, vendor outcome-data transparency, family disclosure, human-centered implementation, fall and spring convenings and Innovation Index participation. Each CMO receives $300K a year under a two-year grant, with potential renewal for Years 3–4.</p><p class="muted small">Partner facts come from each organization’s website (November 2026).</p><a href="about.html#requirements">Read the full network requirements →</a></div>' +
+    '<div class="card card--tint" style="margin-top:var(--sp-8)"><h3>What every partner commits to</h3><p class="muted">A shared Similar Schools assessment approach with disaggregated subgroup reporting, quarterly stack documentation, the do-no-harm equity guardrail, vendor outcome-data transparency, family disclosure, human-centered implementation, fall and spring convenings and Innovation Index participation. Each CMO receives $300K a year under a two-year grant, with potential renewal for Years 3–4.</p><p class="muted small">Partner facts come from each organization’s website (November 2026).</p><a href="about.html#requirements">Read the partner commitments →</a></div>' +
     "</div>";
 };

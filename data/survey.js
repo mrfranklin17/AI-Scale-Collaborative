@@ -14,17 +14,17 @@ window.ASC.survey = {
     { id: "objectives", short: "Met learning goals", text: "The convening met its stated learning goals." },
     { id: "relevance", short: "Relevant to my role", text: "The content was relevant to my role and my organization's context." },
     { id: "host_view", short: "Clear view of host's AI work", text: "The host's sessions gave me a clear, honest view of how they implement AI." },
-    { id: "actionable", short: "Leaving with an actionable idea", text: "I am leaving with at least one idea I can act on in the next 90 days." },
+    { id: "actionable", short: "Left with an actionable idea", text: "I am leaving with at least one idea I can act on in the next 90 days." },
     // v2 ids (Nov 2026): "focus_students" replaces "equity", which named different student groups.
-    { id: "focus_students", short: "Addressed focus students", text: "Sessions addressed how AI can raise proficiency for Black, Latino, and low-income students." },
-    { id: "agenda", short: "Shifted my thinking", text: "This convening changed how I think about using AI to raise proficiency for Black, Latino, and low-income students in my own context." },
+    { id: "focus_students", short: "Addressed focus students", text: "Sessions addressed how AI can increase proficiency for Black, Latino, and low-income students." },
+    { id: "agenda", short: "Shifted my thinking", text: "This convening changed how I think about using AI to increase proficiency for Black, Latino, and low-income students in my own context." },
     { id: "connections", short: "Built peer connections", text: "I made connections with peers in the network that I plan to follow up on." },
     { id: "logistics", short: "Logistics supported learning", text: "Logistics and pacing supported my learning." }
   ],
 
   nps: {
     id: "nps",
-    text: "How likely are you to recommend future collaborative convenings to a colleague?",
+    text: "How likely are you to recommend future Collaborative convenings to a colleague?",
     low: "Not at all likely",
     high: "Extremely likely"
   },
@@ -33,6 +33,7 @@ window.ASC.survey = {
 
   friction: {
     id: "friction",
+    paused: true, // not asked or reported until the Collaborative settles its framework
     text: "Where did you see AI implementation get hardest?",
     intro: "The network looks at four places where AI implementation can break down. Pick the one that felt most relevant to your own work after this convening.",
     // Plain-language descriptions shown with each option in the survey

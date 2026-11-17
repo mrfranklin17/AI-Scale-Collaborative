@@ -128,38 +128,38 @@
     // Each sample comment is used once, so the list reads like distinct respondents.
     const text = {
       valuable: [
-        "Seeing the Data Hub's 'where to intervene' board — flags, interventions and targets on one screen.",
-        "The observation agent built inside Google Chat. Building to the workflow people already use is the lesson.",
-        "Hearing DREAM say plainly that student-facing AI fails the students furthest behind.",
-        "Leader Data Day norms — results are not a reflection of worth. That changes the room.",
-        "Rubric-scoring agents giving Fridays back to teachers for reteach planning.",
-        "The honesty about the tutoring pilot showing no difference yet.",
-        "The AI literacy protocol in history class: accept, revise or reject.",
-        "Tiered data access and versioned flag definitions.",
-        "How the task force puts the choice of where to use AI with the people doing the work.",
-        "The 35-tools-piloted, five-to-eight-kept discipline and the one-month abandonment threshold.",
-        "Seeing tutoring tasks pulled from IM and sequenced to next week's Tier 1 lesson."
+        "Seeing how the host brings student data together in one place for leaders.",
+        "Watching teachers and leaders talk openly about what is and isn’t working yet.",
+        "The way staff are involved in deciding where AI should help.",
+        "Time with peers from other CMOs working on the same questions.",
+        "Seeing AI support teachers’ planning so they can focus on instruction.",
+        "How the host connects intervention to what students are learning in class.",
+        "Concrete examples of AI tools that fit into routines staff already use.",
+        "The student-facing AI literacy work.",
+        "Hearing how decisions about which tools to keep are made.",
+        "Classroom time — seeing the work, not just hearing about it.",
+        "Clear data norms that keep conversations focused on students."
       ],
       try: [
-        "Pilot rubric-based scoring for one interim with our ELA team.",
-        "Share the 'top-and-bottom' agent approach with our network tech team.",
-        "Write down our own flag definitions before building any dashboard.",
-        "Set an explicit abandonment threshold for tools we pilot.",
-        "Map our tutoring sessions to next week's Tier 1 content instead of remediation.",
-        "Bring the task-force model to our central office.",
-        "Audit where tutoring sits in our schedule and what dosage students actually get.",
-        "Ask every vendor for subgroup outcome data before renewal.",
-        "Try the history-class protocol in one middle school AI literacy unit."
+        "Pilot one AI-supported planning routine with a single grade team.",
+        "Share the host’s staff-involvement approach with our central office.",
+        "Define what success looks like before we roll out the next tool.",
+        "Set a clear point to decide whether to keep or drop a pilot.",
+        "Connect our tutoring more closely to core classroom content.",
+        "Start a cross-functional AI group that includes school staff.",
+        "Look at how much time students actually spend with the tools we use.",
+        "Ask our vendors for subgroup outcome data.",
+        "Try a short AI literacy unit with one class."
       ],
       improve: [
-        "More time in classrooms, less in presentations.",
+        "More time in classrooms.",
         "Structured time with our own team to plan next steps before we leave.",
-        "Share pre-reads on the data stack ahead of time.",
-        "A session specifically on English learners and students with IEPs.",
-        "Smaller cross-network groups so CMOs can compare notes by role.",
-        "Build in a debrief at the end of each day.",
-        "Tighter agenda on day two — sessions ran long.",
-        "Hear from teachers and students directly, not only leaders."
+        "Share pre-reads ahead of time.",
+        "A session focused on Black, Latino, and low-income students.",
+        "Smaller cross-network groups so people can compare notes by role.",
+        "A short debrief at the end of each day.",
+        "A slightly lighter agenda on day two.",
+        "Hear directly from teachers and students."
       ]
     };
     const nextText = {};

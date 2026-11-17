@@ -11,12 +11,12 @@ window.ASC.collaborative = {
   subtitle: "CMO Network",
   launch: "Fall 2026",
   tagline:
-    "Four high-readiness charter networks implementing AI-augmented instruction under a common measurement framework — to learn what raises proficiency for Black, Latino, and low-income students.",
+    "A common measurement framework, shared stack documentation and two convenings a year — so every partner learns what increases proficiency for Black, Latino, and low-income students.",
   // The students whose proficiency the network is built to raise.
-  focusPopulations: ["Black students", "Latino students", "Students from low-income families"],
+  focusPopulations: ["Black students", "Latino students", "Low-income students"],
   intro: [
     "The AI Scale Collaborative is the field-learning engine of the US Charters AI Innovation strategy. A concentrated network of high-readiness CMOs implements AI-augmented instruction under a common measurement framework, documents their instructional stacks, and shares what they learn across the network.",
-    "Together, the four networks generate evidence that is cross-context, disaggregated, and practitioner-produced — learning each partner can put to work in its own schools and share across the network."
+    "Together, the four CMOs generate evidence that is cross-context, disaggregated, and practitioner-produced — learning each partner can put to work in its own schools."
   ],
   theoryOfChange:
     "If a concentrated network of high-readiness CMOs implements AI-augmented instruction under common measurement conditions, the network learns together which approaches increase proficiency, and for which students.",
@@ -38,13 +38,13 @@ window.ASC.collaborative = {
     "These questions are best answered by learning across real school contexts, side by side, rather than through a controlled experiment. The evidence the network produces is ESSA Tier 3 by design.",
   smallNetwork:
     "A smaller, higher-fidelity network produces more actionable evidence than a larger, lower-fidelity one. The network can add CMO partners when evidence and fit support it.",
-  tightLoose:
-    "The network operates on a tight-loose framework. The tight elements are non-negotiable entry conditions; the loose elements are where variation is expected and valuable, because the network learns from variation rather than by controlling it.",
+  commitmentsIntro:
+    "Every CMO partner makes the same core commitments. How each one implements AI is where the Collaborative expects variation — and learns from it.",
   requirements: [
     {
       id: "assessment",
       title: "Shared assessment approach",
-      text: "CMOs commit to a common approach to measuring student proficiency using a Similar Schools model, with disaggregated subgroup reporting as a condition of network membership. CMOs are also encouraged to explore and compare AI-enabled, ongoing formative assessment approaches that give better real-time tracking than legacy standardized measures. CMOs propose their assessment approach at onboarding and report consistently for comparability across the network."
+      text: "CMOs commit to a common approach to measuring student proficiency using a Similar Schools methodology, with disaggregated subgroup reporting as a condition of network membership. CMOs are also encouraged to explore and compare AI-enabled, ongoing formative assessment approaches that give better real-time tracking than legacy standardized measures. CMOs propose their assessment approach at onboarding and report consistently for comparability across the network."
     },
     {
       id: "stack",
@@ -110,7 +110,7 @@ window.ASC.collaborative = {
    `date` is used for ordering and to mark items done (in the past) or upcoming.
    Year 1 is SY2026–27. */
 window.ASC.milestones = [
-  { date: "2026-09-01", when: "Fall 2026", what: "Network launches", note: "Four CMO partners · Year 1 begins" },
+  { date: "2026-09-01", when: "Fall 2026", what: "The Collaborative launches", note: "Four CMO partners · Year 1 begins" },
   { date: "2028-04-01", when: "Spring 2028", what: "Year 1–2 evidence review", note: "Informs Years 3–4 renewal" },
   { date: "2028-06-30", when: "Summer 2028", what: "Year 2 targets", note: "65% proficiency · 100% Index ≥ 3.5", href: "measures.html" },
   { date: "2029-06-30", when: "Summer 2029", what: "Year 3 targets", note: "80% proficiency · 100% AI access", href: "measures.html" },
@@ -123,7 +123,7 @@ window.ASC.milestones = [
 window.ASC.partners = [
   {
     id: "dream",
-    cardLine: "3K–12 · East Harlem and the Bronx",
+    cardLine: "3K–12 · more than three decades in the community",
     mark: "DREAM", // short label on generated art
     name: "DREAM Charter Schools",
     short: "DREAM",
@@ -136,15 +136,9 @@ window.ASC.partners = [
     website: "https://wearedream.org",
     facts: [
       { k: "Grades", v: "3K–12" },
-      { k: "Where", v: "East Harlem and the Bronx" },
       { k: "In the community", v: "More than three decades" }
     ],
-    stack: {
-      hqim: "Illustrative Mathematics (math)",
-      tools: ["DREAM Data Hub (BigQuery + Looker Studio)", "Enterprise AI for every staff member", "Rubric-scoring agents (co-designed with Enlighten)", "AI tutoring assistant on the Learning Commons knowledge graph", "DREAM Observation Agent (Google Chat)", "Coursemojo (pilot)", "i-Ready", "Zearn"],
-      summary: "HQIM: Illustrative Mathematics · Data Hub, rubric-scoring agents, AI tutoring assistant, Coursemojo pilot",
-      source: "Observed at the November 2026 convening; to be confirmed in DREAM’s stack documentation."
-    },
+    stack: null, // filled from quarterly stack documentation
     rationale: "Pioneer of bottom-up AI adoption, with 75% weekly staff AI usage, custom internal tool development, and strong community trust infrastructure. Brings an urban, Northeast context.",
     summary: "Free public charter schools in East Harlem and the Bronx serving children from 3K through high school, building on more than three decades of work in the community."
   },
@@ -168,7 +162,6 @@ window.ASC.partners = [
       { k: "Cities", v: "East Palo Alto, Menlo Park, Oakland, Redwood City, San Francisco, San José, San Lorenzo, Stockton" },
       { k: "In Northern California", v: "24 years · 4,500 alumni" }
     ],
-    hosting: "Spring 2027",
     stack: null, // filled from quarterly stack documentation
     rationale: "Systematic piloting rigor, subgroup equity metrics, and in-house statistical evaluation capacity — a strong evidence culture that aligns with the network’s learning requirements.",
     summary: "23 tuition-free public charter schools serving 7,100 TK–12 students across eight Northern California cities, from San Francisco and Oakland to San José and Stockton."
@@ -192,7 +185,7 @@ window.ASC.partners = [
       { k: "Opening", v: "Rexburg, Fall 2027" },
       { k: "Operator", v: "Gem Innovation Schools" }
     ],
-    hosting: "2027–28 school year",
+    hosting: "SY2027–28",
     stack: null,
     rationale: "Rural and western geography, in an Idaho policy environment supportive of nontraditional scheduling and competency-based progression. Strong AI readiness documented in a 2024 BLUUM case study.",
     summary: "K–12 free public charter schools across southern and eastern Idaho — Meridian, Nampa, Idaho Falls, Pocatello and Twin Falls — plus an online school, operated by Gem Innovation Schools."
@@ -216,9 +209,9 @@ window.ASC.partners = [
       { k: "Scholars", v: "85% first-generation college · 20% with special education needs" },
       { k: "In Louisiana", v: "15 years" }
     ],
-    hosting: "2027–28 school year",
+    hosting: "SY2027–28",
     stack: null,
-    rationale: "Operates in an AI-active city with a high-need urban context and a strong equity focus.",
+    rationale: "Rooted in New Orleans, an AI-active city, with a high-need urban context and a strong equity focus.",
     summary: "Five open-enrollment high schools and two post-secondary programs in New Orleans and Baton Rouge, preparing every scholar for college and lives of unlimited opportunity."
   }
 ];
@@ -233,11 +226,11 @@ window.ASC.measures = [
       { label: "Year 2", value: 65 },
       { label: "Year 3", value: 80 }
     ],
-    source: "State assessments + Similar Schools framework",
+    source: "State assessments + Similar Schools methodology",
     cadence: "Annual",
     focus: true,            // reported for the network's focus populations
     current: null,          // set to a number (0–100) when the first report is in
-    firstReport: "Fall 2027 (after SY2026–27 state results)"
+    firstReport: "Fall 2027, after SY2026–27 state results"
   },
   {
     id: "access",
@@ -299,7 +292,8 @@ window.ASC.measurementChoices = [
   { title: "Network scale", text: "Implementation is measured across all sites in each CMO network, not at individual pilot schools." }
 ];
 
-/* The Implementation R&D friction framework used to organize site-visit learning. */
+/* PAUSED (Nov 2026): not shown anywhere on the site until the Collaborative settles its own framework.
+   The Implementation R&D friction framework used to organize site-visit learning. */
 window.ASC.frictionFramework = [
   {
     id: "product",

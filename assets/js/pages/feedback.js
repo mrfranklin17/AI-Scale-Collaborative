@@ -168,7 +168,7 @@ ASC.render = async function () {
       '<section class="findings" aria-labelledby="findings-h"><h2 id="findings-h">Headline findings' + samplePill + '</h2><p class="panel-sub">' + e(scope()) + " · n=" + rows.length + "</p><ul>" +
       "<li><b>Strongest:</b> " + e(f.hi.q.short) + " (" + C.fmt(f.hi.m) + " of 5)" + (cmp && netMeans[f.hi.q.id] != null ? ", " + C.deltaHtml(f.hi.m - netMeans[f.hi.q.id], 1, "", "vs network") : "") + ".</li>" +
       "<li><b>Weakest:</b> " + e(f.lo.q.short) + " (" + C.fmt(f.lo.m) + " of 5)" + (cmp && netMeans[f.lo.q.id] != null ? ", " + C.deltaHtml(f.lo.m - netMeans[f.lo.q.id], 1, "", "vs network") : "") + ".</li>" +
-      (fr ? "<li><b>Most-cited friction:</b> " + e(fr.title) + (fr.tied.length > 1 ? ", tied at " + C.pct(fr.share) + " each" : ", named by " + C.pct(fr.share) + " of respondents") + ".</li>" : "") +
+      (fr && !S.friction.paused ? "<li><b>Most-cited friction:</b> " + e(fr.title) + (fr.tied.length > 1 ? ", tied at " + C.pct(fr.share) + " each" : ", named by " + C.pct(fr.share) + " of respondents") + ".</li>" : "") +
       "</ul></section>";
 
     /* KPIs */
@@ -200,7 +200,7 @@ ASC.render = async function () {
     const statements = panelHtml({
       id: "statements",
       wide: true,
-      title: e(f.hi.q.short) + " rated highest; " + e(f.lo.q.short.charAt(0).toLowerCase() + f.lo.q.short.slice(1)) + " lagged",
+      title: "“" + e(f.hi.q.short) + "” rated highest; “" + e(f.lo.q.short) + "” rated lowest",
       sub: "Share of respondents by level of agreement, excluding N/A · " + e(scope()) + (cmp ? " · black tick = where the network’s “agree” share begins; mean change vs network at right" : ""),
       n: rows.length,
       body: C.likert(likRows, S.scale, { refLabel: cmp ? "Network" : null })
@@ -240,7 +240,7 @@ ASC.render = async function () {
 
     out.innerHTML =
       findings + kpis + statements +
-      '<div class="dash-grid">' + sessions + frictions + byOrg(rows) + "</div>" +
+      '<div class="dash-grid">' + sessions + (S.friction.paused ? "" : frictions) + byOrg(rows) + "</div>" +
       trends() + acrossHosts(conv) + commentsPanel();
     wireComments(rows);
     wireTables();
@@ -259,7 +259,7 @@ ASC.render = async function () {
   function byOrg(rows) {
     const groups = ASC.orgs().map((o) => ({ o, rs: rows.filter((r) => r.organization === o.id) })).filter((g) => g.rs.length).sort((a, b) => b.rs.length - a.rs.length);
     const body =
-      '<div class="table-wrap"><table class="data-table"><caption class="sr-only">Responses and ratings by respondent organization</caption><thead><tr><th scope="col">Organization</th><th scope="col" class="num">n</th><th scope="col" class="num">Avg.</th><th scope="col" class="num">Actionable</th></tr></thead><tbody>' +
+      '<div class="table-wrap"><table class="data-table"><caption class="sr-only">Responses and ratings by respondent organization</caption><thead><tr><th scope="col">Organization</th><th scope="col" class="num">n</th><th scope="col" class="num">Avg.</th><th scope="col" class="num">Actionable idea</th></tr></thead><tbody>' +
       groups.map((g) => { const small = g.rs.length < MIN; return '<tr><th scope="row">' + e(g.o.name) + '</th><td class="num">' + g.rs.length + '</td><td class="num">' + (small ? "—" : C.fmt(M.overall(g.rs))) + '</td><td class="num">' + (small ? "—" : C.pct(M.agreeShare(g.rs, "actionable"))) + "</td></tr>"; }).join("") +
       "</tbody></table></div><p class=\"muted small\" style=\"margin:var(--sp-3) 0 0\">— hidden for groups under " + MIN + " responses.</p>";
     const top = groups[0];
@@ -278,7 +278,7 @@ ASC.render = async function () {
       list.map((c) => { p.set("convening", c.id); return row(e(ASC.hostName(c)) + ' <span class="muted small">' + e(c.dates) + "</span>", base.filter((r) => r.convening_id === c.id), conv && conv.id === c.id ? "sel" : "", "feedback.html?" + p.toString()); }).join("") +
       row("<b>Network total</b>", base, "total") +
       "</tbody></table></div>";
-    return '<div style="margin-top:var(--sp-5)">' + panelHtml({ id: "hosts", wide: true, title: "Every host school side by side", sub: "Select a host to open its view" + (state.org !== "all" || state.role !== "all" ? " · current respondent filters applied" : ""), body }) + "</div>";
+    return '<div style="margin-top:var(--sp-5)">' + panelHtml({ id: "hosts", wide: true, title: "Every host CMO side by side", sub: "Select a host to open its view" + (state.org !== "all" || state.role !== "all" ? " · current respondent filters applied" : ""), body }) + "</div>";
   }
 
   function commentsPanel() {

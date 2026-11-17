@@ -17,13 +17,13 @@ It is a static site — plain HTML, CSS and JavaScript, no build step — so it 
 | Convening detail | `convening.html?id=…` | `data/convenings.js` |
 | Feedback dashboard | `feedback.html` | survey responses (see below) |
 | Survey | `survey.html?convening=…` | `data/survey.js` |
-| Foundation analysis | `foundation.html` | analysis blocks in `data/convenings.js` — **unlinked, not access-controlled** |
+| Foundation analysis | `foundation.html` | analysis blocks in `data/convenings.js` (currently none) — **unlinked, not access-controlled** |
 
 ## Design system
 
 - `assets/css/tokens.css` — every color, type size, spacing step, radius and shadow, with light and dark values. Change the look here.
 - `assets/css/site.css` — components built only from tokens: one card (`.card`, `--link`, `--outline`, `--tint`), one button system (`.btn-primary`, `.btn-secondary`, `.btn-ghost`), one chip (`.chip` and variants), plus page sections.
-- Friction-point colors (`--fr-*`) and the Likert scale (`--lk-*`) are fixed tokens so every chart and card reads the same.
+- The Likert scale (`--lk-*`) uses fixed tokens so every chart reads the same. Friction-point colors (`--fr-*`) are kept for when the Collaborative adopts its own implementation framework.
 
 ## Running locally
 
@@ -46,9 +46,9 @@ Then open http://localhost:8000.
 See [`docs/SURVEY_BACKEND.md`](docs/SURVEY_BACKEND.md). Out of the box the site runs in **preview mode**: responses are stored in the visitor's browser only, and the dashboard shows clearly labeled sample data until the first real response is recorded. Connect the shared Supabase table so every school submits to — and sees — the same data.
 
 The dashboard supports:
-- Filters for convening (host school), respondent organization, role and comment theme, all kept in the URL — send a host a link such as `feedback.html?convening=dream-2026-11&org=kipp-norcal` and Back/Forward work.
+- Filters for convening (host CMO), respondent organization, role and comment theme, all kept in the URL — send a host a link such as `feedback.html?convening=dream-2026-11&org=kipp-norcal` and Back/Forward work.
 - Auto-generated headline findings; whenever a convening or organization is selected, every metric shows its difference from the network, and each Likert bar carries a network marker.
-- Session usefulness, friction-point resonance, by-organization and all-host-schools tables, and trend small multiples once two convenings have data.
+- Session usefulness, by-organization and all-host-CMO tables, and trend small multiples once two convenings have data. (The friction-point question and chart are paused; set `paused: false` on `friction` in `data/survey.js` to bring them back.)
 - Comments with theme tags, search and "Show more"; the organization is hidden on comments when it has fewer than 3 respondents.
 - CSV export, CSV/JSON import in preview mode, and a Print / Save as PDF layout for host reports.
 - Small-group suppression below `minResponsesToShow` (default 3) and a small-sample note below 5.

@@ -43,7 +43,7 @@ ASC.render = async function () {
   const media = (seed, label) => '<div class="card-media">' + ASC.art(seed, { ratio: 0.5625, label, labelSize: 64 }) + "</div>";
   const latestCards = [
     latest
-      ? '<a class="card card--link" href="convening.html?id=' + e(latest.id) + '">' + media(latest.id, "0" + latest.number) + '<div class="card-kicker">Convening notes</div><h3>' + e(latest.title) + '</h3><p class="muted small">' + e(latest.dates) + " · " + e(latest.location) + "</p><p>" + e((latest.takeaways && latest.takeaways[0]) || latest.summary) + '</p><span class="more">Read the notes</span></a>'
+      ? '<a class="card card--link" href="convening.html?id=' + e(latest.id) + '">' + media(latest.id, "0" + latest.number) + '<div class="card-kicker">Latest convening</div><h3>' + e(latest.title) + '</h3><p class="muted small">' + e(latest.dates) + " · " + e(latest.location) + "</p><p>" + e((latest.takeaways && latest.takeaways[0]) || latest.summary) + '</p><span class="more">See the convening</span></a>'
       : "",
     f
       ? '<a class="card card--link" href="feedback.html?convening=' + e(latest.id) + '">' + media("feedback-" + latest.id, f.hi.m.toFixed(1)) + '<div class="card-kicker">Feedback' + (sample ? ' <span class="chip chip--sample">Sample</span>' : "") + "</div><h3>Attendees rated “" + e(f.hi.q.short) + "” highest</h3>" +
@@ -56,7 +56,7 @@ ASC.render = async function () {
   const hostLink = latest ? "feedback.html?convening=" + latest.id : "feedback.html";
   const roles = [
     { href: hostLink, icon: "users", title: "I hosted or attended a convening", text: "See feedback for " + (latest ? "the " + ASC.hostName(latest, true) + " convening" : "your convening") + " next to the network average." },
-    { href: "feedback.html", icon: "chart", title: "I want to see network results", text: "Every host school side by side, with trends across convenings." },
+    { href: "feedback.html", icon: "chart", title: "I want to see network results", text: "Every host CMO side by side, with trends across convenings." },
     { href: "survey.html", icon: "clipboard", title: "I’m here to take the survey", text: "About five minutes, built for your phone." }
   ];
 
@@ -71,9 +71,9 @@ ASC.render = async function () {
     /* hero */
     '<section class="hero"><div class="wrap hero-grid"><div>' +
     '<span class="eyebrow">US Charters · Launched ' + e(c.launch) + "</span>" +
-    '<h1>Four charter networks learning how AI can <span class="hl">raise proficiency</span>.</h1>' +
+    '<h1>Four charter networks learning how AI can <span class="hl">increase proficiency</span>.</h1>' +
     '<p class="lede">' + e(c.tagline) + "</p>" +
-    '<div class="actions-row"><a class="btn btn-primary" href="about.html">Explore the collaborative ' + I("arrow") + '</a><a class="btn btn-secondary" href="convenings.html">See convenings</a></div>' +
+    '<div class="actions-row"><a class="btn btn-primary" href="about.html">Explore the Collaborative ' + I("arrow") + '</a><a class="btn btn-secondary" href="convenings.html">See convenings</a></div>' +
     '</div><div class="hero-visual">' + ASC.art("ai-scale-collaborative-hero") + nextCard + "</div></div>" +
     '<svg class="connector" viewBox="0 0 300 160" style="left:44%;bottom:-40px;width:260px" aria-hidden="true"><path d="M5 5 C 80 150, 200 150, 295 120"/></svg>' +
     "</section>" +
@@ -82,7 +82,7 @@ ASC.render = async function () {
     '<section class="band band--sky" aria-labelledby="why-h"><div class="wrap">' +
     '<span class="eyebrow" id="why-h">Why this network</span>' +
     '<p class="statement">If four high-readiness CMOs implement AI under <em>common measurement conditions</em>, we learn together which approaches increase proficiency — and for which students.</p>' +
-    '<div class="grid grid-2" style="margin-top:var(--sp-10);max-width:1000px;align-items:end"><p style="color:var(--text-2);margin:0;font-size:var(--fs-md)">' + e(c.intro[0]) + '</p><div><a class="btn btn-secondary" href="about.html">How the network works ' + I("arrow") + "</a></div></div>" +
+    '<div class="grid grid-2" style="margin-top:var(--sp-10);max-width:1000px;align-items:end"><p style="color:var(--text-2);margin:0;font-size:var(--fs-md)">Each partner measures proficiency the same way, documents its instructional and AI stack, and shares what it learns with the others.</p><div><a class="btn btn-secondary" href="about.html">How the network works ' + I("arrow") + "</a></div></div>" +
     "</div></section>" +
 
     /* stats band */
@@ -108,7 +108,7 @@ ASC.render = async function () {
 
     /* timeline */
     '<section class="section" aria-labelledby="tl-h"><div class="wrap">' +
-    '<div class="section-head"><div><span class="eyebrow">Investment timeline</span><h2 id="tl-h">From launch to evidence.</h2></div><p>Initial investment Fall 2026 – Summer 2028, with a potential extension through 2030.</p></div>' +
+    '<div class="section-head"><div><span class="eyebrow">Investment timeline</span><h2 id="tl-h">From launch to evidence.</h2></div><p>Two-year grants run from fall 2026 through August 2028, with potential renewal through 2030.</p></div>' +
     timeline + "</div></section>" +
 
     /* latest */

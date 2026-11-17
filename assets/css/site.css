@@ -394,7 +394,7 @@ button.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); bo
 .filters { position: sticky; top: calc(var(--header-h) + var(--sp-2)); z-index: 30; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: var(--sp-4); }
 .filter-panel { display: flex; gap: var(--sp-3); flex-wrap: wrap; align-items: end; }
 .filter-panel .f { flex: 1 1 190px; min-width: 0; }
-.filter-panel label:not(.btn) { display: block; font-size: var(--fs-xs); font-weight: 650; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); margin-bottom: 6px; }
+.filter-panel label:not(.btn):not(.switch) { display: block; font-size: var(--fs-xs); font-weight: 650; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); margin-bottom: 6px; }
 .filter-actions { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
 .filter-actions .btn { min-height: 44px; }
 .filter-toggle { display: none; }

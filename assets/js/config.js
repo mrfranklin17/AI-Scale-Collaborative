@@ -38,9 +38,9 @@ window.ASC.config = {
   // "Last updated" dates shown on pages. Update when you edit the matching data.
   // (The Feedback page uses the date of the most recent response instead.)
   lastUpdated: {
-    convenings: "2026-11-16",
-    measures: "2026-11-16",
-    partners: "2026-11-16",
-    about: "2026-11-16"
+    convenings: "2026-11-17",
+    measures: "2026-11-17",
+    partners: "2026-11-17",
+    about: "2026-11-17"
   }
 };

@@ -24,7 +24,7 @@ ASC.render = async function () {
       '<p class="muted small">Hosted by ' + e(ASC.hostName(c)) + " · " + e(c.location) + "</p>" +
       "<p>" + e(c.summary) + "</p>" +
       (c.themes && c.themes.length ? '<div class="chips">' + c.themes.map((t) => '<span class="chip">' + e(t) + "</span>").join("") + "</div>" : "") +
-      '<span class="more">Read notes' + (n ? " · " + n + " survey response" + (n === 1 ? "" : "s") : "") + "</span></div></a></li>"
+      '<span class="more">See the convening' + (n ? " · " + n + " survey response" + (n === 1 ? "" : "s") : "") + "</span></div></a></li>"
     );
   };
 
@@ -42,7 +42,7 @@ ASC.render = async function () {
     "</tbody></table></div>";
 
   const sections = [
-    { id: "timeline", nav: "Timeline", html: '<h2 id="timeline-h">Every convening, in order</h2><p style="color:var(--text-2)">Past convenings link to full notes and feedback. Upcoming ones appear as outlines until they are scheduled.</p><ol class="ct">' + list.map(item).join("") + "</ol>" },
+    { id: "timeline", nav: "Timeline", html: '<h2 id="timeline-h">Every convening, in order</h2><p style="color:var(--text-2)">Past convenings link to their page and attendee feedback. Upcoming convenings show their host and dates, with details added as they’re confirmed.</p><ol class="ct">' + list.map(item).join("") + "</ol>" },
     { id: "rotation", nav: "Hosting rotation", html: '<h2 id="rotation-h">Every CMO hosts at least twice</h2><p style="color:var(--text-2)">When each partner has hosted, or is scheduled to host, the Collaborative.</p>' + rotation }
   ];
 

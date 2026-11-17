@@ -8,6 +8,8 @@ ASC.render = function () {
     return;
   }
   document.title = p.name + " · AI Scale Collaborative";
+  const md = document.querySelector('meta[name="description"]');
+  if (md) md.setAttribute("content", p.summary);
   const hosted = ASC.convenings.filter((c) => c.host === p.id && c.status === "completed").sort((a, b) => a.start.localeCompare(b.start));
   const upcoming = ASC.convenings.filter((c) => c.host === p.id && c.status !== "completed");
   const h = ASC.hostingText(p);
@@ -15,7 +17,7 @@ ASC.render = function () {
 
   const stack = p.stack
     ? "<dl class=\"stack\"><dt>High-quality instructional materials</dt><dd>" + e(p.stack.hqim) + "</dd><dt>AI tools and systems in use</dt><dd><ul>" + p.stack.tools.map((t) => "<li>" + e(t) + "</li>").join("") + "</ul></dd></dl>" + (p.stack.source ? '<p class="source">' + e(p.stack.source) + "</p>" : "")
-    : '<div class="empty-state"><div class="icon-dot">' + I("book") + "</div><h3>Stack documentation not yet submitted</h3><p>Partners report HQIM, AI tools, deployment conditions and supervised vs. unsupervised use at onboarding, then quarterly.</p></div>";
+    : '<div class="empty-state"><div class="icon-dot">' + I("book") + "</div><h3>Stack documentation not yet submitted</h3><p>CMOs report HQIM, AI tools, deployment conditions and supervised vs. unsupervised use, updated quarterly.</p></div>";
 
   const convList = hosted.length
     ? '<ul class="plain-list">' + hosted.map((c) => '<li><a href="convening.html?id=' + e(c.id) + '"><b>' + e(c.title) + "</b></a><span class=\"muted small\">" + e(c.dates) + " · " + e(c.location) + "</span></li>").join("") + "</ul>"

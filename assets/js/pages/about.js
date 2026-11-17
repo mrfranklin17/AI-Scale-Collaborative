@@ -29,15 +29,14 @@ ASC.render = function () {
       nav: "Theory of change",
       html:
         '<h2 id="theory-h">Theory of change</h2>' +
-        '<p class="statement" style="font-size:clamp(1.4rem,2.6vw,2rem)">' + e(c.theoryOfChange) + "</p>" +
-        '<p style="color:var(--text-2);max-width:68ch;margin-top:var(--sp-6)">' + e(c.smallNetwork) + "</p>"
+        '<p class="statement" style="font-size:clamp(1.4rem,2.6vw,2rem)">' + e(c.theoryOfChange) + "</p>"
     },
     {
       id: "requirements",
-      nav: "Network requirements",
+      nav: "Partner commitments",
       html:
-        '<h2 id="requirements-h">Tight on entry conditions, loose where variation teaches</h2>' +
-        '<p style="color:var(--text-2);max-width:68ch">' + e(c.tightLoose) + "</p>" +
+        '<h2 id="requirements-h">Commitments every partner makes</h2>' +
+        '<p style="color:var(--text-2);max-width:68ch">' + e(c.commitmentsIntro) + "</p>" +
         '<div class="card">' +
         c.requirements.map((r, i) => '<div class="req" id="' + e(r.id) + '"><div class="n" aria-hidden="true">' + (i + 1) + "</div><div><h3>" + e(r.title) + "</h3><p>" + e(r.text) + "</p></div></div>").join("") +
         "</div>"
@@ -58,7 +57,7 @@ ASC.render = function () {
       band: "sky",
       art: "about-purpose",
       eyebrow: "Purpose & Design",
-      title: "The field-learning engine of the AI Innovation strategy",
+      title: "How the Collaborative works",
       lede: e(c.intro[0]) + " " + e(c.intro[1]),
       updated: ASC.config.lastUpdated.about
     }) + ASC.withToc(sections);

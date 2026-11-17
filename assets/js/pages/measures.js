@@ -41,9 +41,7 @@ ASC.render = function () {
       '<div class="grid grid-3" style="margin-bottom:var(--sp-6)">' + ASC.measurementChoices.map((m) => '<div class="card card--tint"><h3>' + e(m.title) + '</h3><p class="muted">' + e(m.text) + "</p></div>").join("") + "</div>" +
       '<div class="callout" style="margin-bottom:var(--sp-6)">Proficiency and AI access are reported for Black, Latino, and low-income students. Under the <a href="about.html#equity">equity guardrail</a>, data by race/ethnicity, special education status and English learner status must show no harm to any subgroup before a tool is scaled.</div>' +
       '<p class="muted small" style="margin-bottom:var(--sp-6)"><b>Year definitions.</b> Year 1 is SY2026–27, Year 2 is SY2027–28 and Year 3 is SY2028–29. Targets match what partners have signed or proposed.</p>' +
-      '<div class="grid grid-2">' +
-      ["assessment", "equity", "vendor", "index"].map((id) => { const r = req(id); return '<div class="card"><h3>' + e(r.title) + '</h3><p class="muted">' + e(r.text) + "</p></div>"; }).join("") +
-      "</div>"
+      '<p><a class="arrow-link" href="about.html#requirements">How partners assess, document and report ' + ASC.icon("arrow") + "</a></p>"
   };
 
   document.getElementById("main").innerHTML =
