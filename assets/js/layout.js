@@ -267,7 +267,7 @@
       '<footer class="site-footer"><div class="wrap">' +
       '<div class="footer-cta"><h2>Attended a convening? Tell us how it went.</h2><div class="actions-row"><a class="btn btn-light" href="survey.html">Take the survey ' + ASC.icon("arrow") + '</a><a class="btn btn-outline-light" href="feedback.html">See the results</a></div></div>' +
       '<div class="footer-grid">' +
-      '<div><a class="brand" href="index.html" style="color:#fff;margin-bottom:var(--sp-4)"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative</span></a><p>A US Charters network of four CMOs learning how AI-augmented instruction can increase proficiency for Black, Latino, and low-income students. Launched fall 2026.</p></div>' +
+      '<div><a class="brand" href="index.html" style="color:#fff;margin-bottom:var(--sp-4)"><span class="brand-mark">' + BRAND_MARK + '</span><span>AI Scale Collaborative</span></a><p>A US Charters network of four CMOs learning how AI-augmented instruction can increase proficiency for the students they serve. Launched fall 2026.</p></div>' +
       '<div><h2>The collaborative</h2><ul>' +
       NAV.slice(0, 4).map((n) => '<li><a href="' + n.href + '">' + n.label + "</a></li>").join("") +
       '<li><a href="about.html#requirements">Partner commitments</a></li></ul></div>' +

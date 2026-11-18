@@ -62,7 +62,7 @@ ASC.render = async function () {
 
   const stats = [
     { href: "partners.html", v: cmos.length, l: "CMO partners", go: "Meet the CMOs", cls: "coral" },
-    { href: "about.html#focus", v: c.focusPopulations.length, l: "Focus populations", go: "Who we focus on", cls: "teal" },
+    { href: "about.html#requirements", v: c.requirements.length, l: "Partner commitments", go: "See the commitments", cls: "teal" },
     { href: "measures.html", v: ASC.measures.length, l: "Outcome measures to 2030", go: "See the measures", cls: "sun" },
     { href: "convenings.html", v: completed.length, l: "Convening" + (completed.length === 1 ? "" : "s") + " held", go: "See convenings", cls: "white" }
   ];

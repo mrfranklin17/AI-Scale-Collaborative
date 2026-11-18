@@ -15,9 +15,9 @@ window.ASC.survey = {
     { id: "relevance", short: "Relevant to my role", text: "The content was relevant to my role and my organization's context." },
     { id: "host_view", short: "Clear view of host's AI work", text: "The host's sessions gave me a clear, honest view of how they implement AI." },
     { id: "actionable", short: "Left with an actionable idea", text: "I am leaving with at least one idea I can act on in the next 90 days." },
-    // v2 ids (Nov 2026): "focus_students" replaces "equity", which named different student groups.
-    { id: "focus_students", short: "Addressed focus students", text: "Sessions addressed how AI can increase proficiency for Black, Latino, and low-income students." },
-    { id: "agenda", short: "Shifted my thinking", text: "This convening changed how I think about using AI to increase proficiency for Black, Latino, and low-income students in my own context." },
+    // v3 ids (Nov 18, 2026): replace "focus_students" and "agenda", which named specific student groups.
+    { id: "students_served", short: "Addressed our students", text: "Sessions addressed how AI can increase proficiency for the students my organization serves." },
+    { id: "thinking", short: "Shifted my thinking", text: "This convening changed how I think about using AI to increase student proficiency in my own context." },
     { id: "connections", short: "Built peer connections", text: "I made connections with peers in the network that I plan to follow up on." },
     { id: "logistics", short: "Logistics supported learning", text: "Logistics and pacing supported my learning." }
   ],
@@ -69,7 +69,7 @@ window.ASC.survey = {
     { id: "tutoring", label: "AI tutoring", keywords: ["tutor", "dosage", "intervention"] },
     { id: "literacy", label: "AI literacy", keywords: ["literacy", "history class", "accept, revise", "protocol"] },
     { id: "mindsets", label: "Mindsets & culture", keywords: ["task force", "culture", "norm", "mindset", "abandon", "honest", "worth", "agent approach", "pilot"] },
-    { id: "equity", label: "Equity & focus students", keywords: ["black", "latino", "low-income", "low income", "english learner", "iep", "equity", "subgroup", "focus population", "focus student", "furthest behind", "students with"] },
+    { id: "equity", label: "Equity", keywords: ["english learner", "iep", "equity", "subgroup", "focus population", "focus student", "furthest behind", "students with"] },
     { id: "logistics", label: "Logistics", keywords: ["logistics", "schedule", "agenda", "pre-read", "debrief", "pacing", "more time", "smaller", "groups", "session on"] }
   ],
 

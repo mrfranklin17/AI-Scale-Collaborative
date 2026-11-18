@@ -28,7 +28,6 @@ ASC.render = function () {
       '<h2 id="' + e(m.id) + '-h" style="font-size:var(--fs-lg);margin-top:var(--sp-3)">' + e(m.title) + "</h2>" +
       '<p class="muted" style="max-width:70ch">' + e(m.definition) + "</p>" +
       (m.domains ? '<div class="chips" aria-label="Index domains" style="margin-top:var(--sp-3)">' + m.domains.map((d) => '<span class="chip chip--accent">' + e(d) + "</span>").join("") + "</div>" : "") +
-      (m.focus ? '<p class="focus-note">' + ASC.icon("users") + "<span>Reported for Black, Latino, and low-income students.</span></p>" : "") +
       track(m) +
       '<dl class="mt-meta"><dt>Data source</dt><dd>' + e(m.source) + "</dd><dt>Cadence</dt><dd>" + e(m.cadence) + "</dd><dt>Targets</dt><dd>" + m.targets.map((t) => t.value + "% by " + t.label).join(" · ") + "</dd></dl></div>"
   }));
@@ -39,7 +38,7 @@ ASC.render = function () {
     html:
       '<h2 id="how-h">Three design choices set this measurement apart</h2>' +
       '<div class="grid grid-3" style="margin-bottom:var(--sp-6)">' + ASC.measurementChoices.map((m) => '<div class="card card--tint"><h3>' + e(m.title) + '</h3><p class="muted">' + e(m.text) + "</p></div>").join("") + "</div>" +
-      '<div class="callout" style="margin-bottom:var(--sp-6)">Proficiency and AI access are reported for Black, Latino, and low-income students. Under the <a href="about.html#equity">equity guardrail</a>, data by race/ethnicity, special education status and English learner status must show no harm to any subgroup before a tool is scaled.</div>' +
+      '<div class="callout" style="margin-bottom:var(--sp-6)">Under the <a href="about.html#equity">equity guardrail</a>, disaggregated subgroup data must show no harm before any tool is scaled within a network school.</div>' +
       '<p class="muted small" style="margin-bottom:var(--sp-6)"><b>Year definitions.</b> Year 1 is SY2026–27, Year 2 is SY2027–28 and Year 3 is SY2028–29. Targets match what partners have signed or proposed.</p>' +
       '<p><a class="arrow-link" href="about.html#requirements">How partners assess, document and report ' + ASC.icon("arrow") + "</a></p>"
   };
@@ -52,7 +51,7 @@ ASC.render = function () {
       artLabel: "2030",
       eyebrow: "Outcome metrics",
       title: "What we will know by 2030",
-      lede: "Five outcome measures track whether AI-augmented instruction reaches every student in each CMO network and increases proficiency for Black, Latino, and low-income students.",
+      lede: "Five outcome measures track whether AI-augmented instruction reaches every student in each CMO network and increases student proficiency.",
       updated: ASC.config.lastUpdated.measures
     }) + ASC.withToc(measureSections.concat([how]));
 };

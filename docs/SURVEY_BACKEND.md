@@ -63,7 +63,7 @@ Each response is one row. `organization` and `role` are stored as ids (e.g. `kip
 ```json
 {
   "likert":   { "objectives": 4, "relevance": 5, "host_view": 4, "actionable": 5,
-                "focus_students": 3, "agenda": 4, "connections": 4, "logistics": 3 },
+                "students_served": 3, "thinking": 4, "connections": 4, "logistics": 3 },
   "nps":      9,
   "sessions": { "data-hub": 5, "tutoring": 4 },
   "friction": "practice",
@@ -79,6 +79,26 @@ Question ids come from `data/survey.js`. Don't rename an id once responses exist
 
 A response counts as a Foundation response when the role is **Foundation employee** or the organization is **Gates Foundation**. The dashboard's **Exclude Foundation responses** switch removes them from every chart, table and comparison, and the choice is kept in the link (`&foundation=exclude`).
 
+## Keeping individual responses private
+
+The site only ever shows group totals (by organization and across the Collaborative, hidden below 3 responses), and it never displays open-ended comments. To make sure individual responses can't be read from the database either, run this once in **SQL Editor**:
+
+```sql
+-- A read-only view for the dashboard: ratings only, no open-ended comments.
+create or replace view public.survey_results as
+select id, submitted_at, convening_id, organization, role,
+       answers - 'open' as answers
+from public.survey_responses;
+
+grant select on public.survey_results to anon;
+
+-- The public key can no longer read the raw responses table.
+drop policy if exists "read responses" on public.survey_responses;
+revoke select on public.survey_responses from anon;
+```
+
+After this, the public key can still **submit** responses and read the comment-free view, but not the raw table. Comments are visible only to the Foundation team in the Supabase **Table Editor**. (Supabase may flag the view as "security definer" — that is intentional: it lets the site read the comment-free view without access to the table.)
+
 ## Access considerations
 
-With the policies above, anyone who has the site URL can read all responses (organization, role, ratings and comments — never names). That fits a site shared only with collaborative members. If the site will be public, put it behind sign-in (for example Vercel password protection) or replace the `select` policy with one that requires an authenticated Supabase user.
+Before the privacy step above, anyone with the site URL could read all responses through the API. After it, only the comment-free ratings view is readable. That fits a site shared only with collaborative members. If the site will be public, put it behind sign-in (for example Vercel password protection) or replace the `select` policy with one that requires an authenticated Supabase user.

@@ -51,7 +51,11 @@
       return cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + cfg.table;
     },
     async list() {
-      const res = await fetch(this.base() + "?select=*&order=submitted_at.asc", { headers: this.headers() });
+      // Prefer the comment-free results view; fall back to the table if the view isn't set up yet.
+      const root = cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/";
+      const q = "?select=id,submitted_at,convening_id,organization,role,answers&order=submitted_at.asc";
+      let res = cfg.resultsView ? await fetch(root + cfg.resultsView + q, { headers: this.headers() }) : null;
+      if (!res || !res.ok) res = await fetch(this.base() + q, { headers: this.headers() });
       if (!res.ok) throw new Error("Could not load responses (" + res.status + ")");
       return res.json();
     },
@@ -70,8 +74,11 @@
   ASC.store = {
     mode: useSupabase ? "shared" : "local",
 
+    // Results never include individual open-ended comments: they're stripped here
+    // (and, once the results view is set up, never leave the database at all).
     async list() {
-      return useSupabase ? supabase.list() : readLocal();
+      const rows = useSupabase ? await supabase.list() : readLocal();
+      return rows.map((r) => Object.assign({}, r, { answers: Object.assign({}, r.answers, { open: {} }) }));
     },
 
     async submit(partial) {
@@ -120,7 +127,7 @@
     const pick = (arr) => arr[Math.floor(r() * arr.length)];
     const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
     // Item "lean" shifts the distribution per question so the sample looks varied.
-    const lean = { objectives: 0.5, relevance: 0.6, host_view: 0.9, actionable: 0.7, focus_students: -0.6, agenda: 0.2, connections: 0.1, logistics: -0.2 };
+    const lean = { objectives: 0.5, relevance: 0.6, host_view: 0.9, actionable: 0.7, students_served: -0.3, thinking: 0.2, connections: 0.1, logistics: -0.2 };
     const sessionLean = { "leader-data-day": 0.6, "classroom-obs": 0.2, "ai-native": 0.4, "ai-literacy": 0.5, tutoring: 0.7, "data-hub": 0.9, "task-force": 0.3, coursemojo: -0.3 };
     const orgs = ["kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "kipp-norcal", "gem-prep", "gem-prep", "gem-prep", "gem-prep", "gem-prep", "collegiate", "collegiate", "collegiate", "collegiate", "collegiate", "collegiate", "gates", "gates", "gates", "ai-for-equity", "ai-for-equity", "ai-for-equity", "dream", "dream", "dream"];
     const roles = { default: ["network", "network", "school", "school", "instruction", "data", "operations"], gates: ["foundation"], "ai-for-equity": ["other"], dream: ["school", "instruction", "data"] };
@@ -155,7 +162,7 @@
         "More time in classrooms.",
         "Structured time with our own team to plan next steps before we leave.",
         "Share pre-reads ahead of time.",
-        "A session focused on Black, Latino, and low-income students.",
+        "A session on how each partner is measuring proficiency gains.",
         "Smaller cross-network groups so people can compare notes by role.",
         "A short debrief at the end of each day.",
         "A slightly lighter agenda on day two.",
@@ -173,7 +180,7 @@
       const likert = {};
       ASC.survey.likert.forEach((q) => {
         likert[q.id] = clamp(Math.round(3.6 + (lean[q.id] || 0) + person + (r() - 0.5) * 1.6), 1, 5);
-        if ((org === "gates" || org === "ai-for-equity") && ["relevance", "actionable", "agenda"].includes(q.id) && r() < 0.6) likert[q.id] = "na";
+        if ((org === "gates" || org === "ai-for-equity") && ["relevance", "actionable", "thinking"].includes(q.id) && r() < 0.6) likert[q.id] = "na";
       });
       const sessions = {};
       conv.sessions.forEach((s) => {

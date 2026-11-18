@@ -5,17 +5,6 @@ ASC.render = function () {
 
   const sections = [
     {
-      id: "focus",
-      nav: "Who we focus on",
-      html:
-        '<h2 id="focus-h">Raising proficiency for the students the system has underserved</h2>' +
-        '<p style="color:var(--text-2);max-width:68ch">The network’s central outcome is increased proficiency in Math and ELA for three focus populations, measured against comparable schools with a Similar Schools methodology.</p>' +
-        '<div class="grid grid-3" style="margin-top:var(--sp-6)">' +
-        c.focusPopulations.map((f, i) => '<div class="card focus-card focus-card--' + i + '"><div class="q-num" aria-hidden="true">0' + (i + 1) + "</div><h3>" + e(f) + "</h3></div>").join("") +
-        "</div>" +
-        '<p class="muted small" style="margin-top:var(--sp-5)">Separately, the <a href="#equity">equity guardrail</a> requires data disaggregated by race/ethnicity, special education status and English learner status to show no harm to any subgroup before a tool is scaled.</p>'
-    },
-    {
       id: "questions",
       nav: "Learning agenda",
       html:

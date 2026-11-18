@@ -13,7 +13,10 @@ window.ASC.config = {
     type: "supabase",
     supabaseUrl: "https://ibnhdbkrhrofhxjzzjeb.supabase.co",      // e.g. "https://abcd1234.supabase.co"
     supabaseAnonKey: "sb_publishable_WggZitaumNTB7WmMKHhzIg_x9aHUBlt",  // the project's publishable key (sb_publishable_...) or legacy anon key — public by design; row-level security controls access
-    table: "survey_responses"
+    table: "survey_responses",
+    // Read-only view the dashboard reads from: ratings only, no open-ended comments.
+    // See docs/SURVEY_BACKEND.md. Falls back to the table until the view exists.
+    resultsView: "survey_results"
   },
 
   // Show illustrative sample responses on the Feedback page while no real

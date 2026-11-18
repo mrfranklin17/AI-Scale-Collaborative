@@ -12,8 +12,6 @@ window.ASC.collaborative = {
   launch: "Fall 2026",
   tagline:
     "A common measurement framework, shared stack documentation and two convenings a year — so every partner learns what increases proficiency for the students it serves.",
-  // The students whose proficiency the network is built to raise.
-  focusPopulations: ["Black students", "Latino students", "Low-income students"],
   intro: [
     "The AI Scale Collaborative is the field-learning engine of the US Charters AI Innovation strategy. A concentrated network of high-readiness CMOs implements AI-augmented instruction under a common measurement framework, documents their instructional stacks, and shares what they learn across the network.",
     "Together, the four CMOs generate evidence that is cross-context, disaggregated, and practitioner-produced — learning each partner can put to work in its own schools."
@@ -23,7 +21,7 @@ window.ASC.collaborative = {
   questions: [
     {
       title: "Conditions for proficiency gains",
-      text: "Under what conditions does AI-augmented instruction increase proficiency for Black, Latino, and low-income students in high-quality charter contexts?"
+      text: "Under what conditions does AI-augmented instruction increase student proficiency in high-quality charter contexts?"
     },
     {
       title: "What holds up across contexts",
@@ -206,7 +204,6 @@ window.ASC.partners = [
     facts: [
       { k: "Schools", v: "5 open-enrollment high schools + 2 post-secondary programs" },
       { k: "Grades", v: "9–12 and beyond" },
-      { k: "Scholars", v: "85% first-generation college · 20% with special education needs" },
       { k: "In Louisiana", v: "15 years" }
     ],
     hosting: "SY2027–28",
@@ -221,14 +218,13 @@ window.ASC.measures = [
     id: "proficiency",
     title: "Student Proficiency (Math + ELA)",
     definition:
-      "% of CMO partner schools in the top third of the Similar Schools metric in both Math and ELA. Tests the core proposition: AI-augmented instruction increases proficiency for Black, Latino, and low-income students relative to comparable schools, in both subjects.",
+      "% of CMO partner schools in the top third of the Similar Schools metric in both Math and ELA. Tests the core proposition: AI-augmented instruction increases student proficiency relative to comparable schools, in both subjects.",
     targets: [
       { label: "Year 2", value: 65 },
       { label: "Year 3", value: 80 }
     ],
     source: "State assessments + Similar Schools methodology",
     cadence: "Annual",
-    focus: true,            // reported for the network's focus populations
     current: null,          // set to a number (0–100) when the first report is in
     firstReport: "Fall 2027, after SY2026–27 state results"
   },
@@ -236,14 +232,13 @@ window.ASC.measures = [
     id: "access",
     title: "Network-Wide AI Access",
     definition:
-      "% of students across each full CMO network — not just pilot classrooms — with access to AI-enabled instructional solutions aligned to HQIM, disaggregated by focus populations. Tests the network-scale differentiator.",
+      "% of students across each full CMO network — not just pilot classrooms — with access to AI-enabled instructional solutions aligned to HQIM. Tests the network-scale differentiator.",
     targets: [
       { label: "Year 2", value: 75 },
       { label: "Year 3", value: 100 }
     ],
     source: "Implementation reports (collected by AI for Equity)",
     cadence: "Quarterly",
-    focus: true,
     current: null,
     firstReport: "Spring 2027"
   },

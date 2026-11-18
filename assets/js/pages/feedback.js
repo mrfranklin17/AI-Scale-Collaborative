@@ -14,7 +14,7 @@ ASC.render = async function () {
   const { rows: all, sample, error } = await ASC.loadResponses();
 
   /* ---------- state <-> URL ---------- */
-  const KEYS = ["convening", "org", "role", "theme", "foundation"];
+  const KEYS = ["convening", "org", "role", "foundation"];
   const state = { convening: "all", org: "all", role: "all", theme: "all", foundation: "all", tab: S.open[0].id, q: "", limit: 6 };
   function readUrl() {
     const p = new URLSearchParams(location.search);
@@ -95,7 +95,7 @@ ASC.render = async function () {
     '<label class="switch"><input type="checkbox" id="f-foundation" role="switch"><span class="switch-track" aria-hidden="true"></span><span>Exclude Foundation responses</span></label>' +
     '<div class="filter-actions">' +
     '<button class="btn btn-secondary btn-sm" type="button" id="print">' + ASC.icon("print") + "Print / PDF</button>" +
-    '<button class="btn btn-secondary btn-sm" type="button" id="export">' + ASC.icon("download") + "CSV</button>" +
+    '<button class="btn btn-secondary btn-sm" type="button" id="export">' + ASC.icon("download") + "Summary CSV</button>" +
     (ASC.store.mode === "local" ? '<label class="btn btn-secondary btn-sm">' + ASC.icon("upload") + 'Import<input type="file" id="import" accept=".csv,.json" class="sr-only"></label>' : "") +
     "</div></div>" +
     '<div class="active-chips chips" id="active-chips" aria-live="polite"></div>' +
@@ -244,8 +244,7 @@ ASC.render = async function () {
     out.innerHTML =
       findings + kpis + statements +
       '<div class="dash-grid">' + sessions + (S.friction.paused ? "" : frictions) + byOrg(rows) + "</div>" +
-      trends() + acrossHosts(conv) + commentsPanel();
-    wireComments(rows);
+      trends() + acrossHosts(conv) + privacyNote();
     wireTables();
   }
 
@@ -284,70 +283,11 @@ ASC.render = async function () {
     return '<div style="margin-top:var(--sp-5)">' + panelHtml({ id: "hosts", wide: true, title: "Every host CMO side by side", sub: "Select a host to open its view" + (state.org !== "all" || state.role !== "all" ? " · current respondent filters applied" : ""), body }) + "</div>";
   }
 
-  function commentsPanel() {
+  function privacyNote() {
     return (
-      '<section class="panel panel--wide" id="comments" aria-labelledby="comments-h" style="margin-top:var(--sp-5)"><div class="panel-head"><div><h3 id="comments-h">In their words' + samplePill + '</h3><p class="panel-sub">Open-ended responses · ' + e(scope()) + "</p></div>" +
-      '<div class="c-search"><label class="sr-only" for="c-search">Search comments</label><input type="search" id="c-search" placeholder="Search comments…" value="' + e(state.q) + '"></div></div>' +
-      '<div class="tabs" role="tablist" aria-label="Question">' + S.open.map((q) => '<button type="button" role="tab" id="tab-' + q.id + '" data-tab="' + e(q.id) + '" aria-controls="c-list">' + e(q.short) + ' <span data-count="' + e(q.id) + '"></span></button>').join("") + "</div>" +
-      '<p class="muted small" id="c-question"></p>' +
-      '<div class="chips theme-chips" role="group" aria-label="Filter by theme" id="theme-chips"></div>' +
-      '<div class="comments" id="c-list" role="tabpanel"></div></section>'
+      '<section class="panel panel--wide privacy-note" aria-labelledby="privacy-h" style="margin-top:var(--sp-5)"><div class="panel-head"><div><h3 id="privacy-h">About these results</h3>' +
+      '<p class="panel-sub">Results are shown only as totals for groups of ' + MIN + " or more, by organization and across the Collaborative. Individual responses and open-ended comments aren’t shown on this site; the Foundation team reads comments and shares themes back with the network.</p></div></div></section>"
     );
-  }
-
-  function wireComments(rows) {
-    const list = document.getElementById("c-list");
-    const search = document.getElementById("c-search");
-    const roleLabel = (id) => (S.roles.find((r) => r.id === id) || { label: id }).label;
-    const orgCounts = {};
-    rows.forEach((r) => (orgCounts[r.organization] = (orgCounts[r.organization] || 0) + 1));
-    function paint() {
-      const q = state.q.toLowerCase();
-      const withText = rows.filter((r) => r.answers && r.answers.open && r.answers.open[state.tab]);
-      S.open.forEach((o) => { const el = document.querySelector('[data-count="' + o.id + '"]'); if (el) el.textContent = "(" + rows.filter((r) => r.answers && r.answers.open && r.answers.open[o.id]).length + ")"; });
-      document.querySelectorAll("[data-tab]").forEach((b) => { const on = b.dataset.tab === state.tab; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; });
-      list.setAttribute("aria-labelledby", "tab-" + state.tab);
-      document.getElementById("c-question").textContent = (S.open.find((o) => o.id === state.tab) || {}).text || "";
-      const counts = {};
-      withText.forEach((r) => themesOf(r.answers.open[state.tab]).forEach((t) => (counts[t] = (counts[t] || 0) + 1)));
-      document.getElementById("theme-chips").innerHTML =
-        '<button type="button" class="chip" data-theme="all" aria-pressed="' + (state.theme === "all") + '">All themes</button>' +
-        S.themes.filter((t) => counts[t.id] || state.theme === t.id).map((t) => '<button type="button" class="chip" data-theme="' + t.id + '" aria-pressed="' + (state.theme === t.id) + '">' + e(t.label) + " (" + (counts[t.id] || 0) + ")</button>").join("");
-      document.querySelectorAll("[data-theme]").forEach((b) => b.addEventListener("click", () => { state.theme = b.dataset.theme; state.limit = 6; writeUrl(); draw(); }));
-      const items = withText
-        .filter((r) => state.theme === "all" || themesOf(r.answers.open[state.tab]).includes(state.theme))
-        .filter((r) => !q || r.answers.open[state.tab].toLowerCase().includes(q))
-        .sort((a, b) => (b.submitted_at || "").localeCompare(a.submitted_at || ""));
-      const shown = items.slice(0, state.limit);
-      list.innerHTML = items.length
-        ? shown.map((r) => {
-            const c = ASC.convening(r.convening_id);
-            const showOrg = orgCounts[r.organization] >= MIN;
-            const th = themesOf(r.answers.open[state.tab]).map((id) => S.themes.find((t) => t.id === id).label);
-            return (
-              '<figure class="comment"><blockquote>' + e(r.answers.open[state.tab]) + "</blockquote><figcaption>" +
-              "<span>" + e(roleLabel(r.role)) + (showOrg ? ", " + e(ASC.org(r.organization).short) : "") + "</span>" +
-              (state.convening === "all" && c ? '<span class="muted">· ' + e(ASC.hostName(c, true)) + " convening</span>" : "") +
-              th.map((t) => '<span class="chip">' + e(t) + "</span>").join("") +
-              (r.sample ? '<span class="chip chip--sample">Sample</span>' : "") + "</figcaption></figure>"
-            );
-          }).join("") +
-          (items.length > shown.length ? '<div><button type="button" class="btn btn-secondary btn-sm" id="c-more">Show more (' + (items.length - shown.length) + " remaining)</button></div>" : "")
-        : '<div class="empty">' + (q ? "No comments match “" + e(state.q) + "”." : "No comments for this question and theme yet.") + "</div>";
-      const more = document.getElementById("c-more");
-      if (more) more.addEventListener("click", () => { state.limit += 6; paint(); });
-    }
-    const tabs = [...document.querySelectorAll("[data-tab]")];
-    tabs.forEach((b, i) => {
-      b.addEventListener("click", () => { state.tab = b.dataset.tab; state.limit = 6; paint(); });
-      b.addEventListener("keydown", (ev) => {
-        if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
-        const n = tabs[(i + (ev.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
-        n.focus(); n.click();
-      });
-    });
-    search.addEventListener("input", () => { state.q = search.value; state.limit = 6; paint(); });
-    paint();
   }
 
   function wireTables() {
@@ -365,24 +305,24 @@ ASC.render = async function () {
     ASC.convenings.forEach((c) => (c.sessions || []).forEach((s) => { if (!ids.includes(s.id)) ids.push(s.id); }));
     return ids;
   }
+  // Export organization-level totals for the current filters (never individual responses).
   function exportCsv(rows) {
-    const sess = allSessionIds();
-    const cols = ["id", "submitted_at", "convening_id", "organization", "role"].concat(S.likert.map((q) => "lk_" + q.id), ["nps"], sess.map((s) => "ss_" + s), ["friction"], S.open.map((q) => "op_" + q.id), ["sample"]);
-    const cell = (v) => { const s = v == null ? "" : String(v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
-    const lines = [cols.join(",")].concat(
-      rows.map((r) => {
-        const a = r.answers || {};
-        const vals = { id: r.id, submitted_at: r.submitted_at, convening_id: r.convening_id, organization: r.organization, role: r.role, nps: a.nps, friction: a.friction, sample: r.sample ? "true" : "" };
-        S.likert.forEach((q) => (vals["lk_" + q.id] = a.likert && a.likert[q.id]));
-        sess.forEach((s) => (vals["ss_" + s] = a.sessions && a.sessions[s]));
-        S.open.forEach((q) => (vals["op_" + q.id] = a.open && a.open[q.id]));
-        return cols.map((c) => cell(vals[c])).join(",");
-      })
-    );
-    const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const cell = (v) => { const t = v == null ? "" : String(v); return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+    const num = (v, d) => (v == null || isNaN(v) ? "" : Number(v).toFixed(d));
+    const cols = ["group", "responses", "avg_agreement", "nps", "pct_actionable_idea"].concat(S.likert.map((q) => "mean_" + q.id));
+    const line = (name, rs) => {
+      if (rs.length < MIN) return [name, rs.length].concat(cols.slice(2).map(() => "")).map(cell).join(",");
+      const ac = M.agreeShare(rs, "actionable");
+      return [name, rs.length, num(M.overall(rs), 2), M.nps(rs), ac == null ? "" : Math.round(ac * 100)].concat(S.likert.map((q) => num(M.mean(M.likertVals(rs, q.id)), 2))).map(cell).join(",");
+    };
+    const groups = ASC.orgs().map((o) => ({ o, rs: rows.filter((r) => r.organization === o.id) })).filter((g) => g.rs.length);
+    const lines = ["# " + scope() + (sample ? " (SAMPLE DATA)" : "") + " · groups under " + MIN + " responses are left blank", cols.join(",")]
+      .concat(groups.map((g) => line(g.o.name, g.rs)))
+      .concat([line("All organizations", rows)]);
+    const blob = new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "convening-feedback" + (state.convening !== "all" ? "-" + state.convening : "") + ".csv";
+    a.download = "convening-feedback-summary" + (state.convening !== "all" ? "-" + state.convening : "") + ".csv";
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
