@@ -11,7 +11,7 @@ window.ASC.collaborative = {
   subtitle: "CMO Network",
   launch: "Fall 2026",
   tagline:
-    "A common measurement framework, shared stack documentation and two convenings a year — so every partner learns what increases proficiency for Black, Latino, and low-income students.",
+    "A common measurement framework, shared stack documentation and two convenings a year — so every partner learns what increases proficiency for the students it serves.",
   // The students whose proficiency the network is built to raise.
   focusPopulations: ["Black students", "Latino students", "Low-income students"],
   intro: [
