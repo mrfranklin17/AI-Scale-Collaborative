@@ -1,0 +1,49 @@
+# Posts a daily survey response count as a comment on the "Survey response count" issue.
+# Runs at 7:35 AM Pacific (15:35 UTC during standard time) through December 2, 2026,
+# then disables itself. Run it anytime from the Actions tab ("Run workflow").
+name: Daily survey response count
+
+on:
+  schedule:
+    - cron: "35 15 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  actions: write
+  contents: read
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stop after the survey window
+        id: window
+        run: |
+          today=$(TZ=America/Los_Angeles date +%F)
+          if [[ "$today" > "2026-12-02" ]]; then echo "ended=true" >> "$GITHUB_OUTPUT"; else echo "ended=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Count responses
+        if: steps.window.outputs.ended == 'false'
+        run: node .github/scripts/survey-count.mjs > report.md && cat report.md
+
+      - name: Post to the tracking issue
+        if: steps.window.outputs.ended == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Survey response count"
+          num=$(gh issue list --state open --search "\"$title\" in:title" --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -n1)
+          if [ -z "$num" ]; then
+            num=$(gh issue create --title "$title" --body "Daily survey response counts for the AI Scale Collaborative, posted at about 7:35 AM Pacific through December 2, 2026. Close this issue to stop reading them; the workflow stops on its own after December 2." | grep -oE '[0-9]+$')
+          fi
+          { echo "@mrfranklin17"; echo; cat report.md; } > comment.md
+          gh issue comment "$num" --body-file comment.md
+
+      - name: Disable after the window ends
+        if: steps.window.outputs.ended == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow disable "Daily survey response count" --repo "$GITHUB_REPOSITORY"
