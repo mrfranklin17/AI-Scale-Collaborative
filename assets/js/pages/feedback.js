@@ -1,4 +1,7 @@
 ASC.render = async function () {
+  if (!ASC.hasAccess()) {
+    return ASC.renderGate({ crumbs: [{ label: "Feedback" }], band: "sky", eyebrow: "Convening feedback", title: "What attendees told us", lede: "Feedback results are for Collaborative members.", onUnlock: () => ASC.render() });
+  }
   const e = ASC.esc;
   const S = ASC.survey;
   const C = ASC.charts;

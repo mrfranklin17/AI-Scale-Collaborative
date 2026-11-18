@@ -36,7 +36,7 @@ ASC.render = async function () {
     '</ol><div class="tl-legend" aria-hidden="true"><span><i class="f"></i>Completed</span><span><i></i>Upcoming</span></div>';
 
   /* ---- Latest from the network ---- */
-  const { rows, sample } = await ASC.loadResponses();
+  const { rows, sample } = ASC.hasAccess() ? await ASC.loadResponses() : { rows: [], sample: false };
   const latestRows = latest ? rows.filter((r) => r.convening_id === latest.id) : [];
   const f = latestRows.length >= (ASC.config.minResponsesToShow || 3) ? ASC.metrics.findings(latestRows) : null;
   const measure = ASC.measures[0];

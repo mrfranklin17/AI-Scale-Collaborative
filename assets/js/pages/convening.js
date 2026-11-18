@@ -157,11 +157,15 @@ ASC.render = async function () {
   /* ---- embedded feedback summary ---- */
   const fmt = (v) => (v == null || isNaN(v) ? "—" : Number(v).toFixed(1));
   const pct = (v) => (v == null || isNaN(v) ? "—" : Math.round(v * 100) + "%");
+  const box = document.getElementById("fb-summary");
+  if (!ASC.hasAccess()) {
+    box.innerHTML = '<div class="empty-state"><div class="icon-dot">' + I("chart") + '</div><h3>Results are for Collaborative members</h3><p><a href="feedback.html?convening=' + e(c.id) + '">Enter the password to see feedback</a></p></div>';
+    return;
+  }
   const { rows: allRows, sample } = await ASC.loadResponses();
   const rows = allRows.filter((r) => r.convening_id === c.id);
   const MIN = ASC.config.minResponsesToShow || 3;
   const M = ASC.metrics;
-  const box = document.getElementById("fb-summary");
   if (rows.length < MIN) {
     box.innerHTML = '<div class="empty-state"><div class="icon-dot">' + I("chart") + "</div><h3>Feedback results appear after " + MIN + " responses</h3><p>" + (rows.length ? rows.length + " so far. " : "No responses yet. ") + '<a href="survey.html?convening=' + e(c.id) + '">Take the survey</a></p></div>';
     return;

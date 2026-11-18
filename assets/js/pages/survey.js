@@ -1,4 +1,7 @@
 ASC.render = function () {
+  if (!ASC.hasAccess()) {
+    return ASC.renderGate({ crumbs: [{ label: "Survey" }], eyebrow: "Post-convening survey", title: "How was the convening?", lede: "The survey is for Collaborative convening attendees.", onUnlock: () => ASC.render() });
+  }
   const e = ASC.esc;
   const S = ASC.survey;
   const I = ASC.icon;

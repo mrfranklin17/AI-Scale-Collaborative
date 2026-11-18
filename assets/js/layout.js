@@ -134,6 +134,50 @@
   const BRAND_MARK =
     '<svg viewBox="0 0 36 36" aria-hidden="true" focusable="false"><rect x="2" y="6" width="24" height="24" rx="5" fill="#4b1660"/><rect x="12" y="2" width="22" height="22" rx="5" fill="#f26a4f" opacity=".95"/><circle cx="24" cy="25" r="7" fill="#ffe27a"/></svg>';
 
+  /* ---------- basic password gate (survey + results) ---------- */
+  const ACCESS_KEY = "asc_access_v1";
+  ASC.hasAccess = function () {
+    const a = ASC.config && ASC.config.access;
+    if (!a || !a.enabled) return true;
+    return ASC.storage.get(ACCESS_KEY, null) === a.passwordHash;
+  };
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  // Renders a password screen into <main>; calls onUnlock() after a correct entry.
+  ASC.renderGate = function (o) {
+    const e = ASC.esc;
+    const main = document.getElementById("main");
+    main.innerHTML =
+      ASC.pageHero({ crumbs: o.crumbs, band: o.band || "sage", art: false, eyebrow: o.eyebrow, title: o.title, lede: o.lede }) +
+      '<section class="wrap gate-wrap"><form class="card gate" id="gate" novalidate>' +
+      '<div class="icon-dot">' + ASC.icon("info") + "</div>" +
+      '<h2 class="gate-title">Enter the Collaborative password</h2>' +
+      '<p class="muted">You’ll find it in your convening invitation email. Your device will remember it.</p>' +
+      '<label class="q-label" for="gate-pw">Password</label>' +
+      '<input type="password" id="gate-pw" autocomplete="current-password" required>' +
+      '<p class="form-error" id="gate-err" role="alert"></p>' +
+      '<button type="submit" class="btn btn-primary">Continue ' + ASC.icon("arrow") + "</button>" +
+      "</form></section>";
+    const input = document.getElementById("gate-pw");
+    input.focus();
+    document.getElementById("gate").addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const err = document.getElementById("gate-err");
+      const val = input.value.trim();
+      if (!val) { err.textContent = "Please enter the password."; return; }
+      if ((await sha256(val)) !== ASC.config.access.passwordHash) {
+        err.textContent = "That password didn’t match. Check your invitation email and try again.";
+        input.select();
+        return;
+      }
+      ASC.storage.set(ACCESS_KEY, ASC.config.access.passwordHash);
+      window.scrollTo(0, 0);
+      o.onUnlock();
+    });
+  };
+
   /* ---------- page scaffolding ---------- */
 
   // Breadcrumb trail: [{label, href?}, ...]; the last item is the current page.

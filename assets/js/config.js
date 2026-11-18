@@ -29,6 +29,16 @@ window.ASC.config = {
   // protect respondent anonymity in small groups.
   minResponsesToShow: 3,
 
+  // Basic password gate for the survey and all results (dashboard, landing and
+  // convening feedback summaries). Only the SHA-256 hash of the password is stored.
+  // To change the password: run  echo -n 'NewPassword' | shasum -a 256  and paste
+  // the hex value below. Set enabled: false to remove the gate.
+  // Note: this keeps casual visitors out; it is not strong security.
+  access: {
+    enabled: true,
+    passwordHash: "4b1d6aa196b0d22ee9a6171f8c6b5924e1c3e27dd0a0c44c0e6c6812b5e4363d"
+  },
+
   // Shown in the footer. Leave email blank to show the team name only.
   contact: {
     name: "US Charters team, Gates Foundation",

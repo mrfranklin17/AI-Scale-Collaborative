@@ -399,7 +399,7 @@ button.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); bo
 .filter-actions .btn { min-height: 44px; }
 .filter-toggle { display: none; }
 .active-chips { margin-top: var(--sp-3); align-items: center; min-height: 32px; }
-select, input[type="text"], input[type="search"], textarea { width: 100%; font: inherit; font-size: 15px; color: var(--text); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 10px 12px; min-height: 44px; }
+select, input[type="text"], input[type="search"], input[type="password"], textarea { width: 100%; font: inherit; font-size: 15px; color: var(--text); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 10px 12px; min-height: 44px; }
 select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--text-2) 50%), linear-gradient(135deg, var(--text-2) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
 select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
 @media (max-width: 760px) {
@@ -805,3 +805,11 @@ textarea { min-height: 110px; resize: vertical; }
 .pin text { font-size: 15px; }
 .rot-partner { display: inline-flex; gap: var(--sp-3); align-items: center; }
 .rot-partner img { border-radius: 6px; background: #fff; border: 1px solid #e5ddd0; padding: 2px; object-fit: contain; flex: none; }
+
+/* ---------- Password gate ---------- */
+.gate-wrap { max-width: 560px; padding-top: var(--sp-12); }
+.gate { padding: var(--sp-8); }
+.gate-title { font-size: var(--fs-lg); margin-bottom: var(--sp-2); }
+.gate input { margin-bottom: var(--sp-2); }
+.gate .btn { margin-top: var(--sp-3); width: 100%; }
+.gate .form-error:empty { display: none; }
